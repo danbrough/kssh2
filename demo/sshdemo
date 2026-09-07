@@ -1,0 +1,40 @@
+#!/bin/bash
+export KLOG_COLOR=1
+export KLOG_LEVEL=TRACE
+
+DIR="$(pwd)"
+cd `dirname "$0"` && cd ..
+ROOTDIR="$(pwd)"
+MODULE=demo
+EXE=ssh2demo
+
+
+#LIBS=/usr/local/lib:/usr/lib
+#if [ "$OSTYPE" == "linux-gnu" ]; then
+#    if [ "$HOSTTYPE" == "x86_64" ]; then
+#      export LD_LIBRARY_PATH=`realpath jni/build/bin/linuxX64/kssh2jniDebugShared`:$LIBS
+#    else
+#      export LD_LIBRARY_PATH=`realpath jni/build/bin/linuxArm64/kssh2jniDebugShared`:$LIBS
+#    fi
+#    echo LD_LIBRARY_PATH: $LD_LIBRARY_PATH
+#else
+#  if [ "$HOSTTYPE" == "x86_64" ]; then
+#    export DYLD_LIBRARY_PATH=`realpath jni/build/bin/macosX64/kssh2jniDebugShared`:$LIBS
+#  else
+#    export DYLD_LIBRARY_PATH=`realpath jni/build/bin/macosArm64/kssh2jniDebugShared`:$LIBS
+#  fi
+#  echo DYLD_LIBRARY_PATH $DYLD_LIBRARY_PATH
+#fi
+
+
+if [[ $OSTYPE == darwin* ]] && [[ $HOSTTYPE == "x86_64" ]]; then
+  ./gradlew :$MODULE:link${EXE}DebugExecutableMacosX64 || exit $?
+  cd "$DIR"
+  echo running $ROOTDIR/$MODULE/build/bin/macosX64/${EXE}DebugExecutable/${EXE}.kexe
+  exec "$ROOTDIR/$MODULE/build/bin/macosX64/${EXE}DebugExecutable/${EXE}.kexe" "$@"
+else
+  ./gradlew :$MODULE:link${EXE}DebugExecutableLinuxX64 || exit $?
+  cd "$DIR"
+  echo running $ROOTDIR/$MODULE/build/bin/linuxX64/${EXE}DebugExecutable/${EXE}.kexe
+  exec "$ROOTDIR/$MODULE/build/bin/linuxX64/${EXE}DebugExecutable/${EXE}.kexe" "$@"
+fi

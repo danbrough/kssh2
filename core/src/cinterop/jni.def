@@ -1,0 +1,29 @@
+#package = io.github.danbrough.jni.cinterop
+package = platform.android
+
+headers = jni.h
+#headers.linux = jni.h jni_md.h
+#headers.osx = jni.h jni_md.h
+#headers.android = jni.h
+
+#headers = /home/dan/.konan/dependencies/target-toolchain-2-linux-android_ndk/sysroot/usr/include/jni.h
+#headers = jni.h
+#compilerOpts.linux_x64 = -I/usr/include -I./src/headers -I./src/headers/linux
+#headers.android = jni.h log.h
+#compilerOpts.android = -I./src/headers/android
+
+compilerOpts.linux_x64 = -I /files/workspace/knativedemos/kssh2/core/src/headers/ -I /files/workspace/knativedemos/kssh2/core/src/headers/linux
+compilerOpts.linux_arm64 = -I /files/workspace/knativedemos/kssh2/core/src/headers/ -I /files/workspace/knativedemos/kssh2/core/src/headers/linux
+compilerOpts.osx_x64 = -I /files/workspace/knativedemos/kssh2/core/src/headers/ -I /files/workspace/knativedemos/kssh2/core/src/headers/darwin
+compilerOpts.osx_arm64 = -I /files/workspace/knativedemos/kssh2/core/src/headers/ -I /files/workspace/knativedemos/kssh2/core/src/headers/darwin
+compilerOpts.android_x64 = -I /files/workspace/knativedemos/kssh2/core/src/headers/android
+compilerOpts.android_arm64 = -I /files/workspace/knativedemos/kssh2/core/src/headers/android
+#exportForwardDeclarations = JNINativeInterface_ JNIEnvVar
+#linkerOpts.android = -llog
+#compilerOpts.osx = -I/usr/include -I./src/headers -I./src/headers/darwin
+#compilerOpts.android = -I./src/headers/android
+#headers.android = jni.h
+#linkerOpts.osx = -L/usr/local/Cellar/libssh2/1.11.1_4/lib -lssh2
+#compilerOpts.android = -I/home/dan/.konan/dependencies/target-toolchain-2-linux-android_ndk/sysroot/usr/include
+#compilerOpts.android = -I/files/workspace/knativedemos/kssh2/jni/src/headers/android/
+
