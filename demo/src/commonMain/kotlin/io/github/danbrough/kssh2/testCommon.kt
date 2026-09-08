@@ -25,7 +25,7 @@ internal val demoLog = logger("SSH2DEMO")
 suspend fun commonMain(cmdHandler: BasicCommandHandler, args: Array<String>) {
   cmdHandler.registerCommands(
     basicCommand("ssh2Test", "Runs some tests in LibSSH2", KTerminal::ssh2Test),
-
+    basicCommand("authTest", "Test authentication", authTest),
     basicCommand("configTest", "Prints the config") { args ->
       println("configTest()")
       parseArgs(args)?.also {

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <!-- 1. Required to make network requests, API calls, or use sockets -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- 2. Recommended to check if Wi-Fi or mobile data is connected -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"

@@ -30,13 +30,17 @@ import io.github.danbrough.libssh2.cinterop.libssh2_session_free
 import io.github.danbrough.libssh2.cinterop.libssh2_session_handshake
 import io.github.danbrough.libssh2.cinterop.libssh2_session_init_ex
 import io.github.danbrough.libssh2.cinterop.libssh2_session_last_errno
+import io.github.danbrough.libssh2.cinterop.libssh2_session_last_error
 import io.github.danbrough.libssh2.cinterop.libssh2_session_set_blocking
+import io.github.danbrough.libssh2.cinterop.libssh2_userauth_password_ex
+import io.github.danbrough.libssh2.cinterop.libssh2_userauth_publickey_frommemory
 import io.github.danbrough.libssh2.cinterop.ssh2_socket_close
 import io.github.danbrough.libssh2.cinterop.ssh2_socket_connect
 import io.github.danbrough.libssh2.cinterop.waitsocket
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.CPointerVar
+import kotlinx.cinterop.IntVar
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.convert
@@ -50,7 +54,6 @@ import kotlinx.cinterop.usePinned
 import kotlinx.cinterop.value
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import platform.posix.sleep
 
 private val log = logNative
 
@@ -59,6 +62,7 @@ actual object LibSSH2 {
     kssh2_init(0).also {
       log.debug { "LibSSH2Native::initLib() kssh2_init() returned: $it" }
     }
+
   }
 
   actual fun closeLib() {
@@ -75,6 +79,7 @@ actual object LibSSH2 {
         ssh2_socket_close(socket.toInt())
     }
   }
+
 
   actual object Session {
     actual fun createSession(blocking: Boolean): SessionPtr {
@@ -171,7 +176,86 @@ actual object LibSSH2 {
       }
       return agent.toLong()
     }
+
+
+    /*
+int
+libssh2_userauth_publickey_frommemory(LIBSSH2_SESSION *session,
+                                    const char *username,
+                                    size_t username_len,
+                                    const char *publickeydata,
+                                    size_t publickeydata_len,
+                                    const char *privatekeydata,
+                                    size_t privatekeydata_len,
+                                    const char *passphrase);
+   */
+
+    actual fun authenticatePublicKey(
+      sessionPtr: SessionPtr,
+      socket: SocketHandle,
+      user: String?,
+      publicKeyData: String?,
+      privateKeyData: String?,
+      passphrase: String?
+    ): Int {
+      var ret = 0
+      while (true) {
+        ret = libssh2_userauth_publickey_frommemory(
+          sessionPtr.toCPointer(),
+          user,
+          user?.length?.toULong() ?: 0UL,
+          publicKeyData,
+          publicKeyData?.length?.toULong() ?: 0UL,
+          privateKeyData,
+          privateKeyData?.length?.toULong() ?: 0UL,
+          passphrase
+        )
+        if (ret == LIBSSH2_ERROR_EAGAIN)
+          waitSocket(sessionPtr, socket)
+        else if (ret <= 0) break
+      }
+      return ret
+    }
+
+    actual fun authenticatePassword(
+      sessionPtr: SessionPtr,
+      socket: SocketHandle,
+      userName: String,
+      password: String
+    ): Int {
+      var ret = 0
+      while (true) {
+        ret = libssh2_userauth_password_ex(
+          sessionPtr.toCPointer(),
+          userName,
+          userName.length.toUInt(),
+          password,
+          password.length.toUInt(),
+          null
+        )
+        if (ret == LIBSSH2_ERROR_EAGAIN) waitSocket(sessionPtr, socket)
+        else if (ret <= 0) break
+      }
+      return ret
+    }
+
+    actual fun getError(session: SessionPtr): String? =
+      memScoped {
+        val errMessageVar = alloc<CPointerVar<ByteVar>>()
+        val errMessageLenVar = alloc<IntVar>()
+
+        libssh2_session_last_error(
+          session.toCPointer(),
+          errMessageVar.ptr,
+          errMessageLenVar.ptr,
+          0
+        )
+
+        val nativeMessage: CPointer<ByteVar>? = errMessageVar.value
+        return nativeMessage?.toKString()
+      }
   }
+
 
   actual object Agent {
     actual fun close(agent: AgentPtr) {
@@ -399,7 +483,7 @@ LIBSSH2_ERROR_CHANNEL_REQUEST_DENIED -
               // Non-blocking catch: Yield control back to the coroutine dispatcher
               // instead of freezing the OS thread.
               log.trace { "channelRead() libssh2_channel_read_ex() returned LIBSSH2_ERROR_EAGAIN" }
-              waitSocket(session,socketHandle)
+              waitSocket(session, socketHandle)
               //waitSocket(session, channelPtr)
               //sleep(10.convert())
             }

@@ -25,8 +25,6 @@ suspend fun KTerminal.ssh2Test(args: List<String>) {
       demoLog.debug { "authenticated with agent" }
 
       channel {
-
-
         demoLog.debug { "${SshUtils.threadName()}: opened channel" }
         exec("ls ~/")
         demoLog.debug { "${SshUtils.threadName()}: executed cmd.." }
@@ -35,7 +33,6 @@ suspend fun KTerminal.ssh2Test(args: List<String>) {
         }
         demoLog.debug { "${SshUtils.threadName()}: finished collecting " }
       }
-
 
     }
   }

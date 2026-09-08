@@ -1,15 +1,26 @@
 package io.github.danbrough.kssh2.jni
 
 import io.github.danbrough.kssh2.LibSSH2
+import io.github.danbrough.libssh2.cinterop.libssh2_session_last_error
+import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.CPointerVar
+import kotlinx.cinterop.IntVar
+import kotlinx.cinterop.alloc
 import kotlinx.cinterop.invoke
+import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.pointed
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.toKString
+import kotlinx.cinterop.value
 import platform.android.JNIEnvVar
 import platform.android.JNI_TRUE
 import platform.android.jboolean
 import platform.android.jclass
+import platform.android.jint
 import platform.android.jlong
+import platform.android.jobject
 import platform.android.jstring
 
 
@@ -46,7 +57,6 @@ fun ssh2SessionWaitsocket(
 ): jlong = LibSSH2.Session.waitSocket(ptrSession, ptrSocket)
 
 
-
 @CName("${JNI_PREFIX}_00024Session_authenticateWithAgent")
 fun ssh2SessionAuthenticateWithAgent(
   env: CPointer<JNIEnvVar>,
@@ -62,3 +72,69 @@ fun ssh2SessionAuthenticateWithAgent(
   envPtr.ReleaseStringUTFChars!!(env, remoteUser, remoteUserPtr)
   return result
 }
+
+
+class JniEnv(val env: CPointer<JNIEnvVar>) {
+  val envPtr = env.pointed.pointed!!
+
+  fun <R> jString(s: jstring, block: (String?) -> R): R {
+    val ptr = envPtr.GetStringUTFChars!!(env, s, null)
+    val r = block(ptr?.toKString())
+    envPtr.ReleaseStringUTFChars!!(env, s, ptr)
+    return r
+  }
+}
+
+fun <R> CPointer<JNIEnvVar>.jniEnv(block: JniEnv.() -> R): R =
+  JniEnv(this).block()
+
+@CName("${JNI_PREFIX}_00024Session_authenticatePassword")
+fun ssh2SessionAuthenticateWithPassword(
+  env: CPointer<JNIEnvVar>,
+  clazz: jclass,
+  session: jlong,
+  socket: jlong,
+  remoteUser: jstring,
+  password: jstring
+): jint {
+
+  env.jniEnv {
+    jString(remoteUser) { user ->
+      log.debug { "remoteUser:$user" }
+    }
+  }
+  /*val envPtr = env.pointed.pointed!!
+  val remoteUserPtr = envPtr.GetStringUTFChars!!(env, remoteUser, null)
+  val remoteUserString = remoteUserPtr?.toKString() ?: ""
+  val passwordPtr = envPtr.GetStringUTFChars!!(env, password, null)
+  val passwordString = passwordPtr?.toKString() ?: ""*/
+
+
+  return -1
+}
+
+@CName("${JNI_PREFIX}_00024Session_getError")
+fun getSessionError(
+  env: CPointer<JNIEnvVar>,
+  clz: jclass,
+  sessionPtrValue: jlong
+): jstring? = memScoped {
+  val errmsgVar = alloc<CPointerVar<ByteVar>>()
+  val errmsgLenVar = alloc<IntVar>()
+
+  libssh2_session_last_error(
+    sessionPtrValue.toCPointer(),
+    errmsgVar.ptr,
+    errmsgLenVar.ptr,
+    0
+  )
+
+  val nativeMessage: CPointer<ByteVar>? = errmsgVar.value
+
+  val pointee = env.pointed ?: return null
+  val functions = pointee.pointed ?: return null
+  val newStringUTF = functions.NewStringUTF ?: return null
+
+  return newStringUTF(env, nativeMessage)
+}
+

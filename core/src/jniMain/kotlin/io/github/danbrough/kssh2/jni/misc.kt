@@ -3,19 +3,27 @@
 package io.github.danbrough.kssh2.jni
 
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_CHANNEL
+import io.github.danbrough.libssh2.cinterop.LIBSSH2_SESSION
 import io.github.danbrough.libssh2.cinterop.libssh2_channel_read_ex
+import io.github.danbrough.libssh2.cinterop.libssh2_session_last_error
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.CPointerVar
+import kotlinx.cinterop.IntVar
+import kotlinx.cinterop.alloc
 import kotlinx.cinterop.invoke
+import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.plus
 import kotlinx.cinterop.pointed
+import kotlinx.cinterop.ptr
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.toCPointer
+import kotlinx.cinterop.value
 import platform.android.JNIEnvVar
-import platform.android.jclass
 import platform.android.jint
 import platform.android.jlong
 import platform.android.jobject
+import platform.android.jstring
 
 /*
 extern "C" JNIEXPORT jint JNICALL
@@ -79,3 +87,5 @@ fun sshChannelRead(
 
   return result.toInt()
 }
+
+

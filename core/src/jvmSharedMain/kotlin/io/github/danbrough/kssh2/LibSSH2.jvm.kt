@@ -2,9 +2,12 @@ package io.github.danbrough.kssh2
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.danbrough.klog.logger
 import java.nio.ByteBuffer
 
 actual object LibSSH2 {
+
+  val log = logger("SSH2")
 
   init {
     try {
@@ -57,6 +60,27 @@ actual object LibSSH2 {
       socket: SocketHandle,
       remoteUser: String
     ): AgentPtr
+
+    @JvmStatic
+    actual external fun authenticatePassword(
+      sessionPtr: Long,
+      socket: Long,
+      userName: String,
+      password: String
+    ): Int
+
+    @JvmStatic
+    actual external fun authenticatePublicKey(
+      sessionPtr: Long,
+      socket: Long,
+      user: String?,
+      publicKeyData: String?,
+      privateKeyData: String?,
+      passphrase: String?
+    ): Int
+
+    actual external fun getError(session: SessionPtr): String?
+
   }
 
   actual object Agent {

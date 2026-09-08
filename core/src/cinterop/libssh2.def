@@ -15,10 +15,11 @@ compilerOpts.linux_arm64 = -I/files/cache/xtras/lib/openssl_linuxArm64_3.6.3/inc
 linkerOpts.linux_arm64 = -L/files/cache/xtras/lib/openssl_linuxArm64_3.6.3/lib/ \
                             -L/files/cache/xtras/lib/ssh2_linuxArm64_libssh2-1.11.1/lib/ -lssh2
 linkerOpts.osx = -L/usr/local/lib  -lssh2
-compilerOpts.android_x64 = -I/files/workspace/knativedemos/kssh2/app/libs/x86_64/
-compilerOpts.android_arm64 = -I/files/workspace/knativedemos/kssh2/app/libs/arm64-v8a/
-linkerOpts.android_x64 = -L/files/workspace/knativedemos/kssh2/app/libs/x86_64/ -lssh2
-linkerOpts.android_arm64 = -L/files/workspace/knativedemos/kssh2/app/libs/arm64-v8a/ -lssh2
+compilerOpts.android_x64 = -I/files/workspace/kssh2/app/libs/x86_64/
+linkerOpts.android_x64 = -L/files/workspace/kssh2/app/libs/x86_64/ -lssh2
+compilerOpts.android_arm64 = -I/files/workspace/kssh2/app/libs/arm64-v8a/
+linkerOpts.android_arm64 = -L/files/workspace/kssh2/app/libs/arm64-v8a/ -lssh2
+
 
 ---
 

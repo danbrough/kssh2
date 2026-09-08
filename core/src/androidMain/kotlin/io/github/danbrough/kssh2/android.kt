@@ -10,10 +10,16 @@ suspend fun messageTest() {
   Log.i("SSH2", "messageTest() from Log.i logFactory is $klogFactory")
   log.info { "klog message" }
 
-  ssh {
-    session {
-
+  runCatching {
+    ssh {
+      session {
+        connect("192.168.0.2")
+        authenticatePassword("fred", "ILikeCheese!")
+        log.info { "authenticated" }
+      }
     }
+  }.exceptionOrNull()?.also {
+    log.error { "ssh() failed $it" }
   }
 }
 

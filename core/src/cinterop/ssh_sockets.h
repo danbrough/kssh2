@@ -99,10 +99,10 @@ static int waitsocket(libssh2_socket_t socket_fd, LIBSSH2_SESSION *session) {
         writefd = &fd;
 
     //printf("calling select\n");
-    fflush(stdout);
+    //fflush(stdout);
     rc = select((int) (socket_fd + 1), readfd, writefd, NULL, &timeout);
-    printf("select returned %d\n",rc);
-    fflush(stdout);
+    //printf("select returned %d\n",rc);
+    //fflush(stdout);
     return rc;
 }
 

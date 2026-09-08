@@ -24,6 +24,14 @@ class Session() : Scope {
     agent = LibSSH2.Session.authenticateWithAgent(session, socket, remoteUser)
   }
 
+  suspend fun authenticatePassword(userName: String, password: String) {
+    LibSSH2.Session.authenticatePassword(session, socket, userName, password).also {
+      println("auth returned $it ${LibSSH2.Session.getError(session)}")
+
+    }
+  }
+
+
   override fun close() {
     LibSSH2.Agent.close(agent)
     LibSSH2.Socket.close(socket)

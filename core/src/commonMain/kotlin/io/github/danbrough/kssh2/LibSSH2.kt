@@ -11,10 +11,18 @@ typealias AgentPtr = Long
 private const val LIBSSH2_CHANNEL_WINDOW_DEFAULT = 2 * 1024 * 1024
 private const val LIBSSH2_CHANNEL_PACKET_DEFAULT = 32768
 
+data class  Result(val code: Int, val message: String){
+  companion object {
+    val Success = Result(0, "Success")
+  }
+}
+
 expect object LibSSH2 {
+
 
   fun initLib()
   fun closeLib()
+
 
   object Socket {
     fun connect(hostName: String, port: Int = 22): SocketHandle
@@ -31,12 +39,28 @@ expect object LibSSH2 {
 
     fun waitSocket(session: SessionPtr, socket: SocketHandle): Long
 
+    fun getError(session: SessionPtr):String?
+
 
     fun authenticateWithAgent(
       session: SessionPtr,
       socket: SocketHandle,
       remoteUser: String
     ): AgentPtr
+
+    fun authenticatePassword(
+      sessionPtr: SessionPtr,
+      socket: SocketHandle, userName: String, password: String
+    ): Int
+
+    fun authenticatePublicKey(
+      sessionPtr: SessionPtr,
+      socket: SocketHandle,
+      user: String?,
+      publicKeyData: String?,
+      privateKeyData: String?,
+      passphrase: String?
+    ): Int
   }
 
   object Channel {
@@ -68,9 +92,7 @@ expect object LibSSH2 {
       buffer: ByteArray,
     ): Int
 
-
     suspend fun readAll(channelPtr: ChannelPtr): Flow<ByteArray>
-
     fun write(channel: ChannelPtr, data: String): Long
 
     fun close(channel: ChannelPtr)
