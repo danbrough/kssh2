@@ -14,11 +14,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.danbrough.kssh2.messageTest
+import kotlinx.coroutines.launch
 import org.danbrough.klog.logger
 import org.danbrough.ssh2.ui.theme.MyApplicationTheme
 
@@ -35,6 +37,7 @@ class MainActivity : ComponentActivity() {
     log.error { "init() error!!" }
     setContent {
       MyApplicationTheme {
+        val scope = rememberCoroutineScope()
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
           Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
@@ -44,8 +47,9 @@ class MainActivity : ComponentActivity() {
                   name = "Android",
                   modifier = Modifier.padding(innerPadding)
                 )
-                Button(::messageTest) {
-                  Text("Test Button")
+
+                Button({ scope.launch { messageTest() } }) {
+                  Text("Test")
                 }
               }
             }

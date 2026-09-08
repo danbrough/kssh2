@@ -1,9 +1,11 @@
 package io.github.danbrough.kssh2.jni
 
 import platform.android.JNIEnvVar
-import io.github.danbrough.kssh2.log
 import kotlinx.cinterop.CPointer
+import org.danbrough.klog.logger
 
+
+private val log = logger("SSH2")
 
 @CName("Java_io_github_danbrough_kssh2_AndroidKt_testLog")
 fun testLog(env: CPointer<JNIEnvVar>) {

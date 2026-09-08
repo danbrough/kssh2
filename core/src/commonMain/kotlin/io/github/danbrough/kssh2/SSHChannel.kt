@@ -42,7 +42,7 @@ class Channel(val session: Session, channelType: String = "session") : Scope {
     }
 
 
-  fun readChannel(bufSize: Int = 128): Flow<ByteArray> = flow {
+  fun readChannel(bufSize: Int = 0x4000): Flow<ByteArray> = flow {
     val buf = ByteArray(bufSize)
       while (true) {
         val ret = LibSSH2.Channel.read(session.session, session.socket, channelPtr, 0, buf)

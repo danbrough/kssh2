@@ -2,11 +2,7 @@ package io.github.danbrough.kssh2
 
 import com.github.ajalt.mordant.rendering.TextColors
 import io.github.danbrough.katty.KTerminal
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
-import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.flow.map
 
 
 suspend fun KTerminal.ssh2Test(args: List<String>) {
@@ -30,23 +26,16 @@ suspend fun KTerminal.ssh2Test(args: List<String>) {
 
       channel {
 
-        withContext(Dispatchers.IO){
-          demoLog.debug { "${SshUtils.threadName()}: opened channel" }
-          exec("ls ~/")
-          demoLog.debug { "${SshUtils.threadName()}: executed cmd.." }
-          val flow = readChannel(32)
-          demoLog.debug { "${SshUtils.threadName()}: got flow to read" }
-          delay(1.seconds)
-          demoLog.debug { "${SshUtils.threadName()}: collecting flow.." }
-          delay(1.seconds)
-          flow.collect {
-            demoLog.debug { "${SshUtils.threadName()}: read: ${it.decodeToString()} " }
-            delay(1.seconds)
-          }
-          demoLog.debug { "${SshUtils.threadName()}: finished collecting " }
-        }
 
+        demoLog.debug { "${SshUtils.threadName()}: opened channel" }
+        exec("ls ~/")
+        demoLog.debug { "${SshUtils.threadName()}: executed cmd.." }
+        readChannel().map { it.decodeToString() }.collect {
+          demoLog.debug { it }
+        }
+        demoLog.debug { "${SshUtils.threadName()}: finished collecting " }
       }
+
 
     }
   }

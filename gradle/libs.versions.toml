@@ -71,9 +71,9 @@ dokka = "2.2.0"
 
 logback = "1.6.3"
 clikt = "5.1.0"
-klog = "0.1.4"
+klog = "0.1.5"
 
-katty = "0.0.4"
+katty = "0.0.5"
 mordant = "3.1.0"
 androidx-navigation = "2.9.2"
 runner = "1.7.0"
