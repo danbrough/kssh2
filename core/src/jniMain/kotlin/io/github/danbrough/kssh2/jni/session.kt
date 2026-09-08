@@ -20,7 +20,6 @@ import platform.android.jboolean
 import platform.android.jclass
 import platform.android.jint
 import platform.android.jlong
-import platform.android.jobject
 import platform.android.jstring
 
 
@@ -96,22 +95,14 @@ fun ssh2SessionAuthenticateWithPassword(
   socket: jlong,
   remoteUser: jstring,
   password: jstring
-): jint {
-
-  env.jniEnv {
+): jint = env.jniEnv {
     jString(remoteUser) { user ->
-      log.debug { "remoteUser:$user" }
+      jString(password) { password ->
+        LibSSH2.Session.authenticatePassword(session, socket, user!!, password!!)
+      }
     }
   }
-  /*val envPtr = env.pointed.pointed!!
-  val remoteUserPtr = envPtr.GetStringUTFChars!!(env, remoteUser, null)
-  val remoteUserString = remoteUserPtr?.toKString() ?: ""
-  val passwordPtr = envPtr.GetStringUTFChars!!(env, password, null)
-  val passwordString = passwordPtr?.toKString() ?: ""*/
 
-
-  return -1
-}
 
 @CName("${JNI_PREFIX}_00024Session_getError")
 fun getSessionError(

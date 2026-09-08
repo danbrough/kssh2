@@ -9,6 +9,8 @@ suspend fun <R> SSHScope.session(block: suspend Session.() -> R): R =
 
 class Session() : Scope {
 
+  class SessionException(val code: Int, override val message: String) : Exception(message)
+
   val session: SessionPtr = LibSSH2.Session.createSession(false)
   var socket: SocketHandle = 0L
   var agent: AgentPtr = 0L
@@ -24,11 +26,15 @@ class Session() : Scope {
     agent = LibSSH2.Session.authenticateWithAgent(session, socket, remoteUser)
   }
 
-  suspend fun authenticatePassword(userName: String, password: String) {
-    LibSSH2.Session.authenticatePassword(session, socket, userName, password).also {
-      println("auth returned $it ${LibSSH2.Session.getError(session)}")
+  suspend fun authenticatePassword(userName: String, password: String) =
+    LibSSH2.Session.authenticatePassword(session, socket, userName, password).throwErrorIfNeeded()
 
-    }
+
+  private fun Int.throwErrorIfNeeded() {
+    if (this != 0) throw SessionException(
+      this,
+      LibSSH2.Session.getError(session) ?: "Unknown error"
+    )
   }
 
 
