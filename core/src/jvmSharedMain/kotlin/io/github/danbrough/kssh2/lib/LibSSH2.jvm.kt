@@ -1,4 +1,4 @@
-package io.github.danbrough.kssh2
+package io.github.danbrough.kssh2.lib
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

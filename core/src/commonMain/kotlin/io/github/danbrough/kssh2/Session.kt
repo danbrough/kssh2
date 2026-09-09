@@ -1,5 +1,9 @@
 package io.github.danbrough.kssh2
 
+import io.github.danbrough.kssh2.lib.AgentPtr
+import io.github.danbrough.kssh2.lib.LibSSH2
+import io.github.danbrough.kssh2.lib.SessionPtr
+import io.github.danbrough.kssh2.lib.SocketHandle
 import kotlinx.coroutines.withContext
 
 suspend fun <R> SSHScope.session(block: suspend Session.() -> R): R =

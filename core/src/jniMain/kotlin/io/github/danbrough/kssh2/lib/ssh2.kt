@@ -1,8 +1,7 @@
 @file:Suppress("SpellCheckingInspection")
 
-package io.github.danbrough.kssh2.jni
+package io.github.danbrough.kssh2.lib
 
-import io.github.danbrough.kssh2.LibSSH2
 import kotlinx.cinterop.CPointer
 import org.danbrough.klog.logger
 import platform.android.JNIEnvVar
@@ -12,7 +11,7 @@ import platform.android.jlong
 val log = logger("SSH2_JNI")
 
 
-const val JNI_PREFIX = "Java_io_github_danbrough_kssh2_LibSSH2"
+const val JNI_PREFIX = "Java_io_github_danbrough_kssh2_lib_LibSSH2"
 
 
 @CName("${JNI_PREFIX}_initLib")
@@ -28,7 +27,7 @@ fun ssh2Close(env: CPointer<JNIEnvVar>) {
 }
 
 
-@CName("Java_io_github_danbrough_kssh2_LibSSH2_00024Agent_close")
+@CName("${JNI_PREFIX}_00024Agent_close")
 fun ssh2AgentClose(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,

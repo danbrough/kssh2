@@ -1,18 +1,16 @@
 package io.github.danbrough.kssh2
 
+import io.github.danbrough.kssh2.lib.ChannelPtr
+import io.github.danbrough.kssh2.lib.LibSSH2
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 import org.danbrough.klog.logger
 
-
-typealias ChannelPtr = Long
 
 private val channelLog = logger("SSH2")
 
@@ -44,12 +42,12 @@ class Channel(val session: Session, channelType: String = "session") : Scope {
 
   fun readChannel(bufSize: Int = 0x4000): Flow<ByteArray> = flow {
     val buf = ByteArray(bufSize)
-      while (true) {
-        val ret = LibSSH2.Channel.read(session.session, session.socket, channelPtr, 0, buf)
-        channelLog.trace { "readChannel():${SshUtils.threadName()} ret: $ret " }
-        if (ret <= 0) break
-        emit(buf.take(ret).toByteArray())
-      }
+    while (true) {
+      val ret = LibSSH2.Channel.read(session.session, session.socket, channelPtr, 0, buf)
+      channelLog.trace { "readChannel():${SshUtils.threadName()} ret: $ret " }
+      if (ret <= 0) break
+      emit(buf.take(ret).toByteArray())
+    }
 
     channelLog.trace { "readChannel() done ${SshUtils.threadName()}" }
   }.flowOn(Dispatchers.IO).buffer(0)

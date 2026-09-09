@@ -1,6 +1,7 @@
 package io.github.danbrough.kssh2
 
 import io.github.danbrough.kssh2.SshUtils.getEnv
+import io.github.danbrough.kssh2.lib.LibSSH2
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_ERROR_AUTHENTICATION_FAILED
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_ERROR_EAGAIN
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_ERROR_FILE

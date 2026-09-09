@@ -55,6 +55,7 @@ import kotlinx.cinterop.value
 
 import platform.posix.size_tVar
 import kotlin.io.encoding.Base64
+
 private val log = logNative
 
 class SessionNative internal constructor(@Suppress("MemberVisibilityCanBePrivate") val config: SessionConfig) :
@@ -67,7 +68,7 @@ class SessionNative internal constructor(@Suppress("MemberVisibilityCanBePrivate
     memScoped {
       log.info { "SSH.connect() ${config.user}@${config.hostName}:${config.port} .." }
 
-      sock = ssh2_socket_connect(config.hostName,config.port)
+      sock = ssh2_socket_connect(config.hostName, config.port)
       log.debug { "ssh2_socket_connect returned $sock" }
 //      sock = socket(AF_INET, SOCK_STREAM, 0).convert()
 //      if (sock == LIBSSH2_INVALID_SOCKET)

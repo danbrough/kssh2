@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package io.github.danbrough.kssh2.jni
+package io.github.danbrough.kssh2.lib
 
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_CHANNEL
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_SESSION

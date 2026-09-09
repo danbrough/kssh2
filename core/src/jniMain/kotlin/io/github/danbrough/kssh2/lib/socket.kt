@@ -1,6 +1,5 @@
-package io.github.danbrough.kssh2.jni
+package io.github.danbrough.kssh2.lib
 
-import io.github.danbrough.kssh2.LibSSH2
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.invoke
 import kotlinx.cinterop.pointed

@@ -1,5 +1,6 @@
 package io.github.danbrough.kssh2
 
+import io.github.danbrough.kssh2.lib.LibSSH2
 import kotlin.coroutines.CoroutineContext
 
 

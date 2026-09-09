@@ -1,6 +1,5 @@
-package io.github.danbrough.kssh2.jni
+package io.github.danbrough.kssh2.lib
 
-import io.github.danbrough.kssh2.LibSSH2
 import io.github.danbrough.libssh2.cinterop.libssh2_session_last_error
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointer

@@ -1,6 +1,4 @@
-@file:Suppress("KotlinUnreachableCode")
-
-package io.github.danbrough.kssh2
+package io.github.danbrough.kssh2.lib
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

@@ -1,6 +1,7 @@
-package io.github.danbrough.kssh2
+package io.github.danbrough.kssh2.lib
 
-import io.github.danbrough.kssh2.LibSSH2.Session.waitSocket
+import io.github.danbrough.kssh2.lib.LibSSH2.Session.waitSocket
+import io.github.danbrough.kssh2.logNative
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_CHANNEL
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_ERROR_EAGAIN
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_SESSION
@@ -55,18 +56,17 @@ import kotlinx.cinterop.value
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-private val log = logNative
 
 actual object LibSSH2 {
   actual fun initLib() {
     kssh2_init(0).also {
-      log.debug { "LibSSH2Native::initLib() kssh2_init() returned: $it" }
+      logNative.debug { "LibSSH2Native::initLib() kssh2_init() returned: $it" }
     }
 
   }
 
   actual fun closeLib() {
-    log.trace { "LibSSH2Native::closeLib() calling kssh2_exit()" }
+    logNative.trace { "LibSSH2Native::closeLib() calling kssh2_exit()" }
     kssh2_exit()
   }
 
@@ -83,7 +83,7 @@ actual object LibSSH2 {
 
   actual object Session {
     actual fun createSession(blocking: Boolean): SessionPtr {
-      log.trace { "LibSSH2Native::Session::createSession(blocking=$blocking)" }
+      logNative.trace { "LibSSH2Native::Session::createSession(blocking=$blocking)" }
       val session: CPointer<LIBSSH2_SESSION> =
         libssh2_session_init_ex(null, null, null, null)
           ?: error("Failed to created ssh session")
@@ -94,7 +94,7 @@ actual object LibSSH2 {
 
     actual fun close(session: SessionPtr) {
       session.toCPointer<LIBSSH2_SESSION>()?.also { sessionPtr ->
-        log.trace { "LibSSH2Native::Session::closeSession()" }
+        logNative.trace { "LibSSH2Native::Session::closeSession()" }
         libssh2_session_disconnect_ex(
           sessionPtr,
           SSH_DISCONNECT_BY_APPLICATION,
@@ -106,7 +106,7 @@ actual object LibSSH2 {
     }
 
     actual fun sessionHandshake(session: SessionPtr, socket: SocketHandle): Long {
-      log.trace { "LibSSH2Native::Session::sessionHandshake()" }
+      logNative.trace { "LibSSH2Native::Session::sessionHandshake()" }
       var rc: Int
       do {
         rc = libssh2_session_handshake(session.toCPointer(), socket.toInt())
@@ -128,20 +128,20 @@ actual object LibSSH2 {
       val agent: CPointer<cnames.structs._LIBSSH2_AGENT> =
         libssh2_agent_init(session.toCPointer())
           ?: error("authenticateWithAgent::libssh2_agent_init() failed")
-      log.trace { "authenticateWithAgent::libssh2_agent_init() success agent: $agent" }
+      logNative.trace { "authenticateWithAgent::libssh2_agent_init() success agent: $agent" }
 
       runCatching {
 
         libssh2_agent_connect(agent).takeIf { it != 0 }?.also {
           error("authenticateWithAgent::libssh2_agent_connect() failed. error:$it")
         }
-        log.trace { "authenticateWithAgent::libssh2_agent_connect() success" }
+        logNative.trace { "authenticateWithAgent::libssh2_agent_connect() success" }
 
 
         libssh2_agent_list_identities(agent).takeIf { it != 0 }?.also {
           error("libssh2_agent_list_identities failed error: $it")
         }
-        log.trace { "authenticateWithAgent::libssh2_agent_list_identities success" }
+        logNative.trace { "authenticateWithAgent::libssh2_agent_list_identities success" }
 
         memScoped {
           val identityVar = alloc<CPointerVar<libssh2_agent_publickey>>()
@@ -151,14 +151,14 @@ actual object LibSSH2 {
           var success = false
 
           while (libssh2_agent_get_identity(agent, identityVar.ptr, prev) == 0) {
-            log.trace { "trying to authenticate with identity: ${identityVar.pointed?.comment?.toKString()}" }
+            logNative.trace { "trying to authenticate with identity: ${identityVar.pointed?.comment?.toKString()}" }
             libssh2_agent_userauth(agent, remoteUser, identityVar.value).also {
               if (it == 0) {
                 println("Authentication successful!")
                 success = true
                 break
               } else {
-                log.trace { "Failed err: $it  LIBSSH2_ERROR_EAGAIN = $LIBSSH2_ERROR_EAGAIN" }
+                logNative.trace { "Failed err: $it  LIBSSH2_ERROR_EAGAIN = $LIBSSH2_ERROR_EAGAIN" }
                 if (it == LIBSSH2_ERROR_EAGAIN) {
                   waitSocket(session, socket)
                   continue
@@ -168,7 +168,7 @@ actual object LibSSH2 {
             prev = identityVar.value
           }
 
-          log.info { "authenticateWithAgent::finished. success: $success" }
+          logNative.info { "authenticateWithAgent::finished. success: $success" }
         }
       }.exceptionOrNull()?.also {
         Agent.close(agent.toLong())
@@ -309,9 +309,9 @@ libssh2_channel_open_session(session);
         )
 
         if (channel != null) break
-        log.trace { "channelOpen() libssh2_channel_open_ex() returned" }
+        logNative.trace { "channelOpen() libssh2_channel_open_ex() returned" }
         rc = libssh2_session_last_errno(session.toCPointer())
-        log.trace { "channelOpen() libssh2_channel_open_ex() rc = $rc" }
+        logNative.trace { "channelOpen() libssh2_channel_open_ex() rc = $rc" }
         if (rc != LIBSSH2_ERROR_EAGAIN) break
         waitSocket(session, socket)
       }
@@ -339,7 +339,7 @@ libssh2_channel_open_session(session);
 
      */
     actual fun requestPty(channelPtr: ChannelPtr, terminal: String): Long {
-      log.trace { "LibSSH2Native::Channel::requestPty() terminal:$terminal" }
+      logNative.trace { "LibSSH2Native::Channel::requestPty() terminal:$terminal" }
       var rc = 0
       while (true) {
         rc = libssh2_channel_request_pty_ex(
@@ -428,7 +428,7 @@ LIBSSH2_ERROR_CHANNEL_REQUEST_DENIED -
 
 
     actual fun close(channel: ChannelPtr) {
-      log.trace { "LibSSH2Native::Channel::close()" }
+      logNative.trace { "LibSSH2Native::Channel::close()" }
       if (channel != 0L)
         libssh2_channel_close(channel.toCPointer())
     }
@@ -482,7 +482,7 @@ LIBSSH2_ERROR_CHANNEL_REQUEST_DENIED -
             bytesRead == LIBSSH2_ERROR_EAGAIN.toLong() -> {
               // Non-blocking catch: Yield control back to the coroutine dispatcher
               // instead of freezing the OS thread.
-              log.trace { "channelRead() libssh2_channel_read_ex() returned LIBSSH2_ERROR_EAGAIN" }
+              logNative.trace { "channelRead() libssh2_channel_read_ex() returned LIBSSH2_ERROR_EAGAIN" }
               waitSocket(session, socketHandle)
               //waitSocket(session, channelPtr)
               //sleep(10.convert())

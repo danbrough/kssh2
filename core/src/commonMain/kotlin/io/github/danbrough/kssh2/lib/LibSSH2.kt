@@ -1,4 +1,4 @@
-package io.github.danbrough.kssh2
+package io.github.danbrough.kssh2.lib
 
 import kotlinx.coroutines.flow.Flow
 
@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 typealias SocketHandle = Long
 typealias SessionPtr = Long
 typealias AgentPtr = Long
+typealias ChannelPtr = Long
 
 
 private const val LIBSSH2_CHANNEL_WINDOW_DEFAULT = 2 * 1024 * 1024
