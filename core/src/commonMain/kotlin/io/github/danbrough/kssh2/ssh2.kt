@@ -29,8 +29,3 @@ suspend fun <P : Scope, C : Scope, R> P.sshScope(block: suspend C.() -> R, child
     childScope.block()
   }.also { childScope.close() }.getOrThrow()
 
-
-expect class SSHSessionOld : Scope {
-  override fun close()
-}
-
