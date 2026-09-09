@@ -75,7 +75,7 @@ actual object LibSSH2 {
       logNative.trace { "LibSSH2Native::Session::createSession(blocking=$blocking)" }
       val session: CPointer<LIBSSH2_SESSION> =
         libssh2_session_init_ex(null, null, null, null)
-          ?: error("Failed to created ssh session")
+          ?: return 0
 
       libssh2_session_set_blocking(session, if (blocking) 1 else 0)
       return session.toLong()
@@ -94,14 +94,14 @@ actual object LibSSH2 {
       }
     }
 
-    actual fun sessionHandshake(session: SessionPtr, socket: SocketHandle): Long {
+    actual fun sessionHandshake(session: SessionPtr, socket: SocketHandle): Int {
       logNative.trace { "LibSSH2Native::Session::sessionHandshake()" }
       var rc: Int
       do {
         rc = libssh2_session_handshake(session.toCPointer(), socket.toInt())
       } while (rc == LIBSSH2_ERROR_EAGAIN)
-      if (rc != 0) error("libssh2_session_handshake(session, sock) failed. returned: $rc")
-      return rc.convert()
+      if (rc != 0) logNative.error {  "libssh2_session_handshake(session, sock) failed. returned: $rc" }
+      return rc
     }
 
     actual fun waitSocket(session: SessionPtr, socket: SocketHandle): Long =
@@ -228,7 +228,7 @@ libssh2_userauth_publickey_frommemory(LIBSSH2_SESSION *session,
       return ret
     }
 
-    actual fun getError(session: SessionPtr): String? =
+    actual fun getError(session: SessionPtr): String =
       memScoped {
         val errMessageVar = alloc<CPointerVar<ByteVar>>()
         val errMessageLenVar = alloc<IntVar>()
@@ -241,7 +241,7 @@ libssh2_userauth_publickey_frommemory(LIBSSH2_SESSION *session,
         )
 
         val nativeMessage: CPointer<ByteVar>? = errMessageVar.value
-        return nativeMessage?.toKString()
+        return nativeMessage?.toKString() ?: "Unknown error"
       }
   }
 
@@ -346,10 +346,6 @@ LIBSSH2_ERROR_CHANNEL_REQUEST_DENIED -
         }
         return ret.toLong()
       }
-    }
-
-    fun exec(channel: ChannelPtr, cmdLine: String): Long {
-      return 0L
     }
 
 

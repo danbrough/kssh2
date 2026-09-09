@@ -48,7 +48,7 @@ actual object LibSSH2 {
 
 
     @JvmStatic
-    actual external fun sessionHandshake(session: SessionPtr, socket: SocketHandle): Long
+    actual external fun sessionHandshake(session: SessionPtr, socket: SocketHandle): Int
 
     @JvmStatic
     actual external fun waitSocket(session: SessionPtr, socket: SocketHandle): Long
@@ -79,7 +79,8 @@ actual object LibSSH2 {
       passphrase: String?
     ): Int
 
-    actual external fun getError(session: SessionPtr): String?
+    private external fun getErrorJNI(session: SessionPtr): String?
+    actual  fun getError(session: SessionPtr): String = getErrorJNI(session) ?: "Unknown Error"
 
   }
 

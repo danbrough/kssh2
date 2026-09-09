@@ -27,16 +27,16 @@ expect object LibSSH2 {
   }
 
   object Session {
+
     fun createSession(blocking: Boolean): SessionPtr
 
     fun close(session: SessionPtr)
 
-    fun sessionHandshake(session: SessionPtr, socket: SocketHandle): Long
+    fun sessionHandshake(session: SessionPtr, socket: SocketHandle): Int
 
     fun waitSocket(session: SessionPtr, socket: SocketHandle): Long
 
-    fun getError(session: SessionPtr):String?
-
+    fun getError(session: SessionPtr): String
 
     fun authenticateWithAgent(
       session: SessionPtr,

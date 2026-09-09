@@ -103,7 +103,7 @@ fun ssh2SessionAuthenticateWithPassword(
   }
 
 
-@CName("${JNI_PREFIX}_00024Session_getError")
+@CName("${JNI_PREFIX}_00024Session_getErrorJNI")
 fun getSessionError(
   env: CPointer<JNIEnvVar>,
   clz: jclass,

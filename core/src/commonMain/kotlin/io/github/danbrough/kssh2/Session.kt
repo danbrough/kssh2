@@ -2,6 +2,7 @@ package io.github.danbrough.kssh2
 
 import io.github.danbrough.kssh2.lib.AgentPtr
 import io.github.danbrough.kssh2.lib.LibSSH2
+import io.github.danbrough.kssh2.lib.SSH2Result
 import io.github.danbrough.kssh2.lib.SessionPtr
 import io.github.danbrough.kssh2.lib.SocketHandle
 import kotlinx.coroutines.withContext
@@ -13,34 +14,33 @@ suspend fun <R> SSHScope.session(block: suspend Session.() -> R): R =
 
 class Session() : Scope {
 
-  class SessionException(val code: Int, override val message: String) : Exception(message)
 
   val session: SessionPtr = LibSSH2.Session.createSession(false)
   var socket: SocketHandle = 0L
   var agent: AgentPtr = 0L
 
 
-  suspend fun connect(host: String, port: Int = 22): Long {
+  suspend fun connect(host: String, port: Int = 22): SSH2Result {
     LibSSH2.Socket.close(socket)
     socket = LibSSH2.Socket.connect(host, port)
-    return LibSSH2.Session.sessionHandshake(session, socket)
+    return if (socket == 0L) resultOf(false) else
+      LibSSH2.Session.sessionHandshake(session, socket).asResult()
   }
 
-  suspend fun authenticateWithAgent(remoteUser: String) {
+  suspend fun authenticateWithAgent(remoteUser: String): SSH2Result {
     agent = LibSSH2.Session.authenticateWithAgent(session, socket, remoteUser)
+    return resultOf(agent != 0L)
   }
 
-  suspend fun authenticatePassword(userName: String, password: String) =
-    LibSSH2.Session.authenticatePassword(session, socket, userName, password).throwErrorIfNeeded()
+  suspend fun authenticatePassword(userName: String, password: String): SSH2Result =
+    LibSSH2.Session.authenticatePassword(session, socket, userName, password).asResult()
 
+  private fun resultOf(success: Boolean) = if (success) SSH2Result.SUCCESS else SSH2Result(-1, LibSSH2.Session.getError(session))
 
-  private fun Int.throwErrorIfNeeded() {
-    if (this != 0) throw SessionException(
-      this,
-      LibSSH2.Session.getError(session) ?: "Unknown error"
-    )
-  }
+  private fun Int.asResult(): SSH2Result =
+    if (this == 0) SSH2Result.SUCCESS else SSH2Result(this, LibSSH2.Session.getError(session))
 
+  private fun Long.asResult(): SSH2Result = toInt().asResult()
 
   override fun close() {
     LibSSH2.Agent.close(agent)

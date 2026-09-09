@@ -1,6 +1,10 @@
 #!/bin/bash
-export KLOG_COLOR=1
-export KLOG_LEVEL=TRACE
+
+
+[ ! -v KLOG_COLOR ] && KLOG_COLOR=1
+[ ! -v KLOG_LEVEL ] && KLOG_LEVEL=TRACE
+
+export KLOG_COLOR KLOG_LEVEL
 
 ROOTDIR="$(pwd)"
 cd `dirname "$0"` && cd ..

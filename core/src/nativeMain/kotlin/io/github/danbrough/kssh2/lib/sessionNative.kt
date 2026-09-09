@@ -9,12 +9,20 @@ import io.github.danbrough.libssh2.cinterop.LIBSSH2_TERM_WIDTH
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_TERM_WIDTH_PX
 import io.github.danbrough.libssh2.cinterop.libssh2_channel_read_ex
 import io.github.danbrough.libssh2.cinterop.libssh2_channel_request_pty_ex
+import io.github.danbrough.libssh2.cinterop.libssh2_session_last_error
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.CPointerVar
+import kotlinx.cinterop.IntVar
 import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.alloc
 import kotlinx.cinterop.convert
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.ptr
 import kotlinx.cinterop.toCPointer
+import kotlinx.cinterop.toKString
 import kotlinx.cinterop.usePinned
+import kotlinx.cinterop.value
 
 
 fun nativeSessionRead(
@@ -57,8 +65,8 @@ fun nativeSessionRead(
         }
 
         else -> {
-          logNative.error {"Libssh2 read failed with native error code: $bytesRead" }
-          return bytesRead.convert()
+          logNative.error {"libssh2_channel_read_ex failed with error code: $bytesRead" }
+          return bytesRead
         }
       }
     }
@@ -90,3 +98,20 @@ fun nativeSessionRequestPty(channelPtr: ChannelPtr, terminal: String): Long {
     return rc.toLong()
   }
 }
+
+
+ fun nativeSessionError(session: SessionPtr): String =
+  memScoped {
+    val errMessageVar = alloc<CPointerVar<ByteVar>>()
+    val errMessageLenVar = alloc<IntVar>()
+
+    libssh2_session_last_error(
+      session.toCPointer(),
+      errMessageVar.ptr,
+      errMessageLenVar.ptr,
+      0
+    )
+
+    val nativeMessage: CPointer<ByteVar>? = errMessageVar.value
+    return nativeMessage?.toKString() ?: "Unknown error"
+  }
