@@ -12,14 +12,9 @@ typealias ChannelPtr = Long
 private const val LIBSSH2_CHANNEL_WINDOW_DEFAULT = 2 * 1024 * 1024
 private const val LIBSSH2_CHANNEL_PACKET_DEFAULT = 32768
 
-data class  Result(val code: Int, val message: String){
-  companion object {
-    val Success = Result(0, "Success")
-  }
-}
+
 
 expect object LibSSH2 {
-
 
   fun initLib()
   fun closeLib()
@@ -62,6 +57,8 @@ expect object LibSSH2 {
       privateKeyData: String?,
       passphrase: String?
     ): Int
+
+
   }
 
   object Channel {
@@ -91,7 +88,7 @@ expect object LibSSH2 {
       channelPtr: ChannelPtr,
       streamId: Int,
       buffer: ByteArray,
-    ): Int
+    ): Long
 
     suspend fun readAll(channelPtr: ChannelPtr): Flow<ByteArray>
     fun write(channel: ChannelPtr, data: String): Long

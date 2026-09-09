@@ -144,7 +144,7 @@ fun ssh2ChannelRead(
   channelPtr: jlong,
   streamId: jint,
   buffer: jbyteArray
-): jint {
+): jlong {
   val envPtr = env.pointed.pointed!!
   val channel = channelPtr.toCPointer<LIBSSH2_CHANNEL>() ?: return -1
 
@@ -153,22 +153,22 @@ fun ssh2ChannelRead(
 
   val elements = envPtr.GetByteArrayElements!!(env, buffer, null) ?: return -1
 
-  var result: Int
+  var result: Long
   while (true) {
     result = libssh2_channel_read_ex(
       channel,
       streamId,
       elements.reinterpret(),
       bufLen.convert()
-    ).toInt()
+    )
 
-    if (result == LIBSSH2_ERROR_EAGAIN) {
+    if (result == LIBSSH2_ERROR_EAGAIN.toLong()) {
       LibSSH2.Session.waitSocket(sessionPtr, socketHandle)
       continue
     }
 
     if (result <= 0)
-      return result
+      return result.convert()
     break
   }
 

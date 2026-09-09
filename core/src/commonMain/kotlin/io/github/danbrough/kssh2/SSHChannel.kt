@@ -46,7 +46,7 @@ class Channel(val session: Session, channelType: String = "session") : Scope {
       val ret = LibSSH2.Channel.read(session.session, session.socket, channelPtr, 0, buf)
       channelLog.trace { "readChannel():${SshUtils.threadName()} ret: $ret " }
       if (ret <= 0) break
-      emit(buf.take(ret).toByteArray())
+      emit(buf.take(ret.toInt()).toByteArray())
     }
 
     channelLog.trace { "readChannel() done ${SshUtils.threadName()}" }

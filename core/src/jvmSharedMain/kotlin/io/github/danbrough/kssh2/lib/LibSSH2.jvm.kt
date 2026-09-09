@@ -141,6 +141,6 @@ actual object LibSSH2 {
       channelPtr: ChannelPtr,
       streamId: Int,
       buffer: ByteArray,
-    ): Int
+    ): Long
   }
 }

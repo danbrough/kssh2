@@ -46,6 +46,7 @@ androidx-testExt = "1.3.0"
 composeHotReload = "1.2.0"
 ##            ⬆ = "1.3.0-alpha01"
 composeMultiplatform = "1.12.0"
+##                ⬆ = "1.13.0-alpha01"
 composeHtml = "1.12.0"
 composeRuntime = "1.12.0"
 

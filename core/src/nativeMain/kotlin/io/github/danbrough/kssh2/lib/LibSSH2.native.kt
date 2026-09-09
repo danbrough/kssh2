@@ -2,13 +2,8 @@ package io.github.danbrough.kssh2.lib
 
 import io.github.danbrough.kssh2.lib.LibSSH2.Session.waitSocket
 import io.github.danbrough.kssh2.logNative
-import io.github.danbrough.libssh2.cinterop.LIBSSH2_CHANNEL
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_ERROR_EAGAIN
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_SESSION
-import io.github.danbrough.libssh2.cinterop.LIBSSH2_TERM_HEIGHT
-import io.github.danbrough.libssh2.cinterop.LIBSSH2_TERM_HEIGHT_PX
-import io.github.danbrough.libssh2.cinterop.LIBSSH2_TERM_WIDTH
-import io.github.danbrough.libssh2.cinterop.LIBSSH2_TERM_WIDTH_PX
 import io.github.danbrough.libssh2.cinterop.SSH_DISCONNECT_BY_APPLICATION
 import io.github.danbrough.libssh2.cinterop.kssh2_exit
 import io.github.danbrough.libssh2.cinterop.kssh2_init
@@ -21,16 +16,12 @@ import io.github.danbrough.libssh2.cinterop.libssh2_agent_list_identities
 import io.github.danbrough.libssh2.cinterop.libssh2_agent_publickey
 import io.github.danbrough.libssh2.cinterop.libssh2_agent_userauth
 import io.github.danbrough.libssh2.cinterop.libssh2_channel_close
-import io.github.danbrough.libssh2.cinterop.libssh2_channel_open_ex
 import io.github.danbrough.libssh2.cinterop.libssh2_channel_process_startup
-import io.github.danbrough.libssh2.cinterop.libssh2_channel_read_ex
-import io.github.danbrough.libssh2.cinterop.libssh2_channel_request_pty_ex
 import io.github.danbrough.libssh2.cinterop.libssh2_channel_write_ex
 import io.github.danbrough.libssh2.cinterop.libssh2_session_disconnect_ex
 import io.github.danbrough.libssh2.cinterop.libssh2_session_free
 import io.github.danbrough.libssh2.cinterop.libssh2_session_handshake
 import io.github.danbrough.libssh2.cinterop.libssh2_session_init_ex
-import io.github.danbrough.libssh2.cinterop.libssh2_session_last_errno
 import io.github.danbrough.libssh2.cinterop.libssh2_session_last_error
 import io.github.danbrough.libssh2.cinterop.libssh2_session_set_blocking
 import io.github.danbrough.libssh2.cinterop.libssh2_userauth_password_ex
@@ -42,7 +33,6 @@ import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.CPointerVar
 import kotlinx.cinterop.IntVar
-import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
@@ -51,7 +41,6 @@ import kotlinx.cinterop.ptr
 import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.toKString
 import kotlinx.cinterop.toLong
-import kotlinx.cinterop.usePinned
 import kotlinx.cinterop.value
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -267,23 +256,7 @@ libssh2_userauth_publickey_frommemory(LIBSSH2_SESSION *session,
   }
 
   actual object Channel {
-    /*
-#define libssh2_channel_open_session(session) \
-libssh2_channel_open_ex((session), "session", sizeof("session") - 1, \
-                        LIBSSH2_CHANNEL_WINDOW_DEFAULT, \
-                        LIBSSH2_CHANNEL_PACKET_DEFAULT, NULL, 0)
-#include <libssh2.h>
 
-LIBSSH2_CHANNEL *
-libssh2_channel_open_ex(LIBSSH2_SESSION *session, const char *channel_type,
-                        unsigned int channel_type_len,
-                        unsigned int window_size,
-                        unsigned int packet_size,
-                        const char *message, unsigned int message_len);
-
-LIBSSH2_CHANNEL *
-libssh2_channel_open_session(session);
-*/
     actual fun channelOpen(
       session: SessionPtr,
       socket: SocketHandle,
@@ -291,34 +264,7 @@ libssh2_channel_open_session(session);
       windowSize: Int,
       packetSize: Int,
       message: String?
-    ): ChannelPtr {
-
-      logNative.debug { "channelOpen() session:$session socket:$socket channel type:$channelType windowSize:$windowSize packetSize:$packetSize" }
-
-      var channel: CPointer<LIBSSH2_CHANNEL>? = null
-      var rc = LIBSSH2_ERROR_EAGAIN
-      while (true) {
-        channel = libssh2_channel_open_ex(
-          session.toCPointer(),
-          channelType,
-          channelType.length.convert(),
-          windowSize.convert(),
-          packetSize.convert(),
-          message,
-          message?.length?.convert() ?: 0u
-        )
-
-        if (channel != null) break
-        logNative.trace { "channelOpen() libssh2_channel_open_ex() returned" }
-        rc = libssh2_session_last_errno(session.toCPointer())
-        logNative.trace { "channelOpen() libssh2_channel_open_ex() rc = $rc" }
-        if (rc != LIBSSH2_ERROR_EAGAIN) break
-        waitSocket(session, socket)
-      }
-
-      if (channel == null) error("libssh2_channel_open_ex(channelType=$channelType) -> $rc")
-      return channel.toLong()
-    }
+    ): ChannelPtr = nativeChannelOpen(session, socket, channelType, windowSize, packetSize, message)
 
     /*
     LIBSSH2_API int libssh2_channel_request_pty_ex(LIBSSH2_CHANNEL *channel,
@@ -338,28 +284,8 @@ libssh2_channel_open_session(session);
                                    LIBSSH2_TERM_HEIGHT_PX)
 
      */
-    actual fun requestPty(channelPtr: ChannelPtr, terminal: String): Long {
-      logNative.trace { "LibSSH2Native::Channel::requestPty() terminal:$terminal" }
-      var rc = 0
-      while (true) {
-        rc = libssh2_channel_request_pty_ex(
-          channelPtr.toCPointer(),
-          terminal,
-          terminal.length.convert(),
-          null,
-          0u,
-          LIBSSH2_TERM_WIDTH.convert(),
-          LIBSSH2_TERM_HEIGHT.convert(),
-          LIBSSH2_TERM_WIDTH_PX.convert(),
-          LIBSSH2_TERM_HEIGHT_PX.convert()
-        )
-        if (rc == LIBSSH2_ERROR_EAGAIN) {
-          //TODO delay(10.milliseconds)
-          continue
-        }
-        return rc.toLong()
-      }
-    }
+    actual fun requestPty(channelPtr: ChannelPtr, terminal: String): Long =
+      nativeSessionRequestPty(channelPtr, terminal)
 
     /*
     #define libssh2_channel_exec(channel, command) \
@@ -441,7 +367,6 @@ LIBSSH2_ERROR_CHANNEL_REQUEST_DENIED -
       val buf = ByteArray(1024)
       while (true) {
         val read = sshChannel.read(0, buf)
-        buf.size
         if (read <= 0) break
         emit(buf.copyOfRange(0, read))
       }
@@ -453,50 +378,7 @@ LIBSSH2_ERROR_CHANNEL_REQUEST_DENIED -
       channelPtr: ChannelPtr,
       streamId: Int,
       buffer: ByteArray
-    ): Int {
-      buffer.usePinned { pinned ->
-
-        // Get the raw pointer address of the specified offset in our byte array
-        val targetAddress: CPointer<ByteVar> = pinned.addressOf(0)
-
-        while (true) {
-          // Call the actual C function directly like a regular Kotlin function!
-          // libssh2_channel_read_ex returns a sign-extended long (ssize_t)
-          val bytesRead = libssh2_channel_read_ex(
-            channel = channelPtr.toCPointer(),
-            stream_id = streamId,
-            buf = targetAddress,
-            buflen = buffer.size.convert()
-          )
-
-
-          when {
-            bytesRead > 0 -> {
-              return bytesRead.toInt() // Return read amount
-            }
-
-            bytesRead == 0L -> {
-              return 0 // End of file (EOF)
-            }
-
-            bytesRead == LIBSSH2_ERROR_EAGAIN.toLong() -> {
-              // Non-blocking catch: Yield control back to the coroutine dispatcher
-              // instead of freezing the OS thread.
-              logNative.trace { "channelRead() libssh2_channel_read_ex() returned LIBSSH2_ERROR_EAGAIN" }
-              waitSocket(session, socketHandle)
-              //waitSocket(session, channelPtr)
-              //sleep(10.convert())
-            }
-
-            else -> {
-              throw IllegalStateException("Libssh2 read failed with native error code: $bytesRead")
-            }
-          }
-        }
-        @Suppress("KotlinUnreachableCode")
-        throw IllegalStateException("Unreachable code")
-      }
-    }
+    ): Long = nativeSessionRead(session, socketHandle, channelPtr, streamId, buffer)
   }
 }
 
