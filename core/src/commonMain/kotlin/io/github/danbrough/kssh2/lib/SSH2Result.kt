@@ -14,6 +14,7 @@ class SSH2Result(val code: Int, val message: String = "Unknown error") {
 
   override fun equals(other: Any?): Boolean = (other is SSH2Result) && other.code == this.code
   override fun hashCode(): Int = code
+  override fun toString(): String = "Result[$code:$message]"
 }
 
 

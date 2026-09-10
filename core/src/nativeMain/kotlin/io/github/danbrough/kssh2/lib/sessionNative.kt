@@ -10,6 +10,7 @@ import io.github.danbrough.libssh2.cinterop.LIBSSH2_TERM_WIDTH_PX
 import io.github.danbrough.libssh2.cinterop.libssh2_channel_read_ex
 import io.github.danbrough.libssh2.cinterop.libssh2_channel_request_pty_ex
 import io.github.danbrough.libssh2.cinterop.libssh2_session_last_error
+import io.github.danbrough.libssh2.cinterop.libssh2_userauth_publickey_frommemory
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.CPointerVar
@@ -23,6 +24,10 @@ import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.toKString
 import kotlinx.cinterop.usePinned
 import kotlinx.cinterop.value
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.readString
 
 
 fun nativeSessionRead(
@@ -40,7 +45,7 @@ fun nativeSessionRead(
     while (true) {
       // Call the actual C function directly like a regular Kotlin function!
       // libssh2_channel_read_ex returns a sign-extended long (ssize_t)
-      val bytesRead:Long = libssh2_channel_read_ex(
+      val bytesRead: Long = libssh2_channel_read_ex(
         channel = channelPtr.toCPointer(),
         stream_id = streamId,
         buf = targetAddress,
@@ -65,7 +70,7 @@ fun nativeSessionRead(
         }
 
         else -> {
-          logNative.error {"libssh2_channel_read_ex failed with error code: $bytesRead" }
+          logNative.error { "libssh2_channel_read_ex failed with error code: $bytesRead" }
           return bytesRead
         }
       }
@@ -100,7 +105,7 @@ fun nativeSessionRequestPty(channelPtr: ChannelPtr, terminal: String): Long {
 }
 
 
- fun nativeSessionError(session: SessionPtr): String =
+fun nativeSessionError(session: SessionPtr): String =
   memScoped {
     val errMessageVar = alloc<CPointerVar<ByteVar>>()
     val errMessageLenVar = alloc<IntVar>()
@@ -115,3 +120,42 @@ fun nativeSessionRequestPty(channelPtr: ChannelPtr, terminal: String): Long {
     val nativeMessage: CPointer<ByteVar>? = errMessageVar.value
     return nativeMessage?.toKString() ?: "Unknown error"
   }
+
+
+fun nativeSessionAuthenticatePublicKey(
+  sessionPtr: SessionPtr,
+  socket: SocketHandle,
+  user: String?,
+  publicKeyData: String?,
+  privateKeyData: String?,
+  passphrase: String?
+): Int {
+  var ret = 0
+
+  val publicData =
+    publicKeyData?.let { Path(it) }?.takeIf { SystemFileSystem.exists(it) }?.let { p ->
+      SystemFileSystem.source(p).buffered().use { it.readString() }
+    } ?: publicKeyData
+
+  val privateData =
+    privateKeyData?.let { Path(it) }?.takeIf { SystemFileSystem.exists(it) }?.let { p ->
+      SystemFileSystem.source(p).buffered().use { it.readString() }
+    } ?: privateKeyData
+
+  while (true) {
+    ret = libssh2_userauth_publickey_frommemory(
+      sessionPtr.toCPointer(),
+      user,
+      user?.length?.toULong() ?: 0UL,
+      publicData,
+      publicData?.length?.toULong() ?: 0UL,
+      privateData,
+      privateData?.length?.toULong() ?: 0UL,
+      passphrase
+    )
+    if (ret == LIBSSH2_ERROR_EAGAIN)
+      waitSocket(sessionPtr, socket)
+    else if (ret <= 0) break
+  }
+  return ret
+}

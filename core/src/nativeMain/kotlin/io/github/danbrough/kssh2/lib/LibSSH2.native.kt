@@ -25,7 +25,6 @@ import io.github.danbrough.libssh2.cinterop.libssh2_session_init_ex
 import io.github.danbrough.libssh2.cinterop.libssh2_session_last_error
 import io.github.danbrough.libssh2.cinterop.libssh2_session_set_blocking
 import io.github.danbrough.libssh2.cinterop.libssh2_userauth_password_ex
-import io.github.danbrough.libssh2.cinterop.libssh2_userauth_publickey_frommemory
 import io.github.danbrough.libssh2.cinterop.ssh2_socket_close
 import io.github.danbrough.libssh2.cinterop.ssh2_socket_connect
 import io.github.danbrough.libssh2.cinterop.waitsocket
@@ -100,7 +99,7 @@ actual object LibSSH2 {
       do {
         rc = libssh2_session_handshake(session.toCPointer(), socket.toInt())
       } while (rc == LIBSSH2_ERROR_EAGAIN)
-      if (rc != 0) logNative.error {  "libssh2_session_handshake(session, sock) failed. returned: $rc" }
+      if (rc != 0) logNative.error { "libssh2_session_handshake(session, sock) failed. returned: $rc" }
       return rc
     }
 
@@ -186,25 +185,14 @@ libssh2_userauth_publickey_frommemory(LIBSSH2_SESSION *session,
       publicKeyData: String?,
       privateKeyData: String?,
       passphrase: String?
-    ): Int {
-      var ret = 0
-      while (true) {
-        ret = libssh2_userauth_publickey_frommemory(
-          sessionPtr.toCPointer(),
-          user,
-          user?.length?.toULong() ?: 0UL,
-          publicKeyData,
-          publicKeyData?.length?.toULong() ?: 0UL,
-          privateKeyData,
-          privateKeyData?.length?.toULong() ?: 0UL,
-          passphrase
-        )
-        if (ret == LIBSSH2_ERROR_EAGAIN)
-          waitSocket(sessionPtr, socket)
-        else if (ret <= 0) break
-      }
-      return ret
-    }
+    ): Int = nativeSessionAuthenticatePublicKey(
+      sessionPtr,
+      socket,
+      user,
+      publicKeyData,
+      privateKeyData,
+      passphrase
+    )
 
     actual fun authenticatePassword(
       sessionPtr: SessionPtr,

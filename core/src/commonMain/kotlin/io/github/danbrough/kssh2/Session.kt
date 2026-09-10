@@ -20,20 +20,35 @@ class Session() : Scope {
   var agent: AgentPtr = 0L
 
 
-  suspend fun connect(host: String, port: Int = 22): SSH2Result {
+  fun connect(host: String, port: Int = 22): SSH2Result {
     LibSSH2.Socket.close(socket)
     socket = LibSSH2.Socket.connect(host, port)
-    return if (socket == 0L) resultOf(session,false) else
+    return if (socket == 0L) resultOf(session, false) else
       LibSSH2.Session.sessionHandshake(session, socket).asResult()
   }
 
-  suspend fun authenticateWithAgent(remoteUser: String): SSH2Result {
+  fun authenticateWithAgent(remoteUser: String): SSH2Result {
     agent = LibSSH2.Session.authenticateWithAgent(session, socket, remoteUser)
-    return resultOf(session,agent != 0L)
+    return resultOf(session, agent != 0L)
   }
 
-  suspend fun authenticatePassword(userName: String, password: String): SSH2Result =
+  fun authenticatePassword(userName: String, password: String): SSH2Result =
     LibSSH2.Session.authenticatePassword(session, socket, userName, password).asResult()
+
+  fun authenticatePublicKey(
+    userName: String,
+    publicKeyData: String?,
+    privateKeyData: String?,
+    password: String? = null
+  ): SSH2Result =
+    LibSSH2.Session.authenticatePublicKey(
+      session,
+      socket,
+      userName,
+      publicKeyData,
+      privateKeyData,
+      password
+    ).asResult()
 
 
   private fun Int.asResult(): SSH2Result =
@@ -49,4 +64,5 @@ class Session() : Scope {
 }
 
 
-internal fun resultOf(sessionPtr: SessionPtr,success: Boolean) = if (success) SSH2Result.SUCCESS else SSH2Result(-1, LibSSH2.Session.getError(sessionPtr))
+internal fun resultOf(sessionPtr: SessionPtr, success: Boolean) =
+  if (success) SSH2Result.SUCCESS else SSH2Result(-1, LibSSH2.Session.getError(sessionPtr))

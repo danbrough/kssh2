@@ -11,6 +11,7 @@ import kotlinx.cinterop.ptr
 import kotlinx.cinterop.sizeOf
 import kotlinx.cinterop.toKString
 import kotlinx.cinterop.value
+import org.danbrough.klog.logger
 import platform.posix.AF_UNSPEC
 import platform.posix.NI_MAXHOST
 import platform.posix.NI_NUMERICHOST
@@ -21,6 +22,7 @@ import platform.posix.gai_strerror
 import platform.posix.getaddrinfo
 import platform.posix.getnameinfo
 import platform.posix.memset
+internal val logNative = logger("SSH2_NATIVE")
 
 actual object SshUtils {
   actual fun getEnv(name: String): String? = platform.posix.getenv(name)?.toKString()
