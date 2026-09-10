@@ -15,13 +15,13 @@ const val JNI_PREFIX = "Java_io_github_danbrough_kssh2_lib_LibSSH2"
 
 
 @CName("${JNI_PREFIX}_initLib")
-fun ssh2Init(env: CPointer<JNIEnvVar>) {
+fun ssh2Init(env: CPointer<JNIEnvVar>,clz: jclass) {
   //log.debug { "${JNI_PREFIX}_ssh2Init()" }
   LibSSH2.initLib()
 }
 
 @CName("${JNI_PREFIX}_closeLib")
-fun ssh2Close(env: CPointer<JNIEnvVar>) {
+fun ssh2Close(env: CPointer<JNIEnvVar>,clz: jclass) {
 //  log.trace { "${JNI_PREFIX}_ssh2Close()" }
   LibSSH2.closeLib()
 }
