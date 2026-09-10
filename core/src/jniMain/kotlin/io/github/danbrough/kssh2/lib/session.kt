@@ -72,19 +72,7 @@ fun ssh2SessionAuthenticateWithAgent(
 }
 
 
-class JniEnv(val env: CPointer<JNIEnvVar>) {
-  val envPtr = env.pointed.pointed!!
 
-  fun <R> jString(s: jstring, block: (String?) -> R): R {
-    val ptr = envPtr.GetStringUTFChars!!(env, s, null)
-    val r = block(ptr?.toKString())
-    envPtr.ReleaseStringUTFChars!!(env, s, ptr)
-    return r
-  }
-}
-
-fun <R> CPointer<JNIEnvVar>.jniEnv(block: JniEnv.() -> R): R =
-  JniEnv(this).block()
 
 @CName("${JNI_PREFIX}_00024Session_authenticatePassword")
 fun ssh2SessionAuthenticateWithPassword(
@@ -95,12 +83,12 @@ fun ssh2SessionAuthenticateWithPassword(
   remoteUser: jstring,
   password: jstring
 ): jint = env.jniEnv {
-    jString(remoteUser) { user ->
-      jString(password) { password ->
-        LibSSH2.Session.authenticatePassword(session, socket, user!!, password!!)
-      }
+  jString(remoteUser) { user ->
+    jString(password) { password ->
+      LibSSH2.Session.authenticatePassword(session, socket, user!!, password!!)
     }
   }
+}
 
 
 @CName("${JNI_PREFIX}_00024Session_getErrorJNI")
@@ -121,10 +109,41 @@ fun getSessionError(
 
   val nativeMessage: CPointer<ByteVar>? = errmsgVar.value
 
-  val pointee = env.pointed ?: return null
+  val pointee = env.pointed
   val functions = pointee.pointed ?: return null
   val newStringUTF = functions.NewStringUTF ?: return null
 
   return newStringUTF(env, nativeMessage)
 }
+
+@CName("${JNI_PREFIX}_00024Session_authenticatePublicKey")
+fun sessionAuthenticatePublicKey(
+  env: CPointer<JNIEnvVar>,
+  clz: jclass,
+  sessionPtrValue: jlong,
+  socket: jlong,
+  user: jstring,
+  publicKeyData: jstring,
+  privateKeyData: jstring,
+  password: jstring
+): jint = env.jniEnv {
+  jString(
+    user,
+    publicKeyData,
+    privateKeyData,
+    password
+  ) { user, publicKeyData, privateKeyData, password ->
+    LibSSH2.Session.authenticatePublicKey(
+      sessionPtrValue,
+      socket,
+      user,
+      publicKeyData,
+      privateKeyData,
+      password
+    )
+  }
+}
+
+
+
 
