@@ -2,9 +2,12 @@ package demo.test
 
 import demo.test.lib.LibSSH2
 import demo.test.lib.Session
+import org.danbrough.klog.logger
 
 class Thang {
   companion object {
+
+    val logDemo = logger("SSH2_DEMO")
 
     init {
       println("loading thang library ..")
@@ -19,16 +22,17 @@ class Thang {
     fun main(args: Array<String>) {
       commonMain(args.toList())
 
-      println("calling initJNI..")
+      logDemo.info {  "calling initJNI.." }
       initJNI()
-      println("calling .. LibSSH2.initLib()")
+      logDemo.debug {  "calling .. LibSSH2.initLib()" }
       LibSSH2.initLib()
-      println("Creating a session...")
+      logDemo.debug {  "Creating a session..." }
       val session = Session.createSession(false)
-      println("got session: $session .. closing it ..")
+      logDemo.debug {"got session: $session .. closing it .." }
       Session.close(session)
-      println("calling .. LibSSH2.closeLib()")
+      logDemo.debug {  "calling .. LibSSH2.closeLib()" }
       LibSSH2.closeLib()
+      logDemo.info {  "done" }
     }
   }
 }

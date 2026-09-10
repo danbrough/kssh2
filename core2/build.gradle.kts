@@ -15,9 +15,20 @@ kotlin {
   if (HostManager.hostIsLinux) {
     linuxX64()
   } else {
+    @Suppress("DEPRECATION")
     macosX64()
   }
 
+  sourceSets {
+    commonMain {
+      dependencies {
+        implementation(
+          if (project.hasProperty("klog.path")) libs.klog
+          else libs.klog.versioned
+        )
+      }
+    }
+  }
   targets.withType<KotlinNativeTarget>().configureEach {
     compilations["main"].apply {
       cinterops.create("jni") {
@@ -41,7 +52,7 @@ kotlin {
         val headerNames = listOf("libssh2.h", "libssh2_publickey.h", "libssh2_sftp.h")
         if (konanTarget.family.isAppleFamily) {
           headers(headerNames.map { file("/usr/local/include/$it") })
-        } else if (konanTarget.family == Family.LINUX){
+        } else if (konanTarget.family == Family.LINUX) {
           headers(headerNames.map { file("/usr/include/$it") })
         }
         compilerOpts("-I/usr/include", "-I/usr/local/include")
