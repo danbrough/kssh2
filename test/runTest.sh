@@ -34,3 +34,4 @@ exec java --enable-native-access=ALL-UNNAMED -Djava.library.path=$LIB_PATH -jar 
 
 
 
+cat gradle.properties  | grep version | sed  -e 's|project.version=||g'
