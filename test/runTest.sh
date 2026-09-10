@@ -27,7 +27,7 @@ fi
 
 LIB_PATH="$(realpath test/build/bin/$TARGET/thangDebugShared/)"
 
-exec java -Djava.library.path=$LIB_PATH -jar test/build/libs/test-0.0.2-all.jar
+exec java --enable-native-access=ALL-UNNAMED -Djava.library.path=$LIB_PATH -jar test/build/libs/test-0.0.2-all.jar
 
 
 
