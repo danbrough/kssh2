@@ -5,10 +5,6 @@ import io.github.danbrough.kssh2.lib.onFailure
 import io.github.danbrough.kssh2.lib.onSuccess
 import io.github.danbrough.kssh2.lib.successOrThrow
 import kotlinx.coroutines.flow.map
-import kotlinx.io.buffered
-import kotlinx.io.files.Path
-import kotlinx.io.files.SystemFileSystem
-import kotlinx.io.readString
 
 
 val authTestPassword = basicCommand("authTestPassword", "Tests password authentication") { args ->
@@ -65,8 +61,8 @@ val authTestPublicKey =
 
           authenticatePublicKey(
             config.user,
-            config.pubKeyPath,
-            config.privateKeyPath,
+            config.pubKey,
+            config.privateKey,
             config.passphrase
           ).onSuccess {
             demoLog.info { "authenticated" }

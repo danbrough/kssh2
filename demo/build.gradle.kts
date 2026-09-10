@@ -62,19 +62,9 @@ afterEvaluate {
   println("HOST ARCH: $arch")
 
 
-  val hostArchName = (if (HostManager.hostIsLinux) "Linux" else "Macos") +
-      (if (HostManager.hostArch() == "x86_64") "X64" else "Arm64")
-  val sharedLibTaskName = "linkKssh2DebugShared$hostArchName"
-
-  val sharedLibTask = rootProject.project("core").let {
-    it.tasks[sharedLibTaskName]
-  }.also {
-    println("LIB TASK: $it")
-  }
-
   tasks.register("getShadowJar") {
     description = "Creates and prints the name of the shadow jar"
-    dependsOn(sharedLibTask)
+    //dependsOn(sharedLibTask)
     dependsOn("shadowJar")
 
     val shadowFile = tasks["shadowJar"].outputs.files

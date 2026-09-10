@@ -14,13 +14,13 @@ data class DemoConfig(
   var user: String = "",
   var host: String = "127.0.0.1",
   var port: String = "22",
-  var pubKeyPath: String = "",
-  var privateKeyPath: String = "",
+  var pubKey: String = "",
+  var privateKey: String = "",
   var passphrase: String? = null,
 ) {
 
   override fun toString(): String =
-    "DemoConfig[user=$user,host=$host,port=$port,pubKeyPath=$pubKeyPath,privateKeyPath=$privateKeyPath,passphrase=${
+    "DemoConfig[user=$user,host=$host,port=$port,pubKeyPath=$pubKey,privateKeyPath=$privateKey,passphrase=${
       buildString {
         if (passphrase.isNullOrBlank()) append("null")
         else {
@@ -37,7 +37,7 @@ const val ENV_PREFIX = "SSHDEMO"
 private val HELP_OPTIONS = setOf("-h", "?", "help", "--help")
 
 suspend fun KTerminal.printHelp(args: List<String>) {
-  println("usage: ${args[0]} host=[server ip address] port=[server port] user=[remote user] publicKey=[public key path] privateKey=[private key path] passphrase=[passphrase or path to passphrase file]")
+  println("usage: ${args[0]} host=[server ip address] port=[server port] user=[remote user] publicKey=[public key string or path] privateKey=[private key string or path] passphrase=[passphrase or path to passphrase file]")
   println(" env variables ${ENV_PREFIX}_HOST=.. ${ENV_PREFIX}_PORT=.. ${ENV_PREFIX}_PUBLIC_KEY ... ${ENV_PREFIX}_PASSPHRASE=..")
 }
 
@@ -52,8 +52,8 @@ suspend fun KTerminal.parseArgs(args: List<String>): DemoConfig? {
   config.user = KattyUtils.getEnv("${ENV_PREFIX}_USER") ?: KattyUtils.getEnv("USER") ?: "user"
   config.host = KattyUtils.getEnv("${ENV_PREFIX}_HOST") ?: "127.0.0.1"
   config.port = KattyUtils.getEnv("${ENV_PREFIX}_PORT") ?: "22"
-  config.pubKeyPath = KattyUtils.getEnv("${ENV_PREFIX}_PUBLIC_KEY") ?: ""
-  config.privateKeyPath = KattyUtils.getEnv("${ENV_PREFIX}_PRIVATE_KEY") ?: ""
+  config.pubKey = KattyUtils.getEnv("${ENV_PREFIX}_PUBLIC_KEY") ?: ""
+  config.privateKey = KattyUtils.getEnv("${ENV_PREFIX}_PRIVATE_KEY") ?: ""
   config.passphrase = KattyUtils.getEnv("${ENV_PREFIX}_PASSPHRASE")
 
   val sshDir = Path(KattyUtils.getEnv("HOME") ?: ".", ".ssh")
@@ -61,8 +61,8 @@ suspend fun KTerminal.parseArgs(args: List<String>): DemoConfig? {
   listOf("ed25519", "ecdsa", "rsa", "dsa").forEach { keyType ->
     val keyPath = Path(sshDir, "id_$keyType")
     if (SystemFileSystem.exists(keyPath)) {
-      config.pubKeyPath = Path(sshDir, "id_$keyType.pub").toString()
-      config.privateKeyPath = Path(sshDir, "id_$keyType").toString()
+      config.pubKey = Path(sshDir, "id_$keyType.pub").toString()
+      config.privateKey = Path(sshDir, "id_$keyType").toString()
     }
   }
 
@@ -72,8 +72,8 @@ suspend fun KTerminal.parseArgs(args: List<String>): DemoConfig? {
       "user" -> config.user = value
       "host" -> config.host = value
       "port" -> config.port = value
-      "publicKey" -> config.pubKeyPath = value
-      "privateKey" -> config.privateKeyPath = value
+      "publicKey" -> config.pubKey = value
+      "privateKey" -> config.privateKey = value
       "passphrase" -> config.passphrase = value
       else -> {
         println((TextColors.brightRed + TextStyles.bold)("Invalid argument: $it"))

@@ -9,32 +9,34 @@ export KLOG_COLOR KLOG_LEVEL
 ROOTDIR="$(pwd)"
 cd `dirname "$0"` && cd ..
 
-
-
-LIBS=/usr/local/lib:/usr/lib
 if [ "$OSTYPE" == "linux-gnu" ]; then
-    if [ "$HOSTTYPE" == "x86_64" ]; then
-      export LD_LIBRARY_PATH=`realpath core/build/bin/linuxX64/kssh2DebugShared`:$LIBS
-    else
-      export LD_LIBRARY_PATH=`realpath core/build/bin/linuxArm64/kssh2DebugShared`:$LIBS
-    fi
-    echo LD_LIBRARY_PATH: $LD_LIBRARY_PATH
-    ARGS="-Djava.library.path=$LD_LIBRARY_PATH"
+  TARGET=linux
 else
-  if [ "$HOSTTYPE" == "x86_64" ]; then
-    export DYLD_LIBRARY_PATH=`realpath core/build/bin/macosX64/kssh2DebugShared`:$LIBS
-  else
-    export DYLD_LIBRARY_PATH=`realpath core/build/bin/macosArm64/kssh2DebugShared`:$LIBS
-  fi
-  echo DYLD_LIBRARY_PATH $DYLD_LIBRARY_PATH
-  ARGS="-Djava.library.path=$DYLD_LIBRARY_PATH"
+  TARGET=macos
 fi
 
-#export LD_LIBRARY_PATH=jni/build/bin/linuxX64/kssh2jniDebugShared
-#export DYLD_LIBRARY_PATH=jni/build/bin/macosX64/kssh2jniDebugShared
+if [ "$HOSTTYPE" == "x86_64" ]; then
+  TARGET=${TARGET}X64
+else
+  TARGET=${TARGET}Arm64
+fi
+
+
+
+LIBS=/usr/local/lib:/usr/lib:$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared
+
+echo target is $TARGET libs: $LIBS
+if [ "$OSTYPE" == "linux-gnu" ]; then
+  export LD_LIBRARY_PATH=$LIBS
+else
+  export DYLD_LIBRARY_PATH=$LIBS
+fi
+
+#ARGS="-Djava.library.path=$LIBS"
+ARGS=""
 
 TMPFILE=`mktemp`
-(./gradlew --console=plain :demo:getShadowJar || exit 1) | tee $TMPFILE
+(./gradlew --console=plain :core:linkKssh2DebugShared$TARGET :demo:getShadowJar || exit 1) | tee $TMPFILE
 JARFILE=`cat $TMPFILE | awk '/shadowJar:/  {print $2}'`
 echo jarfile: $JARFILE
 rm $TMPFILE
