@@ -12,7 +12,7 @@ actual object LibSSH2 {
 
   init {
     try {
-
+/*
       listOf(
         "/usr/local/opt/openssl@3/lib/libssl.3.dylib",
         "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib",
@@ -22,7 +22,7 @@ actual object LibSSH2 {
       ).forEach {
         log.debug { "loading $it" }
         System.load(it)
-      }
+      }*/
 
       log.debug { "JNISupport: loading ssh2 library.." }
       System.loadLibrary("ssh2")
