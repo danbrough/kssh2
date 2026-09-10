@@ -35,6 +35,7 @@ fi
 
 ARGS="-Djava.library.path=$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared:/usr/lib:/usr/local/lib"
 
+export MESSAGE="This is my message at `date`"
 
 TMPFILE=`mktemp`
 (./gradlew --console=plain :core:linkKssh2DebugShared$TARGET :demo:getShadowJar || exit 1) | tee $TMPFILE

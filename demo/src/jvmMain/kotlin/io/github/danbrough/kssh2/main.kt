@@ -26,6 +26,8 @@ import kotlin.time.Clock
 fun main(args: Array<String>) {
   demoLog.info {"LD_LIBRARY_PATH=${System.getenv("LD_LIBRARY_PATH")}" }
   demoLog.info { "DYLD_LIBRARY_PATH=${System.getenv("DYLD_LIBRARY_PATH")}" }
+  demoLog.info { "MESSAGE=${System.getenv("MESSAGE")}" }
+
 
   val cmdHandler = BasicCommandHandler()
   cmdHandler.registerCommands(
