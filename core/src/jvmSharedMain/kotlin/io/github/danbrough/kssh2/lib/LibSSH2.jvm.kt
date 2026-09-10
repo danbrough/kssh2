@@ -4,7 +4,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.danbrough.klog.logger
 import java.nio.ByteBuffer
-import java.util.Locale
 import java.util.Locale.getDefault
 
 @Suppress("UnsafeDynamicallyLoadedCode")
@@ -26,25 +25,25 @@ actual object LibSSH2 {
               System.load(it)
             }*/
 
-      if (System.getProperty("os.name").lowercase(getDefault()).contains("mac")){
+      if (System.getProperty("os.name").lowercase(getDefault()).contains("mac")) {
         log.info { "LibSSH2::running on mac" }
 
 
       }
 
-      val libs = System.getenv("SSH2_LIBS")?.split(":") ?: emptyList()
-      libs.forEach { lib->
-        log.warn { "loading directly lib: $lib.." }
-        System.load(lib)
-      }
+      /*   val libs = System.getenv("SSH2_LIBS")?.split(":") ?: emptyList()
+         libs.forEach { lib->
+           log.warn { "loading directly lib: $lib.." }
+           System.load(lib)
+         }
+   */
 
 
-
-/*      log.debug { "JNISupport: loading ssh2 library.." }
+      log.debug { "JNISupport: loading ssh2 library.." }
       System.loadLibrary("ssh2")
       log.debug { "JNISupport: loading kssh2 library.." }
       System.loadLibrary("kssh2")
-      log.debug { "JNISupport: kssh2 library loaded" }*/
+      log.debug { "JNISupport: kssh2 library loaded" }
 
     } catch (e: UnsatisfiedLinkError) {
       log.error(e) { "Failed to load library" }
