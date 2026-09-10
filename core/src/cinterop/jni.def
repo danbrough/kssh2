@@ -13,7 +13,7 @@ headers = jni.h
 #compilerOpts.android = -I./src/headers/android
 
 
-compilerOpts.linux_x64 = -I /files/workspace/kssh2/core/src/headers/ -I /files/workspace/kssh2/core/src/headers/linux
+compilerOpts.linux_x64 = -I /core/src/headers/ -I /files/workspace/kssh2/core/src/headers/linux
 compilerOpts.linux_arm64 = -I /files/workspace/kssh2/core/src/headers/ -I /files/workspace/kssh2/core/src/headers/linux
 compilerOpts.osx_x64 = -I /files/workspace/kssh2/core/src/headers/ -I /files/workspace/kssh2/core/src/headers/darwin
 compilerOpts.osx_arm64 = -I /files/workspace/kssh2/core/src/headers/ -I /files/workspace/kssh2/core/src/headers/darwin

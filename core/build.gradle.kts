@@ -114,7 +114,13 @@ kotlin {
 
       if (konanTarget.family != Family.ANDROID)
         cinterops.create("jni") {
-          definitionFile = project.file("src/cinterop/jni.def")
+          //definitionFile = project.file("src/cinterop/jni.def")
+          packageName("platform.android")
+          header("./src/headers/jni.h")
+          if (konanTarget.family == Family.LINUX)
+            includeDirs("./src/cinterops", "./src/headers/linux")
+          else
+            includeDirs("./src/cinterops", "./src/headers/darwin")
         }
     }
 
