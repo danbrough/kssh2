@@ -118,9 +118,9 @@ kotlin {
           packageName("platform.android")
           header("./src/headers/jni.h")
           if (konanTarget.family == Family.LINUX)
-            includeDirs("./src/cinterops", "./src/headers/linux")
+            includeDirs("./src/cinterops", "./src/headers","./src/headers/linux")
           else
-            includeDirs("./src/cinterops", "./src/headers/darwin")
+            includeDirs("./src/cinterops", "./src/headers","./src/headers/darwin")
         }
     }
 
