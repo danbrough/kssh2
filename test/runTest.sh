@@ -27,7 +27,9 @@ fi
 
 LIB_PATH="$(realpath test/build/bin/$TARGET/thangDebugShared/)"
 
-exec java --enable-native-access=ALL-UNNAMED -Djava.library.path=$LIB_PATH -jar test/build/libs/test-0.0.2-all.jar
+VERSION="$(cat gradle.properties  | grep version | sed  -e 's|project.version=||g')"
+exec java --enable-native-access=ALL-UNNAMED -Djava.library.path=$LIB_PATH -jar test/build/libs/test-$VERSION-all.jar
+
 
 
 
