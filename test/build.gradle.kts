@@ -20,24 +20,25 @@ kotlin {
   }
 
   targets.withType<KotlinNativeTarget>().configureEach {
-    compilations["main"].cinterops.create("jni") {
-      //defFile(project.file("src/cinterop/jni.def"))
-      packageName("platform.android")
-      header(project.file("src/headers/jni.h"))
+    compilations["main"].apply {
+      cinterops.create("jni") {
+        //defFile(project.file("src/cinterop/jni.def"))
+        packageName("platform.android")
+        header(project.file("src/headers/jni.h"))
 
-      compilerOpts("-I${project.file("src/headers")}")
-      if (konanTarget.family.isAppleFamily) {
-        header(project.file("src/headers/darwin/jni_md.h"))
-        compilerOpts("-I${project.file("src/headers/darwin")}")
-      } else {
-        header(project.file("src/headers/linux/jni_md.h"))
-        compilerOpts("-I${project.file("src/headers/linux")}")
+        compilerOpts("-I${project.file("src/headers")}")
+        if (konanTarget.family.isAppleFamily) {
+          header(project.file("src/headers/darwin/jni_md.h"))
+          compilerOpts("-I${project.file("src/headers/darwin")}")
+        } else {
+          header(project.file("src/headers/linux/jni_md.h"))
+          compilerOpts("-I${project.file("src/headers/linux")}")
+        }
       }
     }
     binaries {
-
       sharedLib("thang", buildTypes = setOf(NativeBuildType.DEBUG)) {
-
+        linkerOpts("-L/usr/lib/","-L/usr/local/lib/","-lssh2")
       }
     }
   }
