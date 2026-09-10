@@ -34,12 +34,16 @@ kotlin {
         }
       }
 
-      cinterops.create("ssh2"){
+      cinterops.create("ssh2") {
         packageName("demo.test.ssh2.cinterops")
 //        headers = libssh2.h  libssh2_publickey.h  libssh2_sftp.h
-        val headerNames = listOf("libssh2.h","libssh2_publickey.h","libssh2_sftp.h")
-        headers(headerNames.map { file("/usr/include/$it") })
-        compilerOpts("-I/usr/include","-I/usr/local/include")
+        val headerNames = listOf("libssh2.h", "libssh2_publickey.h", "libssh2_sftp.h")
+        if (konanTarget.family.isAppleFamily) {
+          headers(headerNames.map { file("/usr/local/include/$it") })
+        } else {
+          headers(headerNames.map { file("/usr/include/$it") })
+        }
+        compilerOpts("-I/usr/include", "-I/usr/local/include")
       }
     }
     binaries {
