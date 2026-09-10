@@ -35,7 +35,7 @@ fi
 
 
 
-ARGS="-Djava.library.path=$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared:/usr/lib:/usr/local/lib"
+ARGS="--enable-native-access=ALL-UNNAMED -Djava.library.path=$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared:/usr/lib:/usr/local/lib"
 
 export MESSAGE="This is my message at `date`"
 
