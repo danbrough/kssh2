@@ -24,8 +24,9 @@ import kotlin.time.Clock
 
 
 fun main(args: Array<String>) {
-  println("LD_LIBRARY_PATH=${System.getenv("LD_LIBRARY_PATH")}")
-  println("DYLD_LIBRARY_PATH=${System.getenv("DYLD_LIBRARY_PATH")}")
+  demoLog.info {"LD_LIBRARY_PATH=${System.getenv("LD_LIBRARY_PATH")}" }
+  demoLog.info { "DYLD_LIBRARY_PATH=${System.getenv("DYLD_LIBRARY_PATH")}" }
+
   val cmdHandler = BasicCommandHandler()
   cmdHandler.registerCommands(
     basicCommand("date", "prints the date") {

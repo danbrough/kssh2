@@ -23,7 +23,7 @@ kotlin {
       compileTaskProvider.configure {
         compilerOptions {
           freeCompilerArgs.add("-Xklib-duplicated-unique-name-strategy=allow-all-with-warning")
-          freeCompilerArgs.add("-Xexport-every-declaration=true")
+
         }
       }
     }
@@ -127,6 +127,8 @@ kotlin {
 
     binaries {
       sharedLib("kssh2") {
+        freeCompilerArgs = freeCompilerArgs + "-Xexport-every-declaration=true"
+
         /*if (target.konanTarget.family.isAppleFamily) {
           freeCompilerArgs += listOf("-Xexport-every-declaration=true")
         }*/
