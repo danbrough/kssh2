@@ -24,11 +24,11 @@ fi
 
 
 echo target is $TARGET libs: $LIBS
-if [ "$OSTYPE" == "linux-gnu" ]; then
-  export LD_LIBRARY_PATH=$LIBS
-else
+#if [ "$OSTYPE" == "linux-gnu" ]; then
+  #export LD_LIBRARY_PATH=$LIBS
+#else
   #export DYLD_LIBRARY_PATH=$LIBS
-fi
+#fi
 
 ARGS="-Djava.library.path=$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared"
 
