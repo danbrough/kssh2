@@ -81,8 +81,6 @@ runner = "1.7.0"
 shadow = "9.6.1"
 core = "1.7.0"
 room = "3.0.3"
-##⬆ = "3.1.0-alpha01"
-
 
 log4k = "2.5.0"
 filekit = "0.16.0"
@@ -105,7 +103,6 @@ maverick-synergy-client = "3.1.4"
 
 sshtools-client = { module = "com.sshtools:maverick-synergy-client", version.ref = "maverick-synergy-client" }
 sshtools-bc = { module = "com.sshtools:maverick-bc", version.ref = "maverick-synergy-client" }
-
 
 #compose
 jetbrains-compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
@@ -144,7 +141,6 @@ androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navi
 
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
-
 
 #androidx-room-ktx = { module = "androidx.room3:room3-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room3:room3-runtime", version.ref = "room" }
