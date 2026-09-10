@@ -25,8 +25,9 @@ fun ssh2TestJNI(env: CPointer<JNIEnvVar>, clz: jclass) {
  * Java expects the naming convention: Java_package_name_ClassName_methodName
  * Under the hood, JNI passes 'env' (JNIEnv*) and 'clazz' (jclass) as the first two parameters.
  */
+@Suppress("FunctionName")
 @CName("Java_io_github_danbrough_kssh2_lib_LibSSH2_testJNI")
-fun platform_testJNI(env: COpaquePointer?, clazz: COpaquePointer?) {
+fun testJNI(env: COpaquePointer?, clazz: COpaquePointer?) {
   println("Hello from Kotlin/Native via JNI on macOS!")
 }
 

@@ -118,14 +118,18 @@ kotlin {
           packageName("platform.android")
           header("./src/headers/jni.h")
           if (konanTarget.family == Family.LINUX)
-            includeDirs("./src/cinterops", "./src/headers","./src/headers/linux")
+            includeDirs("./src/cinterops", "./src/headers", "./src/headers/linux")
           else
-            includeDirs("./src/cinterops", "./src/headers","./src/headers/darwin")
+            includeDirs("./src/cinterops", "./src/headers", "./src/headers/darwin")
         }
     }
 
     binaries {
-      sharedLib("kssh2")
+      sharedLib("kssh2") {
+        if (target.konanTarget.family.isAppleFamily) {
+          freeCompilerArgs += listOf("-Xexport-every-declaration=true")
+        }
+      }
     }
   }
 }
