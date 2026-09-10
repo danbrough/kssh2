@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 import org.danbrough.klog.logger
 
 
@@ -19,26 +18,20 @@ class Channel(val session: Session, channelType: String = "session") : Scope {
   var channelPtr: ChannelPtr =
     LibSSH2.Channel.channelOpen(session.session, session.socket, channelType)
 
-
-  suspend fun requestPty(terminal: String = "vanilla") {
+  fun requestPty(terminal: String = "vanilla") {
     LibSSH2.Channel.requestPty(channelPtr, terminal).also {
       if (it != 0L)
         error("libssh2_channel_request_pty() failed. returned $it")
     }
   }
 
-  suspend fun processStartup(request: String, message: String) {
+  fun processStartup(request: String, message: String) =
     LibSSH2.Channel.processStartup(session.session, session.socket, channelPtr, request, message)
       .also {
         if (it != 0L) error("LibSSH2.Channel.processStartup() returned $it")
       }
-  }
 
-  suspend fun exec(cmdLine: String) =
-    withContext(Dispatchers.IO) {
-      processStartup("exec", cmdLine)
-    }
-
+  fun exec(cmdLine: String) = processStartup("exec", cmdLine)
 
   fun readChannel(bufSize: Int = 0x4000): Flow<ByteArray> = flow {
     val buf = ByteArray(bufSize)
@@ -60,10 +53,4 @@ class Channel(val session: Session, channelType: String = "session") : Scope {
 suspend fun <R> Session.channel(
   channelType: String = "session",
   block: suspend Channel.() -> R
-): R = Channel(this, channelType).let { channel ->
-  try {
-    return channel.block()
-  } finally {
-    channel.close()
-  }
-}
+) = sshScope(block, Channel(this, channelType))

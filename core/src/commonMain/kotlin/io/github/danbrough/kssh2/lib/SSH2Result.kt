@@ -34,7 +34,7 @@ inline fun SSH2Result.onSuccess(block: () -> Unit): SSH2Result {
 
 
 @OptIn(ExperimentalContracts::class)
-inline fun SSH2Result.onFailure(block: (SSH2Result) -> Unit): SSH2Result {
+inline fun SSH2Result.onFailure(block: SSH2Result.() -> Unit): SSH2Result {
   contract {
     callsInPlace(block, InvocationKind.AT_MOST_ONCE)
   }
