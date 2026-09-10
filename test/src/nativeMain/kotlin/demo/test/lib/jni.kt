@@ -1,14 +1,26 @@
 package demo.test.lib
 
+import demo.test.ssh2.cinterops.libssh2_exit
 import demo.test.ssh2.cinterops.libssh2_init
 import kotlinx.cinterop.CPointer
 import platform.android.JNIEnvVar
 import platform.android.jclass
 
-@CName("Java_demo_test_lib_LibSSH2_initLib")
+const val JNI_PREFIX = "Java_demo_test_lib_LibSSH2"
+
+@CName("${JNI_PREFIX}_initLib")
 fun ssh2InitLib(env: CPointer<JNIEnvVar>, clz: jclass) {
   println("Initializing libssh2 ..")
   libssh2_init(0).also {
     println("libssh2_init(0) returned $it")
+  }
+}
+
+
+@CName("${JNI_PREFIX}_closeLib")
+fun ssh2CloseLib(env: CPointer<JNIEnvVar>, clz: jclass) {
+  println("Closing libssh2 ..")
+  libssh2_exit().also {
+    println("libssh2_exit(0) returned")
   }
 }

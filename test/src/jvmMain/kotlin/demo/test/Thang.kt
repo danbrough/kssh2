@@ -15,8 +15,10 @@ class Thang {
       System.loadLibrary("thang")
       println("calling initJNI..")
       initJNI()
-      println("LibSSH2.initLib()")
+      println("calling .. LibSSH2.initLib()")
       LibSSH2.initLib()
+      println("calling .. LibSSH2.closeLib()")
+      LibSSH2.closeLib()
     }
   }
 }
