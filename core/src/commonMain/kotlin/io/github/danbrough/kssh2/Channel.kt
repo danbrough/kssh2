@@ -2,6 +2,7 @@ package io.github.danbrough.kssh2
 
 import io.github.danbrough.kssh2.lib.ChannelPtr
 import io.github.danbrough.kssh2.lib.LibSSH2
+import io.github.danbrough.kssh2.lib.SSH2Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -18,12 +19,10 @@ class Channel(val session: Session, channelType: String = "session") : Scope {
   var channelPtr: ChannelPtr =
     LibSSH2.Channel.channelOpen(session.session, session.socket, channelType)
 
-  fun requestPty(terminal: String = "vanilla") {
-    LibSSH2.Channel.requestPty(channelPtr, terminal).also {
-      if (it != 0L)
-        error("libssh2_channel_request_pty() failed. returned $it")
+  fun requestPty(terminal: String = "vanilla"): SSH2Result =
+    LibSSH2.Channel.requestPty(channelPtr, terminal).let {
+      resultOf(session.session, it == 0L)
     }
-  }
 
   fun processStartup(request: String, message: String) =
     LibSSH2.Channel.processStartup(session.session, session.socket, channelPtr, request, message)
