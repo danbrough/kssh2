@@ -5,10 +5,10 @@
 
 export KLOG_COLOR KLOG_LEVEL
 DIR="$(pwd)"
-cd `dirname "$0"` && cd ..
+cd `dirname "$0"`
+MODULE=""$(pwd)"
+cd ..
 ROOTDIR="$(pwd)"
-MODULE=test
-#EXE=ssh2demo
 
 if [ "$OSTYPE" == "linux-gnu" ]; then
   TARGET=linux
