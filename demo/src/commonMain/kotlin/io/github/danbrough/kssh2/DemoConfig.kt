@@ -36,7 +36,7 @@ data class DemoConfig(
 const val ENV_PREFIX = "SSHDEMO"
 private val HELP_OPTIONS = setOf("-h", "?", "help", "--help")
 
-suspend fun KTerminal.printHelp(args: List<String>) {
+fun KTerminal.printHelp(args: List<String>) {
   println("usage: ${args[0]} host=[server ip address] port=[server port] user=[remote user] publicKey=[public key string or path] privateKey=[private key string or path] passphrase=[passphrase or path to passphrase file]")
   println(" env variables ${ENV_PREFIX}_HOST=.. ${ENV_PREFIX}_PORT=.. ${ENV_PREFIX}_PUBLIC_KEY ... ${ENV_PREFIX}_PASSPHRASE=..")
 }

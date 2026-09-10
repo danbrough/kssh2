@@ -23,16 +23,14 @@ fi
 
 
 
-LIBS=/usr/local/lib:/usr/lib:$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared
-
 echo target is $TARGET libs: $LIBS
 if [ "$OSTYPE" == "linux-gnu" ]; then
   export LD_LIBRARY_PATH=$LIBS
 else
-  export DYLD_LIBRARY_PATH=$LIBS
+  #export DYLD_LIBRARY_PATH=$LIBS
 fi
 
-ARGS="-Djava.library.path=$LIBS"
+ARGS="-Djava.library.path=$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared"
 
 
 TMPFILE=`mktemp`
