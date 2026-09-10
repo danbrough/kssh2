@@ -12,28 +12,33 @@ actual object LibSSH2 {
 
   init {
     try {
-/*
-      listOf(
-        "/usr/local/opt/openssl@3/lib/libssl.3.dylib",
-        "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib",
-        "/usr/local/opt/libssh2/lib/libssh2.1.dylib",
-        "/Users/dan/workspace/kssh2/core/build/bin/macosX64/kssh2DebugShared/libkssh2.dylib",
+      /*
+            listOf(
+              "/usr/local/opt/openssl@3/lib/libssl.3.dylib",
+              "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib",
+              "/usr/local/opt/libssh2/lib/libssh2.1.dylib",
+              "/Users/dan/workspace/kssh2/core/build/bin/macosX64/kssh2DebugShared/libkssh2.dylib",
 
-      ).forEach {
-        log.debug { "loading $it" }
-        System.load(it)
-      }*/
+            ).forEach {
+              log.debug { "loading $it" }
+              System.load(it)
+            }*/
 
       log.debug { "JNISupport: loading ssh2 library.." }
       System.loadLibrary("ssh2")
       log.debug { "JNISupport: loading kssh2 library.." }
       System.loadLibrary("kssh2")
       log.debug { "JNISupport: kssh2 library loaded" }
+      log.info { "calling testJNI()" }
+      testJNI()
     } catch (e: UnsatisfiedLinkError) {
       log.error(e) { "Failed to load library" }
       throw e
     }
   }
+
+  @JvmStatic
+  external fun testJNI()
 
   @JvmStatic
   actual external fun initLib()
