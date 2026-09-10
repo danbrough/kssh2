@@ -7,10 +7,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-  // this is necessary to avoid the plugins to be loaded multiple times
-  // in each subproject's classloader
-  //alias(libs.plugins.androidApplication) apply false
-  //alias(libs.plugins.androidLibrary) apply false
   alias(libs.plugins.compose.hotreload) apply false
   alias(libs.plugins.compose.multiplatform) apply false
   alias(libs.plugins.compose.compiler) apply false
@@ -18,13 +14,8 @@ plugins {
   alias(libs.plugins.kmp.android.library) apply false
   alias(libs.plugins.android.library) apply false
   alias(libs.plugins.android.application) apply false
-  //alias(libs.plugins.android.kotlin.multiplatform.library) apply false
   alias(libs.plugins.dokka)
-  alias(libs.plugins.androidx.room) apply false
-  //alias(libs.plugins.kotlin.android) apply false
   alias(libs.plugins.shadow) apply false
-  alias(libs.plugins.ksp) apply false
-  alias(libs.plugins.koin) apply false
 }
 
 group = project.property("project.group").toString()
