@@ -14,9 +14,11 @@ actual object LibSSH2 {
     try {
 
       listOf(
-        "/usr/local/opt/libssh2/lib/libssh2.1.dylib",
         "/usr/local/opt/openssl@3/lib/libssl.3.dylib",
-        "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib"
+        "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib",
+        "/usr/local/opt/libssh2/lib/libssh2.1.dylib",
+        "/Users/dan/workspace/kssh2/core/build/bin/macosX64/kssh2DebugShared/libkssh2.dylib",
+
       ).forEach {
         log.debug { "loading $it" }
         System.load(it)

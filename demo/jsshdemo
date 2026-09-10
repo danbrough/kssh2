@@ -30,7 +30,7 @@ echo target is $TARGET libs: $LIBS
   #export DYLD_LIBRARY_PATH=$LIBS
 #fi
 
-ARGS="-Djava.library.path=$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared"
+ARGS="-Djava.library.path=$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared:/usr/lib:/usr/local/lib"
 
 
 TMPFILE=`mktemp`
