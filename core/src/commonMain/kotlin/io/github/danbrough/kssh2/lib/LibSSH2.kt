@@ -16,7 +16,7 @@ private const val LIBSSH2_CHANNEL_PACKET_DEFAULT = 32768
 
 expect object LibSSH2 {
 
-  fun testJNI()
+  fun initJNI()
 
   fun initLib()
   fun closeLib()

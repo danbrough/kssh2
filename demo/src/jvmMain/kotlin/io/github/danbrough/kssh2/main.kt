@@ -35,7 +35,7 @@ fun main(args: Array<String>) {
       println("Today is ${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())}")
     },
     basicCommand("jniTest", "Tests that the JNI library works") {
-      LibSSH2.testJNI()
+      LibSSH2.initJNI()
     },
   )
 

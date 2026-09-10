@@ -31,8 +31,8 @@ fun ssh2TestJNI(env: CPointer<JNIEnvVar>, clz: jclass) {
  * Under the hood, JNI passes 'env' (JNIEnv*) and 'clazz' (jclass) as the first two parameters.
  */
 @Suppress("FunctionName")
-@CName("Java_io_github_danbrough_kssh2_lib_LibSSH2_testJNI")
-fun testJNI(env: CPointer<JNIEnvVar>, clz: jclass) {
+@CName("Java_io_github_danbrough_kssh2_lib_LibSSH2_initJNI")
+fun initJNI(env: CPointer<JNIEnvVar>, clz: jclass) {
   println("Hello from Kotlin/Native via JNI")
 }
 

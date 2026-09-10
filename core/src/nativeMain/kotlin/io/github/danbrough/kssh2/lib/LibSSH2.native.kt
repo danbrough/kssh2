@@ -47,7 +47,7 @@ import kotlinx.coroutines.flow.flow
 
 actual object LibSSH2 {
 
-  actual fun testJNI(){}
+  actual fun initJNI(){}
 
   actual fun initLib() {
     kssh2_init(0).also {
