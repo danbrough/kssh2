@@ -127,8 +127,10 @@ kotlin {
 
     binaries {
       sharedLib("kssh2") {
-        freeCompilerArgs = freeCompilerArgs + "-Xexport-every-declaration=true"
-
+        freeCompilerArgs = freeCompilerArgs + listOf(
+          "-Xexport-every-declaration=true",
+          "-include-binary", "initJniBridge"
+        )
         /*if (target.konanTarget.family.isAppleFamily) {
           freeCompilerArgs += listOf("-Xexport-every-declaration=true")
         }*/

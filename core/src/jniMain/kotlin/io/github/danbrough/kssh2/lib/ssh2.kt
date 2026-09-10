@@ -14,6 +14,11 @@ val log = logger("SSH2_JNI")
 
 const val JNI_PREFIX = "Java_io_github_danbrough_kssh2_lib_LibSSH2"
 
+@CName("initJniBridge")
+fun initJniBridge() {
+    // Leave empty. This tells the compiler the file is a global runtime root.
+}
+
 
 /*@CName("Java_io_github_danbrough_kssh2_lib_LibSSH2_testJNI")
 fun ssh2TestJNI(env: CPointer<JNIEnvVar>, clz: jclass) {
