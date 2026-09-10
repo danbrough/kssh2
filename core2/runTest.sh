@@ -6,7 +6,8 @@
 export KLOG_COLOR KLOG_LEVEL
 DIR="$(pwd)"
 cd `dirname "$0"`
-MODULE=""$(pwd)"
+MODULE="${PWD##*/}"
+
 cd ..
 ROOTDIR="$(pwd)"
 
@@ -25,9 +26,9 @@ fi
 
 ./gradlew :$MODULE:linkThangDebugShared$TARGET :$MODULE:shadowJar
 
-LIB_PATH="$(realpath test/build/bin/$TARGET/thangDebugShared/)"
+LIB_PATH="$(realpath $MODULE/build/bin/$TARGET/thangDebugShared/)"
 
 VERSION="$(cat gradle.properties  | grep version | sed  -e 's|project.version=||g')"
-exec java --enable-native-access=ALL-UNNAMED -Djava.library.path=$LIB_PATH -jar test/build/libs/test-$VERSION-all.jar
+exec java --enable-native-access=ALL-UNNAMED -Djava.library.path=$LIB_PATH -jar $MODULE/build/libs/$MODULE-$VERSION-all.jar
 
 
