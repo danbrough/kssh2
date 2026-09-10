@@ -8,6 +8,7 @@ import com.sshtools.common.publickey.SshPublicKeyFileFactory
 import io.github.danbrough.katty.BasicCommandHandler
 import io.github.danbrough.katty.KTerminal
 import io.github.danbrough.katty.basicCommand
+import io.github.danbrough.kssh2.lib.LibSSH2
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -23,10 +24,15 @@ import kotlin.time.Clock
 
 
 fun main(args: Array<String>) {
+  println("LD_LIBRARY_PATH=${System.getenv("LD_LIBRARY_PATH")}")
+  println("DYLD_LIBRARY_PATH=${System.getenv("DYLD_LIBRARY_PATH")}")
   val cmdHandler = BasicCommandHandler()
   cmdHandler.registerCommands(
     basicCommand("date", "prints the date") {
       println("Today is ${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())}")
+    },
+    basicCommand("jniTest", "Tests that the JNI library works") {
+      LibSSH2.testJNI()
     },
   )
 

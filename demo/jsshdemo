@@ -21,14 +21,17 @@ else
   TARGET=${TARGET}Arm64
 fi
 
+LIBS=$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared:/usr/lib:/usr/local/lib
+
 
 
 echo target is $TARGET libs: $LIBS
-#if [ "$OSTYPE" == "linux-gnu" ]; then
-  #export LD_LIBRARY_PATH=$LIBS
-#else
-  #export DYLD_LIBRARY_PATH=$LIBS
-#fi
+if [ "$OSTYPE" == "linux-gnu" ]; then
+  export LD_LIBRARY_PATH=$LIBS
+else
+  export DYLD_LIBRARY_PATH=$LIBS
+fi
+
 
 ARGS="-Djava.library.path=$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared:/usr/lib:/usr/local/lib"
 
@@ -40,6 +43,8 @@ echo jarfile: $JARFILE
 rm $TMPFILE
 echo changing to dir $ROOTDIR
 cd "$ROOTDIR"
+echo LD_LIBRARY_PATH = $LD_LIBRARY_PATH
+echo DYLD_LIBRARY_PATH = $DYLD_LIBRARY_PATH
 exec java $ARGS -jar $JARFILE "$@"
 
 

@@ -27,8 +27,8 @@ fun ssh2TestJNI(env: CPointer<JNIEnvVar>, clz: jclass) {
  */
 @Suppress("FunctionName")
 @CName("Java_io_github_danbrough_kssh2_lib_LibSSH2_testJNI")
-fun testJNI(env: COpaquePointer?, clazz: COpaquePointer?) {
-  println("Hello from Kotlin/Native via JNI on macOS!")
+fun testJNI(env: CPointer<JNIEnvVar>, clz: jclass) {
+  println("Hello from Kotlin/Native via JNI")
 }
 
 @CName("${JNI_PREFIX}_initLib")

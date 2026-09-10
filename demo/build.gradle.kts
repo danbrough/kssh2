@@ -13,9 +13,10 @@ kotlin {
 
   targets.all {
     compilations.all {
+
       compilerOptions.configure {
         // Allows the build to proceed by warning instead of crashing
-        freeCompilerArgs.add("-Xklib-duplicated-unique-name-strategy=allow-all-with-warning")
+        //freeCompilerArgs.add("-Xklib-duplicated-unique-name-strategy=allow-all-with-warning")
       }
     }
   }
