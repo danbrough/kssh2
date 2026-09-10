@@ -1,6 +1,4 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.kotlin.dsl.assign
-import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.konan.target.HostManager
@@ -35,10 +33,18 @@ kotlin {
           compilerOpts("-I${project.file("src/headers/linux")}")
         }
       }
+
+      cinterops.create("ssh2"){
+        packageName("demo.test.ssh2.cinterops")
+//        headers = libssh2.h  libssh2_publickey.h  libssh2_sftp.h
+        val headerNames = listOf("libssh2.h","libssh2_publickey.h","libssh2_sftp.h")
+        headers(headerNames.map { file("/usr/include/$it") })
+        compilerOpts("-I/usr/include","-I/usr/local/include")
+      }
     }
     binaries {
       sharedLib("thang", buildTypes = setOf(NativeBuildType.DEBUG)) {
-        linkerOpts("-L/usr/lib/","-L/usr/local/lib/","-lssh2")
+        linkerOpts("-L/usr/lib/", "-L/usr/local/lib/", "-lssh2")
       }
     }
   }

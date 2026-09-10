@@ -8,3 +8,9 @@ import platform.android.jclass
 fun initJNIImpl(env: CPointer<JNIEnvVar>, clz: jclass) {
   println("JNI WORKS!!")
 }
+
+
+@CName("Java_demo_test_lib_LibSSH2_initLib")
+fun ssh2InitLib(env: CPointer<JNIEnvVar>, clz: jclass) {
+  println("Initializing libssh2 ..")
+}

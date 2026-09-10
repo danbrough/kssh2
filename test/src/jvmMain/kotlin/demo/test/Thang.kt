@@ -1,5 +1,7 @@
 package demo.test
 
+import demo.test.lib.LibSSH2
+
 class Thang {
   companion object {
     @JvmStatic
@@ -13,6 +15,8 @@ class Thang {
       System.loadLibrary("thang")
       println("calling initJNI..")
       initJNI()
+      println("LibSSH2.initLib()")
+      LibSSH2.initLib()
     }
   }
 }
