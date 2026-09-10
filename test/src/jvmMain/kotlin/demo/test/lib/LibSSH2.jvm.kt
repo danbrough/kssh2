@@ -6,6 +6,5 @@ actual object LibSSH2 {
 
   @JvmStatic
   actual external fun closeLib()
-
-
 }
+
