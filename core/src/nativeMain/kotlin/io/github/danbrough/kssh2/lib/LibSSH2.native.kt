@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.flow
 actual object LibSSH2 {
 
   actual fun testJNI(){}
-  
+
   actual fun initLib() {
     kssh2_init(0).also {
       logNative.debug { "LibSSH2Native::initLib() kssh2_init() returned: $it" }

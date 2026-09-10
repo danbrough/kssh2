@@ -2,6 +2,7 @@
 
 package io.github.danbrough.kssh2.lib
 
+import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.CPointer
 import org.danbrough.klog.logger
 import platform.android.JNIEnvVar
@@ -14,9 +15,19 @@ val log = logger("SSH2_JNI")
 const val JNI_PREFIX = "Java_io_github_danbrough_kssh2_lib_LibSSH2"
 
 
-@CName("Java_io_github_danbrough_kssh2_lib_LibSSH2_testJNI")
+/*@CName("Java_io_github_danbrough_kssh2_lib_LibSSH2_testJNI")
 fun ssh2TestJNI(env: CPointer<JNIEnvVar>, clz: jclass) {
   log.info { "testJNI worked!" }
+}
+*/
+/**
+ * The JNI-exported function.
+ * Java expects the naming convention: Java_package_name_ClassName_methodName
+ * Under the hood, JNI passes 'env' (JNIEnv*) and 'clazz' (jclass) as the first two parameters.
+ */
+@CName("Java_io_github_danbrough_kssh2_lib_LibSSH2_testJNI")
+fun platform_testJNI(env: COpaquePointer?, clazz: COpaquePointer?) {
+  println("Hello from Kotlin/Native via JNI on macOS!")
 }
 
 @CName("${JNI_PREFIX}_initLib")
