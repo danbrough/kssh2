@@ -32,8 +32,8 @@ else
   export DYLD_LIBRARY_PATH=$LIBS
 fi
 
-#ARGS="-Djava.library.path=$LIBS"
-ARGS=""
+ARGS="-Djava.library.path=$LIBS"
+
 
 TMPFILE=`mktemp`
 (./gradlew --console=plain :core:linkKssh2DebugShared$TARGET :demo:getShadowJar || exit 1) | tee $TMPFILE
