@@ -38,7 +38,7 @@ actual object LibSSH2 {
   }
 
   @JvmStatic
-  external fun testJNI()
+  actual external fun testJNI()
 
   @JvmStatic
   actual external fun initLib()
