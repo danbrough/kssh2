@@ -127,13 +127,26 @@ kotlin {
 
     binaries {
       sharedLib("kssh2") {
-        freeCompilerArgs = freeCompilerArgs + listOf(
-          "-Xexport-every-declaration=true",
-          "-include-binary", "initJniBridge"
-        )
-        /*if (target.konanTarget.family.isAppleFamily) {
-          freeCompilerArgs += listOf("-Xexport-every-declaration=true")
-        }*/
+        //exportedSymbols("Java_io_github_danbrough_kssh2_lib_LibSSH2_initJNI")
+
+        val isMac = target.konanTarget.family.isAppleFamily
+
+        if (isMac) {
+          // macOS linker option to keep a specific global symbol name
+          freeCompilerArgs += "-linker-options"
+          freeCompilerArgs+= "-exported_symbol"
+          freeCompilerArgs+= "-linker-options"
+          freeCompilerArgs+= "_Java_io_github_danbrough_kssh2_lib_LibSSH2_initJNI"
+          // Note: macOS requires a leading underscore '_' in the linker definition
+        } else {
+          // Linux linker options (GNU ld)
+          freeCompilerArgs+= "-linker-options"
+          freeCompilerArgs+= "--allow-multiple-definition"
+          freeCompilerArgs+= "-linker-options"
+          freeCompilerArgs+= "--export-dynamic"
+        }
+
+
       }
     }
   }
