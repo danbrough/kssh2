@@ -1,7 +1,7 @@
 #!/bin/bash
 
-[ ! -v KLOG_COLOR ] && KLOG_COLOR=1
-[ ! -v KLOG_LEVEL ] && KLOG_LEVEL=TRACE
+[ -z  "$KLOG_COLOR" ] && KLOG_COLOR=1
+[ -z "$KLOG_LEVEL" ] && KLOG_LEVEL=TRACE
 
 export KLOG_COLOR KLOG_LEVEL
 DIR="$(pwd)"
@@ -31,7 +31,3 @@ VERSION="$(cat gradle.properties  | grep version | sed  -e 's|project.version=||
 exec java --enable-native-access=ALL-UNNAMED -Djava.library.path=$LIB_PATH -jar test/build/libs/test-$VERSION-all.jar
 
 
-
-
-
-cat gradle.properties  | grep version | sed  -e 's|project.version=||g'
