@@ -30,9 +30,10 @@ if [ "$OSTYPE" == "linux-gnu" ]; then
   export LD_LIBRARY_PATH=$LIBS
 else
   export DYLD_LIBRARY_PATH=$LIBS
+  export SSH2_LIBS="/usr/local/lib/libssh2.dylib:$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared"
 fi
 
-export SSH2_LIBS="/usr/local/lib/libssh2.dylib:$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared"
+
 
 ARGS="-Djava.library.path=$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared:/usr/lib:/usr/local/lib"
 
