@@ -40,11 +40,11 @@ actual object LibSSH2 {
 
 
 
-      log.debug { "JNISupport: loading ssh2 library.." }
+/*      log.debug { "JNISupport: loading ssh2 library.." }
       System.loadLibrary("ssh2")
       log.debug { "JNISupport: loading kssh2 library.." }
       System.loadLibrary("kssh2")
-      log.debug { "JNISupport: kssh2 library loaded" }
+      log.debug { "JNISupport: kssh2 library loaded" }*/
 
     } catch (e: UnsatisfiedLinkError) {
       log.error(e) { "Failed to load library" }
