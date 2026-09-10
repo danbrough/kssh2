@@ -5,12 +5,23 @@ import kotlinx.coroutines.flow.flow
 import org.danbrough.klog.logger
 import java.nio.ByteBuffer
 
+@Suppress("UnsafeDynamicallyLoadedCode")
 actual object LibSSH2 {
 
   val log = logger("SSH2")
 
   init {
     try {
+
+      listOf(
+        "/usr/local/opt/libssh2/lib/libssh2.1.dylib",
+        "/usr/local/opt/openssl@3/lib/libssl.3.dylib",
+        "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib"
+      ).forEach {
+        log.debug { "loading $it" }
+        System.load(it)
+      }
+
       log.debug { "JNISupport: loading ssh2 library.." }
       System.loadLibrary("ssh2")
       log.debug { "JNISupport: loading kssh2 library.." }
@@ -80,7 +91,7 @@ actual object LibSSH2 {
     ): Int
 
     private external fun getErrorJNI(session: SessionPtr): String?
-    actual  fun getError(session: SessionPtr): String = getErrorJNI(session) ?: "Unknown Error"
+    actual fun getError(session: SessionPtr): String = getErrorJNI(session) ?: "Unknown Error"
 
   }
 
