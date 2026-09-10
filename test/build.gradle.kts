@@ -1,6 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
+import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.HostManager
 
 plugins {
@@ -40,7 +41,7 @@ kotlin {
         val headerNames = listOf("libssh2.h", "libssh2_publickey.h", "libssh2_sftp.h")
         if (konanTarget.family.isAppleFamily) {
           headers(headerNames.map { file("/usr/local/include/$it") })
-        } else {
+        } else if (konanTarget.family == Family.LINUX){
           headers(headerNames.map { file("/usr/include/$it") })
         }
         compilerOpts("-I/usr/include", "-I/usr/local/include")
