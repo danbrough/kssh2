@@ -11,6 +11,8 @@ plugins {
 
 
 kotlin {
+  applyDefaultHierarchyTemplate()
+
   jvm()
   if (HostManager.hostIsLinux) {
     linuxX64()
@@ -28,6 +30,15 @@ kotlin {
         )
       }
     }
+
+    val jvmAndroidMain = create("jvmAndroidMain") {
+      dependsOn(commonMain.get())
+    }
+
+    jvmMain{
+      dependsOn(jvmAndroidMain)
+    }
+
   }
   targets.withType<KotlinNativeTarget>().configureEach {
     compilations["main"].apply {

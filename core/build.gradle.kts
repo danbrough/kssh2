@@ -101,6 +101,10 @@ kotlin {
     linuxMain {
       dependsOn(jniMain)
     }
+
+    macosMain{
+      dependsOn(jniMain)
+    }
   }
 
 
