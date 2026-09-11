@@ -74,3 +74,26 @@ val authTestPublicKey =
       }
     }
   }
+
+
+val authTestAgent =
+  basicCommand("authTestAgent", "Tests agent authentication") { args ->
+
+    parseArgs(args)?.also { config ->
+      println("config: $config")
+      ssh {
+        session {
+          demoLog.debug { "session scope started" }
+          connect(config.host, config.port.toInt()).successOrThrow()
+          demoLog.debug { "connected to ${config.host}:${config.port}" }
+
+          authenticateWithAgent(config.user).onSuccess {
+            demoLog.info { "authenticated" }
+            runTestCommand()
+          }.onFailure {
+            demoLog.error { "authentication failed: $this" }
+          }
+        }
+      }
+    }
+  }

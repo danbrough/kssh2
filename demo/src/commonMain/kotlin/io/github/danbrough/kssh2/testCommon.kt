@@ -27,6 +27,7 @@ suspend fun commonMain(cmdHandler: BasicCommandHandler, args: Array<String>) {
     basicCommand("ssh2Test", "Runs some tests in LibSSH2", KTerminal::ssh2Test),
     authTestPassword,
     authTestPublicKey,
+    authTestAgent,
     basicCommand("configTest", "Prints the config") { args ->
       println("configTest()")
       parseArgs(args)?.also {
