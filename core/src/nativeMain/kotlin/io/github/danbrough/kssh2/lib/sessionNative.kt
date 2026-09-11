@@ -1,6 +1,5 @@
 package io.github.danbrough.kssh2.lib
 
-import io.github.danbrough.kssh2.lib.LibSSH2.Session.waitSocket
 import io.github.danbrough.kssh2.logNative
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_ERROR_EAGAIN
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_TERM_HEIGHT
@@ -66,7 +65,7 @@ fun nativeSessionRead(
           // Non-blocking catch: Yield control back to the coroutine dispatcher
           // instead of freezing the OS thread.
           //logNative.trace { "channelRead() libssh2_channel_read_ex() returned LIBSSH2_ERROR_EAGAIN" }
-          waitSocket(session, socketHandle)
+          LibSession.waitSocket(session, socketHandle)
         }
 
         else -> {
@@ -154,7 +153,7 @@ fun nativeSessionAuthenticatePublicKey(
       passphrase
     )
     if (ret == LIBSSH2_ERROR_EAGAIN)
-      waitSocket(sessionPtr, socket)
+      LibSession.waitSocket(sessionPtr, socket)
     else if (ret <= 0) break
   }
   return ret

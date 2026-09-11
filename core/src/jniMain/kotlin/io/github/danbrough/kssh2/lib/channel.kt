@@ -17,7 +17,9 @@ import platform.android.jint
 import platform.android.jlong
 import platform.android.jstring
 
-@CName("${JNI_PREFIX}_00024Channel_channelOpen")
+private const val JNI_PREFIX = "${JNI_PREFIX_PACKAGE}_LibChannel"
+
+@CName("${JNI_PREFIX}_channelOpen")
 fun ssh2ChannelOpen(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
@@ -55,7 +57,7 @@ fun ssh2ChannelOpen(
   return result
 }
 
-@CName("${JNI_PREFIX}_00024Channel_requestPty")
+@CName("${JNI_PREFIX}_requestPty")
 fun ssh2ChannelRequestPty(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
@@ -73,7 +75,7 @@ fun ssh2ChannelRequestPty(
 }
 
 //    actual external fun processStartup(sessionPtr: SessionPtr,socketHandle: SocketHandle,channel: ChannelPtr, request: String, message: String): Long
-@CName("${JNI_PREFIX}_00024Channel_processStartup")
+@CName("${JNI_PREFIX}_processStartup")
 fun ssh2ChannelProcessStartup(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
@@ -101,7 +103,7 @@ fun ssh2ChannelProcessStartup(
   return ret.convert()
 }
 
-@CName("${JNI_PREFIX}_00024Channel_write")
+@CName("${JNI_PREFIX}_write")
 fun ssh2ChannelWrite(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
@@ -118,7 +120,7 @@ fun ssh2ChannelWrite(
   return ret
 }
 
-@CName("${JNI_PREFIX}_00024Channel_close")
+@CName("${JNI_PREFIX}_close")
 fun ssh2ChannelClose(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
@@ -135,7 +137,7 @@ fun ssh2ChannelClose(
       buffer: ByteArray,
     ): Int
  */
-@CName("${JNI_PREFIX}_00024Channel_read")
+@CName("${JNI_PREFIX}_read")
 fun ssh2ChannelRead(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
@@ -163,7 +165,7 @@ fun ssh2ChannelRead(
     )
 
     if (result == LIBSSH2_ERROR_EAGAIN.toLong()) {
-      LibSSH2.Session.waitSocket(sessionPtr, socketHandle)
+      LibSession.waitSocket(sessionPtr, socketHandle)
       continue
     }
 

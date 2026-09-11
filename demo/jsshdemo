@@ -40,9 +40,9 @@ fi
 ARGS="--enable-native-access=ALL-UNNAMED -Djava.library.path=$(realpath .)/core/build/bin/$TARGET/kssh2DebugShared:/usr/lib:/usr/local/lib"
 
 export MESSAGE="This is my message at `date`"
-
+set -o pipefail
 TMPFILE=`mktemp`
-(./gradlew --console=plain :core:linkKssh2DebugShared$TARGET :demo:getShadowJar || exit 1) | tee $TMPFILE
+ ( ./gradlew --console=plain :core:linkKssh2DebugShared$TARGET :demo:getShadowJar | tee $TMPFILE ) || exit 1
 JARFILE=`cat $TMPFILE | awk '/shadowJar:/  {print $2}'`
 echo jarfile: $JARFILE
 rm $TMPFILE

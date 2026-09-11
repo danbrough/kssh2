@@ -30,6 +30,7 @@ agp = "9.4.0"
 ##⬆= "9.5.0-alpha02"
 ##⬆= "9.5.0-alpha03"
 ##⬆= "9.5.0-alpha04"
+##⬆= "9.5.0-alpha05"
 
 android-compileSdk = "37"
 android-minSdk = "26"

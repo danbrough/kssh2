@@ -21,41 +21,42 @@ import platform.android.jint
 import platform.android.jlong
 import platform.android.jstring
 
+private const val JNI_PREFIX = "${JNI_PREFIX_PACKAGE}_LibSession"
 
-@CName("${JNI_PREFIX}_00024Session_createSession")
+@CName("${JNI_PREFIX}_createSession")
 fun ssh2CreateSession(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
   blocking: jboolean
-): jlong = LibSSH2.Session.createSession(blocking.toInt() == JNI_TRUE)
+): jlong = LibSession.createSession(blocking.toInt() == JNI_TRUE)
 
 
-@CName("${JNI_PREFIX}_00024Session_close")
+@CName("${JNI_PREFIX}_close")
 fun ssh2SessionClose(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
   ptr: jlong
-) = LibSSH2.Session.close(ptr)
+) = LibSession.close(ptr)
 
-@CName("${JNI_PREFIX}_00024Session_sessionHandshake")
+@CName("${JNI_PREFIX}_sessionHandshake")
 fun ssh2SessionHandshake(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
   ptrSession: jlong,
   ptrSocket: jlong,
-) = LibSSH2.Session.sessionHandshake(ptrSession, ptrSocket)
+) = LibSession.sessionHandshake(ptrSession, ptrSocket)
 
 
-@CName("${JNI_PREFIX}_00024Session_waitSocket")
+@CName("${JNI_PREFIX}_waitSocket")
 fun ssh2SessionWaitsocket(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
   ptrSession: jlong,
   ptrSocket: jlong,
-): jlong = LibSSH2.Session.waitSocket(ptrSession, ptrSocket)
+): jlong = LibSession.waitSocket(ptrSession, ptrSocket)
 
 
-@CName("${JNI_PREFIX}_00024Session_authenticateWithAgent")
+@CName("${JNI_PREFIX}_authenticateWithAgent")
 fun ssh2SessionAuthenticateWithAgent(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
@@ -66,7 +67,7 @@ fun ssh2SessionAuthenticateWithAgent(
   val envPtr = env.pointed.pointed!!
   val remoteUserPtr = envPtr.GetStringUTFChars!!(env, remoteUser, null)
   val remoteUserString = remoteUserPtr?.toKString() ?: ""
-  val result = LibSSH2.Session.authenticateWithAgent(session, socket, remoteUserString)
+  val result = LibSession.authenticateWithAgent(session, socket, remoteUserString)
   envPtr.ReleaseStringUTFChars!!(env, remoteUser, remoteUserPtr)
   return result
 }
@@ -74,7 +75,7 @@ fun ssh2SessionAuthenticateWithAgent(
 
 
 
-@CName("${JNI_PREFIX}_00024Session_authenticatePassword")
+@CName("${JNI_PREFIX}_authenticatePassword")
 fun ssh2SessionAuthenticateWithPassword(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
@@ -85,13 +86,13 @@ fun ssh2SessionAuthenticateWithPassword(
 ): jint = env.jniEnv {
   jString(remoteUser) { user ->
     jString(password) { password ->
-      LibSSH2.Session.authenticatePassword(session, socket, user!!, password!!)
+      LibSession.authenticatePassword(session, socket, user!!, password!!)
     }
   }
 }
 
 
-@CName("${JNI_PREFIX}_00024Session_getErrorJNI")
+@CName("${JNI_PREFIX}_getErrorJNI")
 fun getSessionError(
   env: CPointer<JNIEnvVar>,
   clz: jclass,
@@ -116,7 +117,7 @@ fun getSessionError(
   return newStringUTF(env, nativeMessage)
 }
 
-@CName("${JNI_PREFIX}_00024Session_authenticatePublicKey")
+@CName("${JNI_PREFIX}_authenticatePublicKey")
 fun sessionAuthenticatePublicKey(
   env: CPointer<JNIEnvVar>,
   clz: jclass,
@@ -133,7 +134,7 @@ fun sessionAuthenticatePublicKey(
     privateKeyData,
     password
   ) { user, publicKeyData, privateKeyData, password ->
-    LibSSH2.Session.authenticatePublicKey(
+    LibSession.authenticatePublicKey(
       sessionPtrValue,
       socket,
       user,

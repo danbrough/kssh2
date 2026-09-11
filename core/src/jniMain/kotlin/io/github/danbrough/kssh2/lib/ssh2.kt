@@ -65,7 +65,8 @@ fun jniOnLoad(vm: CPointer<JavaVMVar>, reserved: CPointer<out Any>?): jint {
   return JNI_VERSION_1_6
 }*/
 
-const val JNI_PREFIX = "Java_io_github_danbrough_kssh2_lib_LibSSH2"
+const val JNI_PREFIX_PACKAGE = "Java_io_github_danbrough_kssh2_lib"
+private const val JNI_PREFIX = "${JNI_PREFIX_PACKAGE}_LibSSH2"
 
 @CName("initJniBridge")
 fun initJniBridge() {

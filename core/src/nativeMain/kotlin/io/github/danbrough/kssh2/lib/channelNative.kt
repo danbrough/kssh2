@@ -1,6 +1,5 @@
 package io.github.danbrough.kssh2.lib
 
-import io.github.danbrough.kssh2.lib.LibSSH2.Session.waitSocket
 import io.github.danbrough.kssh2.logNative
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_CHANNEL
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_ERROR_EAGAIN
@@ -28,7 +27,7 @@ libssh2_channel_open_ex(LIBSSH2_SESSION *session, const char *channel_type,
 LIBSSH2_CHANNEL *
 libssh2_channel_open_session(session);
 */
- fun nativeChannelOpen(
+fun nativeChannelOpen(
   session: SessionPtr,
   socket: SocketHandle,
   channelType: String,
@@ -57,7 +56,7 @@ libssh2_channel_open_session(session);
     rc = libssh2_session_last_errno(session.toCPointer())
     logNative.trace { "channelOpen() libssh2_channel_open_ex() rc = $rc" }
     if (rc != LIBSSH2_ERROR_EAGAIN) break
-    waitSocket(session, socket)
+    LibSession.waitSocket(session, socket)
   }
 
   if (channel == null) error("libssh2_channel_open_ex(channelType=$channelType) -> $rc")

@@ -10,8 +10,10 @@ import platform.android.jint
 import platform.android.jlong
 import platform.android.jstring
 
+private const val JNI_PREFIX = "${JNI_PREFIX_PACKAGE}_LibSocket"
 
-@CName("${JNI_PREFIX}_00024Socket_connect")
+
+@CName("${JNI_PREFIX}_connect")
 fun ssh2SocketConnect(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
@@ -27,7 +29,7 @@ fun ssh2SocketConnect(
   //log.trace { "ssh2SocketConnect(): hostName:$hostNameString port:$port" }
 
   // Call the actual native implementation
-  val result = LibSSH2.Socket.connect(hostNameString, port)
+  val result = LibSocket.connect(hostNameString, port)
 
   // Clean up
   envPtr.ReleaseStringUTFChars!!(env, hostName, hostNamePtr)
@@ -35,9 +37,9 @@ fun ssh2SocketConnect(
   return result
 }
 
-@CName("${JNI_PREFIX}_00024Socket_close")
+@CName("${JNI_PREFIX}_close")
 fun ssh2SocketClose(
   env: CPointer<JNIEnvVar>,
   clazz: jclass,
   socket: jlong
-) = LibSSH2.Socket.close(socket)
+) = LibSocket.close(socket)
