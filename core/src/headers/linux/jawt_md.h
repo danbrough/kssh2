@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1999, 2001, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,42 +23,38 @@
  * questions.
  */
 
-#ifndef _JAVASOFT_JNI_MD_H_
-#define _JAVASOFT_JNI_MD_H_
+#ifndef _JAVASOFT_JAWT_MD_H_
+#define _JAVASOFT_JAWT_MD_H_
 
-#ifndef __has_attribute
-  #define __has_attribute(x) 0
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include "jawt.h"
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-#ifndef JNIEXPORT
-  #if (defined(__GNUC__) && ((__GNUC__ > 4) || (__GNUC__ == 4) && (__GNUC_MINOR__ > 2))) || __has_attribute(visibility)
-    #ifdef ARM
-      #define JNIEXPORT     __attribute__((externally_visible,visibility("default")))
-    #else
-      #define JNIEXPORT     __attribute__((visibility("default")))
-    #endif
-  #else
-    #define JNIEXPORT
-  #endif
+/*
+ * X11-specific declarations for AWT native interface.
+ * See notes in jawt.h for an example of use.
+ */
+typedef struct jawt_X11DrawingSurfaceInfo {
+    Drawable drawable;
+    Display* display;
+    VisualID visualID;
+    Colormap colormapID;
+    int depth;
+    /*
+     * Since 1.4
+     * Returns a pixel value from a set of RGB values.
+     * This is useful for paletted color (256 color) modes.
+     */
+    int (JNICALL *GetAWTColor)(JAWT_DrawingSurface* ds,
+        int r, int g, int b);
+} JAWT_X11DrawingSurfaceInfo;
+
+#ifdef __cplusplus
+}
 #endif
 
-#if (defined(__GNUC__) && ((__GNUC__ > 4) || (__GNUC__ == 4) && (__GNUC_MINOR__ > 2))) || __has_attribute(visibility)
-  #ifdef ARM
-    #define JNIIMPORT     __attribute__((externally_visible,visibility("default")))
-  #else
-    #define JNIIMPORT     __attribute__((visibility("default")))
-  #endif
-#else
-  #define JNIIMPORT
-#endif
-
-typedef int jint;
-#ifdef _LP64
-typedef long jlong;
-#else
-typedef long long jlong;
-#endif
-
-typedef signed char jbyte;
-
-#endif /* !_JAVASOFT_JNI_MD_H_ */
+#endif /* !_JAVASOFT_JAWT_MD_H_ */
