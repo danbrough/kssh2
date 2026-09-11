@@ -37,6 +37,7 @@ import kotlinx.cinterop.value
 actual object LibSession {
   actual fun createSession(blocking: Boolean): SessionPtr {
     logNative.trace { "LibSSH2Native::Session::createSession(blocking=$blocking)" }
+
     val session: CPointer<LIBSSH2_SESSION> =
       libssh2_session_init_ex(null, null, null, null)
         ?: return 0

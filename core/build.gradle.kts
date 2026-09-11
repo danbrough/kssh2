@@ -102,7 +102,7 @@ kotlin {
       dependsOn(jniMain)
     }
 
-    macosMain{
+    macosMain {
       dependsOn(jniMain)
     }
   }
@@ -113,13 +113,23 @@ kotlin {
     compilations["main"].apply {
 
       cinterops.create("ssh2Interop") {
-        definitionFile = project.file("src/cinterop/libssh2.def")
-        packageName = "${project.group}.libssh2.cinterop"
+        defFile(project.file("src/cinterop/ssh2.def"))
+        packageName("${project.group}.libssh2.cinterop")
+        //includeDirs("./src/cinterops", "./src/headers")
+        if (konanTarget.family == Family.LINUX) {
+          //includeDirs("./src/cinterops", "/usr/include")
+          //compilerOpts("-I./src/cinterops")
+          //linkerOpts("-L/usr/lib")
+        }
+        else
+          includeDirs("./src/cinterops", "./src/headers", "./src/headers/darwin")
       }
 
       if (konanTarget.family != Family.ANDROID)
         cinterops.create("jni") {
-          //definitionFile = project.file("src/cinterop/jni.def")
+          /**
+           * Create the JNI interops in package platform.android so that we can use platform.android for all targets
+           */
           packageName("platform.android")
           header("./src/headers/jni.h")
           if (konanTarget.family == Family.LINUX)
@@ -131,8 +141,7 @@ kotlin {
 
     binaries {
       sharedLib("kssh2") {
-
-
+        //linkerOpts("-L/usr/lib/", "-L/usr/local/lib/", "-lssh2")
       }
     }
   }

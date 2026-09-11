@@ -1,0 +1,73 @@
+
+headers = libssh2.h  libssh2_publickey.h  libssh2_sftp.h
+#headerFilter = libssh2*
+
+#compilerOpts = -I./src/cinterop -fPIC
+compilerOpts.linux = -I/usr/include -I./src/cinterop
+
+# 1. Instruct Kotlin/Native to pull in the static archive
+staticLibraries = libcrypto.a libssl.a libssh2.a
+
+# 2. Tell the compiler where to look for your static files per platform
+#libraryPaths.linux = /usr/lib/x86_64-linux-gnu /usr/local/lib
+libraryPaths.linux_x64 =  /files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/ /files/cache/xtras/lib/ssh2_linuxX64_libssh2-1.11.1/lib/ /usr/lib
+libraryPaths.osx = /opt/homebrew/opt/libssh2/lib /usr/local/opt/libssh2/lib
+
+# 3. CRUCIAL: Link transitive dependencies
+# libssh2 requires a crypto backend (usually OpenSSL via libssl and libcrypto)
+# as well as system libraries like zlib (-lz).
+linkerOpts.osx = -lssl -lcrypto -lz
+linkerOpts.linux = -lz -lpthread -ldl -L/files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/ -L/files/cache/xtras/lib/ssh2_linuxX64_libssh2-1.11.1/lib/
+#linkerOpts.linux =  -lz -lpthread -ldl
+
+
+
+libraryPaths.android_x64 = /files/cache/xtras/lib/openssl_androidX64_3.6.3/lib/ /files/workspace/xtras/libs/ssh2/libs/libssh2/x86_64/lib
+libraryPaths.android_arm64 = /files/cache/xtras/lib/openssl_androidArm64_3.6.3/lib/ /files/workspace/xtras/libs/ssh2/libs/libssh2/arm64-v8a/lib
+linkerOpts.android = -lssl -lcrypto -lz -lpthread -ldl
+compilerOpts.android_x64 = -I/files/workspace/kssh2/app/libs/x86_64/
+linkerOpts.android_x64 = -L/files/workspace/kssh2/app/libs/x86_64/ -lssh2
+compilerOpts.android_arm64 = -I/files/workspace/kssh2/app/libs/arm64-v8a/
+linkerOpts.android_arm64 = -L/files/workspace/kssh2/app/libs/arm64-v8a/ -lssh2
+
+
+---
+
+#include <libssh2.h>
+#include <stddef.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <sys/types.h>
+
+#ifndef _WIN32
+
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#endif
+
+#include "ssh_sockets.h"
+
+static int kssh2_init(int flags) {
+    int rc = 0;
+#ifdef _WIN32
+    WSADATA wsadata;
+
+    rc = WSAStartup(MAKEWORD(2, 0), &wsadata);
+    if(rc) {
+        fprintf(stderr, "WSAStartup failed with error: %d\n", rc);
+        return 1;
+    }
+#endif
+
+    return libssh2_init(flags);
+}
+
+static int kssh2_exit() {
+    libssh2_exit();
+#ifdef _WIN32
+    WSACleanup();
+#endif
+}
+
