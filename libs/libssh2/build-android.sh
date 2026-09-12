@@ -15,7 +15,7 @@ fi
 [ -d $LIBSSH2_FULL_VERSION ] && rm -rf $LIBSSH2_FULL_VERSION
 tar -xvzf $LIBSSH2_FULL_VERSION.tar.gz
 
-ANDROID_LIB_ROOT=$(realpath .)/libs/android 
+ANDROID_LIB_ROOT=$(realpath .)/libs/android
 rm -rf "${ANDROID_LIB_ROOT:?}/*"
 
 cd $LIBSSH2_FULL_VERSION
