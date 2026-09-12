@@ -10,11 +10,12 @@ actual object LibSSH2 {
   actual val Session: LibSession = LibSession
   actual val Socket: LibSocket = LibSocket
   actual val Channel: LibChannel = LibChannel
+  actual val Agent: LibAgent = LibAgent
 
   init {
     try {
-      log.debug { "JNISupport: loading ssh2 library.." }
-      System.loadLibrary("ssh2")
+      //log.debug { "JNISupport: loading ssh2 library.." }
+      //System.loadLibrary("ssh2")
       log.debug { "JNISupport: loading kssh2 library.." }
       System.loadLibrary("kssh2")
       log.debug { "JNISupport: kssh2 library loaded" }
@@ -38,10 +39,7 @@ actual object LibSSH2 {
   external fun test1()
 
 
-  actual object Agent {
-    @JvmStatic
-    actual external fun close(agent: AgentPtr)
-  }
+
 
 
 }

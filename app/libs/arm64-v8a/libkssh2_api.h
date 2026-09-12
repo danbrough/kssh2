@@ -98,6 +98,9 @@ typedef struct {
 } libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result_Companion;
 typedef struct {
   libkssh2_KNativePtr pinned;
+} libkssh2_kref_io_github_danbrough_kssh2_lib_LibAgent;
+typedef struct {
+  libkssh2_KNativePtr pinned;
 } libkssh2_kref_io_github_danbrough_kssh2_lib_LibChannel;
 typedef struct {
   libkssh2_KNativePtr pinned;
@@ -108,9 +111,6 @@ typedef struct {
 typedef struct {
   libkssh2_KNativePtr pinned;
 } libkssh2_kref_io_github_danbrough_kssh2_lib_LibSocket;
-typedef struct {
-  libkssh2_KNativePtr pinned;
-} libkssh2_kref_io_github_danbrough_kssh2_lib_LibSSH2_Agent;
 typedef struct {
   libkssh2_KNativePtr pinned;
 } libkssh2_kref_io_github_danbrough_kssh2_lib_SshChannelNative;
@@ -151,7 +151,10 @@ typedef struct {
   libkssh2_KNativePtr pinned;
 } libkssh2_kref_kotlin_collections_List;
 
+extern void __assert_fail(void* assertion, void* file, libkssh2_KInt line, void* function);
+extern void explicit_bzero(void* s, libkssh2_KLong n);
 extern void Java_io_github_danbrough_kssh2_AndroidKt_testLog(void* env);
+extern void Java_io_github_danbrough_kssh2_lib_LibAgent_close(void* env, void* clazz, libkssh2_KLong agent);
 extern void Java_io_github_danbrough_kssh2_lib_LibChannel_close(void* env, void* clazz, libkssh2_KLong channel);
 extern libkssh2_KLong Java_io_github_danbrough_kssh2_lib_LibChannel_channelOpen(void* env, void* clazz, libkssh2_KLong session, libkssh2_KLong socket, void* channelType, libkssh2_KInt windowSize, libkssh2_KInt packetSize, void* message);
 extern libkssh2_KLong Java_io_github_danbrough_kssh2_lib_LibChannel_processStartup(void* env, void* clazz, libkssh2_KLong sessionPtr, libkssh2_KLong socketHandle, libkssh2_KLong channelPtr, void* request, void* message);
@@ -171,7 +174,6 @@ extern void Java_io_github_danbrough_kssh2_lib_LibSocket_close(void* env, void* 
 extern libkssh2_KLong Java_io_github_danbrough_kssh2_lib_LibSocket_connect(void* env, void* clazz, void* hostName, libkssh2_KInt port);
 extern void Java_io_github_danbrough_kssh2_lib_LibSSH2_initJNI(void* env, void* clz);
 extern void initJniBridge();
-extern void Java_io_github_danbrough_kssh2_lib_LibSSH2_00024Agent_close(void* env, void* clazz, libkssh2_KLong agent);
 extern void Java_io_github_danbrough_kssh2_lib_LibSSH2_closeLib(void* env, void* clz);
 extern void Java_io_github_danbrough_kssh2_lib_LibSSH2_initLib(void* env, void* clz);
 
@@ -226,6 +228,8 @@ typedef struct {
                 libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result (*requestPty)(libkssh2_kref_io_github_danbrough_kssh2_Channel thiz, const char* terminal);
               } Channel;
               struct {
+                void (*assertFailHook)(void* assertion, void* file, libkssh2_KInt line, void* function);
+                void (*explicitBzeroHook)(void* s, libkssh2_KLong n);
                 void (*testLog)(void* env);
               } jni;
               struct {
@@ -252,6 +256,11 @@ typedef struct {
                 } SSH2Result;
                 struct {
                   libkssh2_KType* (*_type)(void);
+                  libkssh2_kref_io_github_danbrough_kssh2_lib_LibAgent (*_instance)();
+                  void (*close)(libkssh2_kref_io_github_danbrough_kssh2_lib_LibAgent thiz, libkssh2_KLong agent);
+                } LibAgent;
+                struct {
+                  libkssh2_KType* (*_type)(void);
                   libkssh2_kref_io_github_danbrough_kssh2_lib_LibChannel (*_instance)();
                   libkssh2_KLong (*channelOpen)(libkssh2_kref_io_github_danbrough_kssh2_lib_LibChannel thiz, libkssh2_KLong session, libkssh2_KLong socket, const char* channelType, libkssh2_KInt windowSize, libkssh2_KInt packetSize, const char* message);
                   void (*close)(libkssh2_kref_io_github_danbrough_kssh2_lib_LibChannel thiz, libkssh2_KLong channel);
@@ -261,13 +270,9 @@ typedef struct {
                   libkssh2_KLong (*write)(libkssh2_kref_io_github_danbrough_kssh2_lib_LibChannel thiz, libkssh2_KLong channel, const char* data);
                 } LibChannel;
                 struct {
-                  struct {
-                    libkssh2_KType* (*_type)(void);
-                    libkssh2_kref_io_github_danbrough_kssh2_lib_LibSSH2_Agent (*_instance)();
-                    void (*close)(libkssh2_kref_io_github_danbrough_kssh2_lib_LibSSH2_Agent thiz, libkssh2_KLong agent);
-                  } Agent;
                   libkssh2_KType* (*_type)(void);
                   libkssh2_kref_io_github_danbrough_kssh2_lib_LibSSH2 (*_instance)();
+                  libkssh2_kref_io_github_danbrough_kssh2_lib_LibAgent (*get_Agent)(libkssh2_kref_io_github_danbrough_kssh2_lib_LibSSH2 thiz);
                   libkssh2_kref_io_github_danbrough_kssh2_lib_LibChannel (*get_Channel)(libkssh2_kref_io_github_danbrough_kssh2_lib_LibSSH2 thiz);
                   libkssh2_kref_io_github_danbrough_kssh2_lib_LibSession (*get_Session)(libkssh2_kref_io_github_danbrough_kssh2_lib_LibSSH2 thiz);
                   libkssh2_kref_io_github_danbrough_kssh2_lib_LibSocket (*get_Socket)(libkssh2_kref_io_github_danbrough_kssh2_lib_LibSSH2 thiz);
@@ -297,6 +302,7 @@ typedef struct {
                   libkssh2_KType* (*_type)(void);
                   libkssh2_kref_io_github_danbrough_kssh2_lib_SshChannelNative (*SshChannelNative)(void* channelPointer);
                 } SshChannelNative;
+                void (*ssh2AgentClose)(void* env, void* clazz, libkssh2_KLong agent);
                 void (*ssh2ChannelClose)(void* env, void* clazz, libkssh2_KLong channel);
                 libkssh2_KLong (*ssh2ChannelOpen)(void* env, void* clazz, libkssh2_KLong session, libkssh2_KLong socket, void* channelType, libkssh2_KInt windowSize, libkssh2_KInt packetSize, void* message);
                 libkssh2_KLong (*ssh2ChannelProcessStartup)(void* env, void* clazz, libkssh2_KLong sessionPtr, libkssh2_KLong socketHandle, libkssh2_KLong channelPtr, void* request, void* message);
@@ -319,7 +325,6 @@ typedef struct {
                 void (*initJNI)(void* env, void* clz);
                 void (*initJNIImpl)(void* env, void* clz);
                 void (*initJniBridge_)();
-                void (*ssh2AgentClose)(void* env, void* clazz, libkssh2_KLong agent);
                 void (*ssh2Close)(void* env, void* clz);
                 void (*ssh2Init)(void* env, void* clz);
                 libkssh2_KInt (*get_LIBSSH2_CHANNEL_PACKET_DEFAULT)();

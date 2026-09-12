@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.MinSdkVersion
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.compose.compiler)
@@ -8,6 +10,7 @@ android {
   compileSdk {
     version = release(37)
   }
+
   packaging {
     jniLibs {
       useLegacyPackaging = true
@@ -25,7 +28,7 @@ android {
   }*/
 
   defaultConfig {
-    minSdk = 26
+    minSdk = 27
     targetSdk = 37
     versionCode = 1
     versionName = "1.0"

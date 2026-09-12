@@ -13,6 +13,7 @@ import kotlinx.cinterop.pointed
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.staticCFunction
+import kotlinx.cinterop.toKString
 import kotlinx.cinterop.value
 import org.danbrough.klog.logger
 import platform.android.JNIEnvVar
@@ -107,12 +108,7 @@ fun ssh2Close(env: CPointer<JNIEnvVar>, clz: jclass) {
 }
 
 
-@CName("${JNI_PREFIX}_00024Agent_close")
-fun ssh2AgentClose(
-  env: CPointer<JNIEnvVar>,
-  clazz: jclass,
-  agent: jlong
-) = LibSSH2.Agent.close(agent)
+
 
 /*
 actual external fun waitSocket(session: SessionPtr, socket: SocketHandle): Long

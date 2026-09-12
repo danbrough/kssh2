@@ -21,9 +21,7 @@ expect object LibSSH2 {
   val Session: LibSession
   val Socket: LibSocket
   val Channel: LibChannel
+  val Agent: LibAgent
 
 
-  object Agent {
-    fun close(agent: AgentPtr)
-  }
 }

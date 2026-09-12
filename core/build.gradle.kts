@@ -31,7 +31,7 @@ kotlin {
 
   android {
     compileSdk { version = release(37) }
-    minSdk = 19
+    minSdk = 27
     namespace = "io.github.danbrough.kssh2"
 
     packaging {
@@ -115,14 +115,6 @@ kotlin {
       cinterops.create("ssh2Interop") {
         defFile(project.file("src/cinterop/ssh2.def"))
         packageName("${project.group}.libssh2.cinterop")
-        //includeDirs("./src/cinterops", "./src/headers")
-        if (konanTarget.family == Family.LINUX) {
-          //includeDirs("./src/cinterops", "/usr/include")
-          //compilerOpts("-I./src/cinterops")
-          //linkerOpts("-L/usr/lib")
-        }
-        else
-          includeDirs("./src/cinterops", "./src/headers", "./src/headers/darwin")
       }
 
       if (konanTarget.family != Family.ANDROID)
@@ -141,7 +133,6 @@ kotlin {
 
     binaries {
       sharedLib("kssh2") {
-        //linkerOpts("-L/usr/lib/", "-L/usr/local/lib/", "-lssh2")
       }
     }
   }
