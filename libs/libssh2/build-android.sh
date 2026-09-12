@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./build-env.sh
+source ./android-env.sh
 
 set -eux
 
@@ -10,10 +10,13 @@ echo ANDROID_NDK_HOME $ANDROID_NDK_HOME
 
 LIBSSH2_FULL_VERSION="libssh2-1.11.1"
 if [ ! -f "$LIBSSH2_FULL_VERSION.tar.gz" ]; then
-    wget -O https://www.libssh2.org/download/$LIBSSH2_FULL_VERSION.tar.gz
+    wget  https://www.libssh2.org/download/$LIBSSH2_FULL_VERSION.tar.gz
 fi
 [ -d $LIBSSH2_FULL_VERSION ] && rm -rf $LIBSSH2_FULL_VERSION
 tar -xvzf $LIBSSH2_FULL_VERSION.tar.gz
+
+ANDROID_LIB_ROOT=$(realpath .)/libs/android 
+rm -rf "${ANDROID_LIB_ROOT:?}/*"
 
 cd $LIBSSH2_FULL_VERSION
 LIBSSH2_FULL_PATH=$(pwd)
@@ -23,8 +26,7 @@ if [ ! "${ANDROID_NDK_HOME}" ]; then
     exit 1
 fi
 
-ANDROID_LIB_ROOT=$(pwd)/../../libssh2/android
-rm -rf "${ANDROID_LIB_ROOT:?}/*"
+
 
 #for ANDROID_TARGET_PLATFORM in armeabi-v7a arm64-v8a x86 x86_64; do
 for ANDROID_TARGET_PLATFORM in x86_64 arm64-v8a; do
