@@ -1,11 +1,18 @@
-#! /usr/bin/env bash
+#!/bin/bash
+
+source ./build-env.sh
 
 set -eux
 
+echo ANDROID_NDK_HOME $ANDROID_NDK_HOME
+
+
+
 LIBSSH2_FULL_VERSION="libssh2-1.11.1"
 if [ ! -f "$LIBSSH2_FULL_VERSION.tar.gz" ]; then
-    curl -O https://www.libssh2.org/download/$LIBSSH2_FULL_VERSION.tar.gz
+    wget -O https://www.libssh2.org/download/$LIBSSH2_FULL_VERSION.tar.gz
 fi
+[ -d $LIBSSH2_FULL_VERSION ] && rm -rf $LIBSSH2_FULL_VERSION
 tar -xvzf $LIBSSH2_FULL_VERSION.tar.gz
 
 cd $LIBSSH2_FULL_VERSION
@@ -16,15 +23,22 @@ if [ ! "${ANDROID_NDK_HOME}" ]; then
     exit 1
 fi
 
-ANDROID_LIB_ROOT=$(pwd)/../libs/libssh2
+ANDROID_LIB_ROOT=$(pwd)/../../libssh2/android
 rm -rf "${ANDROID_LIB_ROOT:?}/*"
 
 #for ANDROID_TARGET_PLATFORM in armeabi-v7a arm64-v8a x86 x86_64; do
-for ANDROID_TARGET_PLATFORM in arm64-v8a x86_64; do
+for ANDROID_TARGET_PLATFORM in x86_64 arm64-v8a; do
     echo "Building libssh2 for ${ANDROID_TARGET_PLATFORM}"
     mkdir -p "${ANDROID_LIB_ROOT}/${ANDROID_TARGET_PLATFORM}"
 
-    export OPENSSL_ROOT_DIR=/root/libs/openssl-lib/${ANDROID_TARGET_PLATFORM}/
+    #export OPENSSL_ROOT_DIR=/root/libs/openssl-lib/${ANDROID_TARGET_PLATFORM}/
+    if [ $ANDROID_TARGET_PLATFORM == "arm64-v8a" ]; then
+      OPENSSL_ROOT_DIR=/files/cache/xtras/lib/openssl_androidArm64_3.6.3/
+    else
+      OPENSSL_ROOT_DIR=/files/cache/xtras/lib/openssl_androidX64_3.6.3/
+    fi
+    echo "ANDROID_TARGET_PLATFORM: " ${ANDROID_LIB_ROOT}/${ANDROID_TARGET_PLATFORM}
+    #exit 0
 
     cd "$LIBSSH2_FULL_PATH"
     rm -rf "build-${ANDROID_TARGET_PLATFORM}"
