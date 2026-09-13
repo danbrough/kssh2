@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
+
 cd "$(dirname "$0")"
 source ../env-android.sh
 [ -f ../env-android-local.sh ] && source ../env-android-local.sh
 
-set -e
+[ ! -d ../build ] && mkdir -p ../build
+cd ../build
+
+set -eux
 
 # ==============================================================================
 # CONFIGURATION
@@ -28,6 +32,7 @@ esac
 
 TOOLCHAIN_BIN="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/${HOST_TAG}/bin"
 
+
 # Download and extract OpenSSL source if it doesn't exist
 SRC_DIR="openssl-${OPENSSL_VERSION}"
 if [ ! -d "${SRC_DIR}" ]; then
@@ -40,8 +45,7 @@ if [ ! -d "${SRC_DIR}" ]; then
 fi
 
 OUTPUT_DIR="$(realpath ..)/lib/openssl/android"
-rm -rf "${OUTPUT_DIR}"
-mkdir -p "${OUTPUT_DIR}"
+rm -rf "${OUTPUT_DIR}" && mkdir -p "${OUTPUT_DIR}"
 
 # List of targets: OpenSSL_Architecture_Name | NDK_Architecture_Name
 # Format: "OPENSSL_TARGET ARCH_NAME"
@@ -84,7 +88,7 @@ for TARGET in "${TARGETS[@]}"; do
         no-tests no-shared \
         enable-pic \
         --prefix="${OUTPUT_DIR}/${ANDROID_ABI}" \
-        -Wno-macro-redefined
+        -Wno-macro-redefined    -mno-outline-atomics
 
     # Build and install locally inside the prefix folder
     make -j"$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)"

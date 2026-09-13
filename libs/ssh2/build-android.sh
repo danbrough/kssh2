@@ -4,19 +4,25 @@ cd "$(dirname "$0")"
 source ../env-android.sh
 [ -f ../env-android-local.sh ] && source ../env-android-local.sh
 
+[ ! -d ../build ] && mkdir -p ../build
+cd ../build
 
 set -eux
 
 LIBSSH2_FULL_VERSION="libssh2-1.11.1"
+ANDROID_LIB_ROOT=$(realpath ..)/lib/ssh2/android
+OPENSSL_LIB_ROOT="$(realpath ..)/lib/openssl/android"
+
+rm -rf "${ANDROID_LIB_ROOT}"
+
+
 if [ ! -f "$LIBSSH2_FULL_VERSION.tar.gz" ]; then
     wget  https://www.libssh2.org/download/$LIBSSH2_FULL_VERSION.tar.gz
 fi
 [ -d $LIBSSH2_FULL_VERSION ] && rm -rf $LIBSSH2_FULL_VERSION
 tar -xvzf $LIBSSH2_FULL_VERSION.tar.gz
 
-ANDROID_LIB_ROOT=$(realpath ..)/lib/ssh2/android
-rm -rf "${ANDROID_LIB_ROOT}"
-OPENSSL_LIB_ROOT="$(realpath ..)/lib/openssl/android"
+
 
 
 cd $LIBSSH2_FULL_VERSION
