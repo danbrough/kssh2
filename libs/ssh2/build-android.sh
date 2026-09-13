@@ -1,14 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
+cd "$(dirname "$0")"
 source ../env-android.sh
 [ -f ../env-android-local.sh ] && source ../env-android-local.sh
 
 
 set -eux
-
-echo ANDROID_NDK_HOME $ANDROID_NDK_HOME
-
-
 
 LIBSSH2_FULL_VERSION="libssh2-1.11.1"
 if [ ! -f "$LIBSSH2_FULL_VERSION.tar.gz" ]; then
@@ -18,7 +15,8 @@ fi
 tar -xvzf $LIBSSH2_FULL_VERSION.tar.gz
 
 ANDROID_LIB_ROOT=$(realpath ..)/lib/ssh2/android
-rm -rf "${ANDROID_LIB_ROOT:?}/*"
+rm -rf "${ANDROID_LIB_ROOT}"
+
 
 cd $LIBSSH2_FULL_VERSION
 LIBSSH2_FULL_PATH=$(pwd)
@@ -31,18 +29,23 @@ fi
 
 
 #for ANDROID_TARGET_PLATFORM in armeabi-v7a arm64-v8a x86 x86_64; do
-for ANDROID_TARGET_PLATFORM in x86_64 arm64-v8a; do
+for ANDROID_TARGET_PLATFORM in arm64-v8a x86_64; do
+
+    echo
     echo "Building libssh2 for ${ANDROID_TARGET_PLATFORM}"
+    sleep 1
+    export ANDROID_TARGET_PLATFORM
     mkdir -p "${ANDROID_LIB_ROOT}/${ANDROID_TARGET_PLATFORM}"
 
     #export OPENSSL_ROOT_DIR=/root/libs/openssl-lib/${ANDROID_TARGET_PLATFORM}/
     if [ $ANDROID_TARGET_PLATFORM == "arm64-v8a" ]; then
-      OPENSSL_ROOT_DIR=/files/cache/xtras/lib/openssl_androidArm64_3.6.3/
+      OPENSSL_ROOT_DIR="$(realpath ../..)/lib/openssl/android/arm64-v8a"
     else
-      OPENSSL_ROOT_DIR=/files/cache/xtras/lib/openssl_androidX64_3.6.3/
+      OPENSSL_ROOT_DIR="$(realpath ../..)/lib/openssl/android/x86_64"
     fi
     echo "ANDROID_TARGET_PLATFORM: " ${ANDROID_LIB_ROOT}/${ANDROID_TARGET_PLATFORM}
-    #exit 0
+    echo "OPENSSL_ROOT_DIR: $OPENSSL_ROOT_DIR"
+
 
     cd "$LIBSSH2_FULL_PATH"
     rm -rf "build-${ANDROID_TARGET_PLATFORM}"
@@ -67,7 +70,7 @@ for ANDROID_TARGET_PLATFORM in x86_64 arm64-v8a; do
         -DCMAKE_INSTALL_PREFIX=${ANDROID_LIB_ROOT}/${ANDROID_TARGET_PLATFORM} \
         -DBUILD_EXAMPLES=OFF \
         -DBUILD_TESTING=OFF \
-        -DBUILD_SHARED_LIBS=ON
+        -DBUILD_SHARED_LIBS=OFF
 
     if [ $? -ne 0 ]; then
         echo "Error executing cmake"
