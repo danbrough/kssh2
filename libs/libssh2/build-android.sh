@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source ./android-env.sh
+source ../env-android.sh
+[ -f ../env-android-local.sh ] && source ../env-android-local.sh
+
 
 set -eux
 
@@ -15,7 +17,7 @@ fi
 [ -d $LIBSSH2_FULL_VERSION ] && rm -rf $LIBSSH2_FULL_VERSION
 tar -xvzf $LIBSSH2_FULL_VERSION.tar.gz
 
-ANDROID_LIB_ROOT=$(realpath .)/libs/android
+ANDROID_LIB_ROOT=$(realpath ..)/lib/ssh2/android
 rm -rf "${ANDROID_LIB_ROOT:?}/*"
 
 cd $LIBSSH2_FULL_VERSION
