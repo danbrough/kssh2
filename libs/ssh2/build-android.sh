@@ -16,6 +16,7 @@ tar -xvzf $LIBSSH2_FULL_VERSION.tar.gz
 
 ANDROID_LIB_ROOT=$(realpath ..)/lib/ssh2/android
 rm -rf "${ANDROID_LIB_ROOT}"
+OPENSSL_LIB_ROOT="$(realpath ..)/lib/openssl/android"
 
 
 cd $LIBSSH2_FULL_VERSION
@@ -32,17 +33,13 @@ fi
 for ANDROID_TARGET_PLATFORM in arm64-v8a x86_64; do
 
     echo
-    echo "Building libssh2 for ${ANDROID_TARGET_PLATFORM}"
-    sleep 1
+    echo "------------- Building libssh2 for ${ANDROID_TARGET_PLATFORM} ---------------"
     export ANDROID_TARGET_PLATFORM
     mkdir -p "${ANDROID_LIB_ROOT}/${ANDROID_TARGET_PLATFORM}"
 
     #export OPENSSL_ROOT_DIR=/root/libs/openssl-lib/${ANDROID_TARGET_PLATFORM}/
-    if [ $ANDROID_TARGET_PLATFORM == "arm64-v8a" ]; then
-      OPENSSL_ROOT_DIR="$(realpath ../..)/lib/openssl/android/arm64-v8a"
-    else
-      OPENSSL_ROOT_DIR="$(realpath ../..)/lib/openssl/android/x86_64"
-    fi
+    OPENSSL_ROOT_DIR="${OPENSSL_LIB_ROOT}/$ANDROID_TARGET_PLATFORM"
+
     echo "ANDROID_TARGET_PLATFORM: " ${ANDROID_LIB_ROOT}/${ANDROID_TARGET_PLATFORM}
     echo "OPENSSL_ROOT_DIR: $OPENSSL_ROOT_DIR"
 
