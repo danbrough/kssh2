@@ -115,7 +115,6 @@ do_build $OPENSSL_ARCH $ARCH_NAME
 }
 
 
-#buildLinuxArm64
+buildLinuxArm64
 buildLinuxX64
 
-exit 0
