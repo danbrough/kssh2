@@ -4,7 +4,6 @@ cd "$(dirname "$0")"
 . ./common.sh
 
 
-
 ANDROID_LIB_ROOT=$(realpath ..)/lib/ssh2/android
 OPENSSL_LIB_ROOT="$(realpath ..)/lib/openssl/android"
 
