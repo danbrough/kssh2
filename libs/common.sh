@@ -22,7 +22,8 @@ export MIN_SDK_VERSION="$ANDROID_API_VERSION"
 
 
 
-set -eux
+#set -eux
+set -eu
 
 
 

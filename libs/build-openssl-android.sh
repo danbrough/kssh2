@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 
 
-cd "$(dirname "$0")"
-. ./common.sh
 . ./openssl.sh
 
-cd ./build
 
 # ==============================================================================
 # CONFIGURATION

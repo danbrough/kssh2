@@ -1,4 +1,9 @@
 
+cd "$(dirname "$0")"
+. ./common.sh
+
+cd ./build
+
 # Download and extract OpenSSL source if it doesn't exist
 export OPENSSL_SRC_DIR="openssl-${OPENSSL_VERSION}"
 if [ ! -d "${OPENSSL_SRC_DIR}" ]; then
