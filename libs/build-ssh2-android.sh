@@ -24,7 +24,6 @@ tar -xvzf $LIBSSH2_FULL_VERSION.tar.gz
 
 
 
-
 cd $LIBSSH2_FULL_VERSION
 LIBSSH2_FULL_PATH=$(pwd)
 
@@ -32,8 +31,6 @@ if [ ! "${ANDROID_NDK_HOME}" ]; then
     echo "ANDROID_NDK_HOME environment variable not set, set and rerun"
     exit 1
 fi
-
-
 
 #for ANDROID_TARGET_PLATFORM in armeabi-v7a arm64-v8a x86 x86_64; do
 for ANDROID_TARGET_PLATFORM in arm64-v8a x86_64; do

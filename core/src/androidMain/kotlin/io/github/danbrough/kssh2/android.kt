@@ -25,7 +25,6 @@ suspend fun Session.runTestCommand() {
       }
     }.also {
       log.debug { it }
-
     }
   }
 }

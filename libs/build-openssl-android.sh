@@ -2,19 +2,14 @@
 
 
 cd "$(dirname "$0")"
-source ../env-android.sh
-[ -f ../env-android-local.sh ] && source ../env-android-local.sh
+. ./common.sh
 
-[ ! -d ../build ] && mkdir -p ../build
-cd ../build
 
-set -eux
 
 # ==============================================================================
 # CONFIGURATION
 # ==============================================================================
-OPENSSL_VERSION="3.3.4"
-MIN_SDK_VERSION="$ANDROID_API_VERSION"
+
 
 # Ensure ANDROID_NDK_HOME is set
 if [ -z "${ANDROID_NDK_HOME}" ]; then

@@ -1,3 +1,4 @@
 /lib
-env-android-local.sh
 /build
+/*env-local.sh
+
