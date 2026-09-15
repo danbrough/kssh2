@@ -4,8 +4,8 @@
 . ./openssl.sh
 
 
-OUTPUT_DIR="$(realpath ..)/lib/openssl/linux"
-rm -rf "${OUTPUT_DIR}" && mkdir -p "${OUTPUT_DIR}"
+OUTPUT_DIR="$LIBDIR/openssl/linux"
+#rm -rf "${OUTPUT_DIR}" && mkdir -p "${OUTPUT_DIR}"
 
 
 export CC="clang"
@@ -19,6 +19,8 @@ ORIGINAL_PATH=$PATH
 
 do_build(){
   cd "${OPENSSL_SRC_DIR}"
+  INSTALLDIR="${OUTPUT_DIR}/${ARCH_NAME}"
+  rm -rf "$INSTALLDIR" 2> /dev/null && mkdir -p "$INSTALLDIR"
   OPENSSL_ARCH="$1"
   ARCH_NAME="$2"
   echo "----------------------------------------------------"
