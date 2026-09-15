@@ -22,6 +22,7 @@ import org.danbrough.klog.logger
 import kotlin.time.Duration.Companion.seconds
 
 internal val demoLog = logger("SSH2DEMO")
+private val log = demoLog
 
 suspend fun commonMain(cmdHandler: BasicCommandHandler, args: Array<String>) {
   cmdHandler.registerCommands(
@@ -46,16 +47,16 @@ suspend fun commonMain(cmdHandler: BasicCommandHandler, args: Array<String>) {
 
 @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 suspend fun KTerminal.coroutineTest(array: List<String>) {
-  demoLog.debug { "coroutineTest: ${SshUtils.threadName()}" }
+  log.debug { "coroutineTest: ${SshUtils.threadName()}" }
 
   coroutineScope {
     withContext(Dispatchers.IO) {
-      demoLog.debug { "coroutineTEst:${SshUtils.threadName()}  inside scope: $this" }
-      delay(1.seconds)
-      demoLog.debug { "coroutineTEst:${SshUtils.threadName()}  finishing inside scope: $this" }
+      log.debug { "coroutineTEst:${SshUtils.threadName()}  inside scope: $this" }
+      delay(2.seconds)
+      log.debug { "coroutineTEst:${SshUtils.threadName()}  finishing inside scope: $this" }
     }
   }
-  demoLog.debug { "coroutineTEst:${SshUtils.threadName()}  outside scope: $this" }
+  log.info { "coroutineTEst:${SshUtils.threadName()}  outside scope: $this" }
 
   val channel = Channel<String>()
   coroutineScope {
@@ -63,37 +64,37 @@ suspend fun KTerminal.coroutineTest(array: List<String>) {
       delay(1.seconds)
       for (n in 1..3) {
         val msg = "Message $n"
-        demoLog.trace { "sending $msg ${SshUtils.threadName()}" }
+        log.trace { "sending $msg ${SshUtils.threadName()}" }
         channel.send(msg)
-        demoLog.trace { "sent $msg ${SshUtils.threadName()}" }
+        log.trace { "sent $msg ${SshUtils.threadName()}" }
       }
     }
 
-    demoLog.debug { "got to here isEmpty: ${channel.isEmpty}" }
+    log.debug { "got to here isEmpty: ${channel.isEmpty}" }
     delay(1.seconds)
 
 
-    demoLog.debug { "received: ${channel.receive()} ${SshUtils.threadName()}" }
-    demoLog.debug { "received: ${channel.receive()} ${SshUtils.threadName()}" }
-    demoLog.debug { "received: ${channel.receive()} ${SshUtils.threadName()}" }
-    demoLog.debug { "received: isEmpty: ${channel.isEmpty} ${SshUtils.threadName()}" }
+    log.debug { "received: ${channel.receive()} ${SshUtils.threadName()}" }
+    log.debug { "received: ${channel.receive()} ${SshUtils.threadName()}" }
+    log.debug { "received: ${channel.receive()} ${SshUtils.threadName()}" }
+    log.debug { "received: isEmpty: ${channel.isEmpty} ${SshUtils.threadName()}" }
 
     val flow = flow {
       var n = 0
       while (true) {
         n++
         val msg = "Message $n"
-        demoLog.trace { "sending $msg ${SshUtils.threadName()}" }
+        log.trace { "sending $msg ${SshUtils.threadName()}" }
         emit(msg)
-        demoLog.trace { "sent $msg ${SshUtils.threadName()}" }
+        log.trace { "sent $msg ${SshUtils.threadName()}" }
       }
     }.flowOn(Dispatchers.IO)
-    demoLog.debug { "created flow ..collecting .." }
+    log.debug { "created flow ..collecting .." }
     flow.take(10).collect {
-      demoLog.info { "collected $it on ${SshUtils.threadName()}" }
+      log.info { "collected $it on ${SshUtils.threadName()}" }
     }
 
-    demoLog.warn { "finished" }
+    log.warn { "finished" }
 
   }
 

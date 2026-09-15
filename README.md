@@ -4,6 +4,45 @@ Install [libssh2](https://github.com/libssh2/libssh2)
 
 Starting point: [sshdemo](./demo/sshdemo) to run the native demo.
 
-Check that [libssh2.def](core/src/cinterop/libssh2.def) is suitable for your build environment.
+There is also a java based demo [jsshdemo](./demo/jsshdemo) using JNI.
 
+Check that [ssh2.def](core/src/cinterop/libssh2.def) is suitable for your build environment.
+
+
+## Code example
+
+```kotlin
+
+runBlocking {
+  parseArgs(args)?.also { config ->
+    println("config: $config")
+    ssh {
+      session {
+        log.debug { "session scope started" }
+        connect(config.host, config.port.toInt()).successOrThrow()
+        log.debug { "connected to ${config.host}:${config.port}" }
+
+        authenticateWithAgent(config.user).onSuccess {
+          log.info { "authenticated" }
+          channel {
+            log.info { "created channel" }
+            val cmd =
+              $$"echo running on $HOSTNAME at `date` ostype:$OSTYPE hosttype:$HOSTTYPE && ls ~/ && ( cat /etc/os-release 2> /dev/null )"
+            log.info { "executing $cmd..." }
+            exec(cmd)
+            buildString {
+              readChannel().map { it.decodeToString() }.collect {
+                append(it)
+              }
+              log.info { toString() }
+            }
+          }
+        }.onFailure {
+          log.error { "authentication failed: $this" }
+        }
+      }
+    }
+  }
+}
+```
 
