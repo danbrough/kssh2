@@ -27,7 +27,7 @@ runBlocking {
           channel {
             log.info { "created channel" }
             val cmd =
-              $$"echo running on $HOSTNAME at `date` ostype:$OSTYPE hosttype:$HOSTTYPE && ls ~/ && ( cat /etc/os-release 2> /dev/null )"
+              $$"echo running on $USER@$HOSTNAME at `date` ostype:$OSTYPE hosttype:$HOSTTYPE && ls ~/ && ( cat /etc/os-release 2> /dev/null )"
             log.info { "executing $cmd..." }
             exec(cmd)
             buildString {

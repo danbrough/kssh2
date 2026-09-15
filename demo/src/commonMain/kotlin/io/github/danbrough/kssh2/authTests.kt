@@ -35,7 +35,7 @@ suspend fun Session.runTestCommand() {
   channel {
     log.info { "created channel" }
     val cmd =
-      $$"echo running on $HOSTNAME at `date` ostype:$OSTYPE hosttype:$HOSTTYPE && ls ~/ && ( cat /etc/os-release 2> /dev/null )"
+      $$"echo running on $USER@$HOSTNAME at `date` ostype:$OSTYPE hosttype:$HOSTTYPE && ls ~/ && ( cat /etc/os-release 2> /dev/null )"
     log.info { "executing $cmd..." }
     exec(cmd)
     buildString {
@@ -90,19 +90,7 @@ val authTestAgent =
 
           authenticateWithAgent(config.user).onSuccess {
             log.info { "authenticated" }
-            channel {
-              log.info { "created channel" }
-              val cmd =
-                $$"echo running on $HOSTNAME at `date` ostype:$OSTYPE hosttype:$HOSTTYPE && ls ~/ && ( cat /etc/os-release 2> /dev/null )"
-              log.info { "executing $cmd..." }
-              exec(cmd)
-              buildString {
-                readChannel().map { it.decodeToString() }.collect {
-                  append(it)
-                }
-                log.debug { toString() }
-              }
-            }
+            runTestCommand()
           }.onFailure {
             log.error { "authentication failed: $this" }
           }
