@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
 
 cd "$(dirname "$0")"
-. ./common.sh
+. ./ssh2.sh
 
 
-ANDROID_LIB_ROOT=$(realpath ..)/lib/ssh2/android
-OPENSSL_LIB_ROOT="$(realpath ..)/lib/openssl/android"
+ANDROID_LIB_ROOT="$LIBDIR/ssh2/android"
+OPENSSL_LIB_ROOT="$LIBDIR/openssl/android"
 
 rm -rf "${ANDROID_LIB_ROOT}"
-
-
-if [ ! -f "$LIBSSH2_FULL_VERSION.tar.gz" ]; then
-    wget  https://www.libssh2.org/download/$LIBSSH2_FULL_VERSION.tar.gz
-fi
-[ -d $LIBSSH2_FULL_VERSION ] && rm -rf $LIBSSH2_FULL_VERSION
-tar -xvzf $LIBSSH2_FULL_VERSION.tar.gz
 
 
 cd $LIBSSH2_FULL_VERSION
