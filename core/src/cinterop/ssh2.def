@@ -4,7 +4,7 @@ headers = libssh2.h  libssh2_publickey.h  libssh2_sftp.h
 
 #compilerOpts = -I./src/cinterop -fPIC
 compilerOpts = -I./src/cinterop -fPIC
-
+compilerOpts.macos_x64 = -I/usr/local/include -I/usr/include
 
 # 1. Instruct Kotlin/Native to pull in the static archive
 #staticLibraries = libcrypto.a libssl.a libssh2.a
@@ -21,7 +21,7 @@ libraryPaths.linux_x64 =  /files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/
 #/files/cache/xtras/lib/ssh2_linuxX64_libssh2-1.11.1/lib/ /usr/lib
 #libraryPaths.linux_arm64 =  /files/cache/xtras/lib/openssl_linuxArm64_3.6.3/lib/ /files/cache/xtras/lib/ssh2_linuxArm64_libssh2-1.11.1/lib/
 #libraryPaths.androidArm64 =  /files/cache/xtras/lib/openssl_androidArm64_3.6.3/lib/ /files/cache/xtras/lib/ssh2_androidArm64_libssh2-1.11.1/lib/
-libraryPaths.osx = /opt/homebrew/opt/libssh2/lib /usr/local/opt/libssh2/lib
+libraryPaths.macos_x64 = /usr/local/lib /usr/lib
 
 # FORCE the linker to look for the exact .a archives instead of searching for .so
 # Note: The order matters. libssh2 depends on libssl, which depends on libcrypto.
@@ -35,7 +35,7 @@ linkerOpts.android_arm64 = -lz  -ldl  /files/workspace/kssh2/libs/lib/ssh2/andro
 # 3. CRUCIAL: Link transitive dependencies
 # libssh2 requires a crypto backend (usually OpenSSL via libssl and libcrypto)
 # as well as system libraries like zlib (-lz).
-linkerOpts.osx = -lssl -lcrypto -lz
+linkerOpts.macos_x64 = -lssl -lcrypto -lz -lssh2 -L/usr/local/lib -L/usr/lib
 #linkerOpts.linux = -lz -lpthread -ldl
 linkerOpts.linux_x64 = -lz -lpthread -ldl  /files/cache/xtras/lib/ssh2_linuxX64_libssh2-1.11.1/lib/libssh2.a  /files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/libssl.a /files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/libcrypto.a
 #/files/cache/xtras/lib/ssh2_linuxX64_libssh2-1.11.1/lib/libssh2.a /files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/libssl.a /files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/libcrypto.a
