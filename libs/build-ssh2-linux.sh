@@ -1,47 +1,154 @@
-#!/usr/bin/env bash
+#!/bin/bash
+set -e
 
-cd "$(dirname "$0")"
-. ./ssh2.sh
+# Configuration
+LIBSSH2_VERSION="1.11.1"
+LIBSSH2_URL="https://www.libssh2.org/download/libssh2-${LIBSSH2_VERSION}.tar.gz"
+LIBSSH2_TAR="libssh2-${LIBSSH2_VERSION}.tar.gz"
+BUILD_ROOT="$(pwd)/libssh2-build"
+INSTALL_ROOT="$(realpath "$(pwd)/../lib/ssh2/linux")"
+SRC_ROOT="$(pwd)/libssh2-$LIBSSH2_VERSION"
+
+# Locate Konan dependencies
+KONAN_HOME="${KONAN_DATA_DIR:-$HOME/.konan}"
+# Find the most recent LLVM dependency directory
+LLVM_DIR=$(find "$KONAN_HOME/dependencies" -maxdepth 1 -name "llvm-*" -type d | sort -V | tail -n 1)
+
+if [ -z "$LLVM_DIR" ]; then
+    echo "Error: Could not find LLVM dependencies in $KONAN_HOME/dependencies."
+    echo "Please run 'konanc -target linux_x64' once to download them."
+    exit 1
+fi
+
+echo "Using Konan LLVM: $LLVM_DIR"
+export PATH="$LLVM_DIR/bin:$PATH"
+
+# Verify Clang is available
+if ! command -v clang &> /dev/null; then
+    echo "Error: clang not found in Konan LLVM bin."
+    exit 1
+fi
+
+# Clean previous builds
+rm -rf "$BUILD_ROOT" "$INSTALL_ROOT"
+mkdir -p "$BUILD_ROOT" "$INSTALL_ROOT"
 
 
-OPENSSL_LIB_ROOT="$LIBDIR/openssl/linux"
-INSTALL_PREFIX="$LIBDIR/ssh2/linux"
-export CC="clang"
-export CXX="clang++"
-export PATH="/home/dan/.konan/kotlin-native-prebuilt-linux-x86_64-2.4.20/bin:/home/dan/.konan/dependencies/llvm-21-x86_64-linux-essentials-116/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+# Download libssh2 if not present
+if [ ! -f "$LIBSSH2_TAR" ]; then
+    echo "Downloading libssh2..."
+    curl -LO "$LIBSSH2_URL"
+fi
 
-do_build(){
-  echo
-  echo -------------      do_build INSTALL_DIR=$INSTALL_DIR TARGET_HOST=$TARGET_HOST
+# Extract source
+rm -rf  "$SRC_ROOT" 2> /dev/null
+echo "Extracting libssh2..."
+tar xfz "$LIBSSH2_TAR"
 
-  rm -rf "$INSTALL_DIR" > /dev/null
-  cd "$SSH2_SRC_DIR"
-  if [ -f Makefile ]; then
-        make clean || true
-  fi
-  ./configure --prefix="$INSTALL_DIR" --host=$TARGET_HOST \
-    --with-crypto=openssl --with-libssl-prefix="$SSL_DIR"  --enable-static=yes
-  make -j4
-}
+# Common CMake options
+CMAKE_OPTS="-DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON -DCRYPTO_BACKEND=OpenSSL -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF"
 
-buildLinuxX64(){
-  INSTALL_DIR="$INSTALL_PREFIX/x64"
-  TARGET_HOST="x86_64-unknown-linux-gnu"
-  SSL_DIR="$OPENSSL_LIB_ROOT/x64"
-  # Define the base x86_64 toolchain path (Adjust folder name to match your actual .konan dir)
-  KONAN_TC="$HOME/.konan/dependencies/x86_64-unknown-linux-gnu-gcc-8.3.0-glibc-2.19-kernel-4.9-2"
+# --- Build for Linux x86_64 (x64) ---
+echo "=== Building for Linux x86_64 ==="
 
-  # Direct Clang to target x86_64 Linux, using the specific sysroot and toolchain linker
-  export CFLAGS="--target=x86_64-unknown-linux-gnu --gcc-toolchain=$KONAN_TC --sysroot=$KONAN_TC/x86_64-unknown-linux-gnu/sysroot -fuse-ld=$KONAN_TC/bin/x86_64-unknown-linux-gnu-ld"
-  export CXXFLAGS="--target=x86_64-unknown-linux-gnu --gcc-toolchain=$KONAN_TC --sysroot=$KONAN_TC/x86_64-unknown-linux-gnu/sysroot -fuse-ld=$KONAN_TC/bin/x86_64-unknown-linux-gnu-ld"
 
-  # Use the matching binary utilities from the x86_64 Konan toolchain
-  export AR="$KONAN_TC/bin/x86_64-unknown-linux-gnu-ar"
-  export NM="$KONAN_TC/bin/x86_64-unknown-linux-gnu-nm"
-  export RANLIB="$KONAN_TC/bin/x86_64-unknown-linux-gnu-ranlib"
-  export PATH="/home/dan/.konan/dependencies/llvm-21-x86_64-linux-essentials-116/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-  do_build
-}
+rm -rf "$BUILD_ROOT/linux-x64"
+mkdir -p "$BUILD_ROOT/linux-x64"
+cd "$BUILD_ROOT/linux-x64"
 
-buildLinuxX64
+
+
+TOOLCHAIN=$HOME/.konan/dependencies/x86_64-unknown-linux-gnu-gcc-8.3.0-glibc-2.19-kernel-4.9-2
+SYSROOT=$TOOLCHAIN/x86_64-unknown-linux-gnu/sysroot
+CC=$TOOLCHAIN/bin/x86_64-unknown-linux-gnu-gcc
+AR=$TOOLCHAIN/bin/x86_64-unknown-linux-gnu-ar
+RANLIB=$TOOLCHAIN/bin/x86_64-unknown-linux-gnu-ranlib
+STRIP=$TOOLCHAIN/bin/x86_64-unknown-linux-gnu-strip
+OPENSSL_ROOT=/files/workspace/kssh2/lib/openssl/linux/x64
+
+rm -rf "$BUILD_ROOT/x64"
+mkdir -p "$BUILD_ROOT/x64"
+cd "$BUILD_ROOT/x64"
+
+
+cmake "$SRC_ROOT" \
+    -DCMAKE_SYSTEM_NAME=Linux \
+    -DCMAKE_SYSTEM_PROCESSOR=x86_64 \
+    -DCMAKE_C_COMPILER="$CC" \
+    -DCMAKE_AR="$AR" \
+    -DCMAKE_RANLIB="$RANLIB" \
+    -DCMAKE_STRIP="$STRIP" \
+    -DCMAKE_SYSROOT="$SYSROOT" \
+    -DCMAKE_FIND_ROOT_PATH="$SYSROOT;$OPENSSL_ROOT" \
+    -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
+    -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
+    -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
+    -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY \
+    -DOPENSSL_ROOT_DIR="$OPENSSL_ROOT" \
+    -DOPENSSL_INCLUDE_DIR="$OPENSSL_ROOT/include" \
+    -DOPENSSL_SSL_LIBRARY="$OPENSSL_ROOT/lib/libssl.a" \
+    -DOPENSSL_CRYPTO_LIBRARY="$OPENSSL_ROOT/lib/libcrypto.a" \
+    -DOPENSSL_USE_STATIC_LIBS=TRUE \
+    -DCMAKE_INSTALL_PREFIX="$INSTALL_ROOT/x64" \
+    $CMAKE_OPTS
+
+#cmake --build . --target install
+cmake --build . --target install --parallel 8
+
+# --- Build for Linux aarch64 (ARM64) ---
+echo "=== Building for Linux aarch64 ==="
+cd "$BUILD_ROOT"
+mkdir -p "arm64"
+cd "arm64"
+
+# For ARM64 cross-compilation, we need the proper sysroot.
+# Konan provides a sysroot for ARM64.
+
+# Note: Konan's sysroot structure varies. A more reliable method is using the sysroot from the Linux target in Konan.
+# We'll attempt to locate the aarch64 sysroot if available, otherwise fall back to host sysroot with target flag.
+# Konan typically includes a minimal sysroot for cross-compilation.
+TOOLCHAIN=/home/dan/.konan/dependencies/aarch64-unknown-linux-gnu-gcc-8.3.0-glibc-2.25-kernel-4.9-2
+SYSROOT=$TOOLCHAIN/aarch64-unknown-linux-gnu/sysroot
+CC=$TOOLCHAIN/bin/aarch64-unknown-linux-gnu-gcc
+AR=$TOOLCHAIN/bin/aarch64-unknown-linux-gnu-ar
+RANLIB=$TOOLCHAIN/bin/aarch64-unknown-linux-gnu-ranlib
+STRIP=$TOOLCHAIN/bin/aarch64-unknown-linux-gnu-strip
+OPENSSL_ROOT=/files/workspace/kssh2/lib/openssl/linux/arm64
+
+rm -rf "$BUILD_ROOT/arm64"
+mkdir -p "$BUILD_ROOT/arm64"
+cd "$BUILD_ROOT/arm64"
+
+cmake "$SRC_ROOT" \
+    -DCMAKE_SYSTEM_NAME=Linux \
+    -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
+    -DCMAKE_C_COMPILER="$CC" \
+    -DCMAKE_AR="$AR" \
+    -DCMAKE_RANLIB="$RANLIB" \
+    -DCMAKE_STRIP="$STRIP" \
+    -DCMAKE_SYSROOT="$SYSROOT" \
+    -DCMAKE_FIND_ROOT_PATH="$SYSROOT;$OPENSSL_ROOT" \
+    -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
+    -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
+    -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
+    -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY \
+    -DOPENSSL_ROOT_DIR="$OPENSSL_ROOT" \
+    -DOPENSSL_INCLUDE_DIR="$OPENSSL_ROOT/include" \
+    -DOPENSSL_SSL_LIBRARY="$OPENSSL_ROOT/lib/libssl.a" \
+    -DOPENSSL_CRYPTO_LIBRARY="$OPENSSL_ROOT/lib/libcrypto.a" \
+    -DOPENSSL_USE_STATIC_LIBS=TRUE \
+    -DCMAKE_INSTALL_PREFIX="$INSTALL_ROOT/arm64" \
+    $CMAKE_OPTS
+
+
+cmake --build . --target install --parallel 8
+
+
+
+
+
+echo "=== Build complete ==="
+echo "Libraries installed to:"
+echo "  Linux x64:   $INSTALL_ROOT/linux-x64"
+echo "  Linux ARM64: $INSTALL_ROOT/linux-arm64"

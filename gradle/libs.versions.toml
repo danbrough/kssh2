@@ -71,6 +71,7 @@ sqldelight-adapters = "2.0.2"
 datetime = "0.8.0"
 ##    ⬆ = "0.8.0-0.6.x-compat"
 dokka = "2.2.0"
+## ⬆ = "2.3.0-Beta"
 
 logback = "1.6.3"
 clikt = "5.1.0"

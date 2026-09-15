@@ -41,7 +41,7 @@ do_build(){
   #no-shared to disable shared libs
   ./Configure "${OPENSSL_ARCH}" \
       no-tests no-shared enable-pic \
-      --prefix="$INSTALL_DIR" \
+      --libdir=lib --prefix="$INSTALL_DIR" \
       -Wno-macro-redefined
 
   # Build and install locally inside the prefix folder
