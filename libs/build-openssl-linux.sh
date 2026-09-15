@@ -19,8 +19,9 @@ ORIGINAL_PATH=$PATH
 
 do_build(){
   cd "${OPENSSL_SRC_DIR}"
-  INSTALLDIR="${OUTPUT_DIR}/${ARCH_NAME}"
-  rm -rf "$INSTALLDIR" 2> /dev/null && mkdir -p "$INSTALLDIR"
+
+  INSTALL_DIR="${OUTPUT_DIR}/${ARCH_NAME}"
+  rm -rf "$INSTALL_DIR" 2> /dev/null && mkdir -p "$INSTALL_DIR"
   OPENSSL_ARCH="$1"
   ARCH_NAME="$2"
   echo "----------------------------------------------------"
@@ -40,7 +41,7 @@ do_build(){
   #no-shared to disable shared libs
   ./Configure "${OPENSSL_ARCH}" \
       no-tests no-shared enable-pic \
-      --prefix="${OUTPUT_DIR}/${ARCH_NAME}" \
+      --prefix="$INSTALL_DIR" \
       -Wno-macro-redefined
 
   # Build and install locally inside the prefix folder
