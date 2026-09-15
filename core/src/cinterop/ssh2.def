@@ -2,12 +2,10 @@
 headers = libssh2.h  libssh2_publickey.h  libssh2_sftp.h
 #headerFilter = libssh2*
 
-#compilerOpts = -I./src/cinterop -fPIC
 compilerOpts = -I./src/cinterop -fPIC
 compilerOpts.macos_x64 = -I/usr/local/include -I/usr/include
 
-# 1. Instruct Kotlin/Native to pull in the static archive
-#staticLibraries = libcrypto.a libssl.a libssh2.a
+
 
 compilerOpts.linux_x64 = -I/files/workspace/kssh2/lib/openssl/linux/x64/include/ -I/files/workspace/kssh2/lib/ssh2/linux/x64/include/
 compilerOpts.linux_arm64 = -I/files/workspace/kssh2/lib/openssl/linux/arm64/include/ -I/files/workspace/kssh2/lib/ssh2/linux/arm64/include/
@@ -25,12 +23,6 @@ linkerOpts.android_arm64 = -lz  -ldl  /files/workspace/kssh2/lib/ssh2/android/ar
 
 linkerOpts.linux_x64 = -lz -lpthread -ldl /files/workspace/kssh2/lib/openssl/linux/x64/lib/libssl.a /files/workspace/kssh2/lib/openssl/linux/x64/lib/libcrypto.a /files/workspace/kssh2/lib/ssh2/linux/x64/lib/libssh2.a
 linkerOpts.linux_arm64 = -lz -lpthread -ldl /files/workspace/kssh2/lib/openssl/linux/arm64/lib/libssl.a /files/workspace/kssh2/lib/openssl/linux/arm64/lib/libcrypto.a /files/workspace/kssh2/lib/ssh2/linux/arm64/lib/libssh2.a
-
-
-
-
-
-
 
 
 

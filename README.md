@@ -1,6 +1,9 @@
 # SSH2 Kotlin Multiplatform Integration Demo
 
-Install [libssh2](https://github.com/libssh2/libssh2)
+Install [libssh2](https://github.com/libssh2/libssh2) or compile it for your system or android
+using the [scripts](./scripts/build-all.sh) and then check that [ssh2.def](core/src/cinterop/libssh2.def) is suitable for your build environment.
+
+
 
 Starting point: [sshdemo](./demo/sshdemo) to run the native demo.
 
