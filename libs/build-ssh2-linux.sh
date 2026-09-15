@@ -1,13 +1,12 @@
 #!/bin/bash
-set -e
 
-# Configuration
-LIBSSH2_VERSION="1.11.1"
-LIBSSH2_URL="https://www.libssh2.org/download/libssh2-${LIBSSH2_VERSION}.tar.gz"
-LIBSSH2_TAR="libssh2-${LIBSSH2_VERSION}.tar.gz"
-BUILD_ROOT="$(pwd)/libssh2-build"
-INSTALL_ROOT="$(realpath "$(pwd)/../lib/ssh2/linux")"
-SRC_ROOT="$(pwd)/libssh2-$LIBSSH2_VERSION"
+cd "$(dirname "$0")"
+. ./ssh.sh
+
+
+OPENSSL_LIB_ROOT="$LIBDIR/openssl/linux"
+SSH2_LIB_ROOT="$LIBDIR/ssh2/linux"
+
 
 # Locate Konan dependencies
 KONAN_HOME="${KONAN_DATA_DIR:-$HOME/.konan}"
@@ -34,16 +33,6 @@ rm -rf "$BUILD_ROOT" "$INSTALL_ROOT"
 mkdir -p "$BUILD_ROOT" "$INSTALL_ROOT"
 
 
-# Download libssh2 if not present
-if [ ! -f "$LIBSSH2_TAR" ]; then
-    echo "Downloading libssh2..."
-    curl -LO "$LIBSSH2_URL"
-fi
-
-# Extract source
-rm -rf  "$SRC_ROOT" 2> /dev/null
-echo "Extracting libssh2..."
-tar xfz "$LIBSSH2_TAR"
 
 # Common CMake options
 CMAKE_OPTS="-DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON -DCRYPTO_BACKEND=OpenSSL -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF"
