@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-
+cd "$(dirname "$0")"
 . ./openssl.sh
 
 
@@ -26,9 +26,7 @@ esac
 TOOLCHAIN_BIN="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/${HOST_TAG}/bin"
 
 
-
-
-OUTPUT_DIR="$(realpath ..)/lib/openssl/android"
+OUTPUT_DIR="$LIBDIR/openssl/android"
 rm -rf "${OUTPUT_DIR}" && mkdir -p "${OUTPUT_DIR}"
 
 # List of targets: OpenSSL_Architecture_Name | NDK_Architecture_Name

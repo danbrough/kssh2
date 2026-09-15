@@ -1,8 +1,7 @@
 
-cd "$(dirname "$0")"
 . ./common.sh
 
-cd ./build
+export OPENSSL_VERSION="3.3.4"
 
 # Download and extract OpenSSL source if it doesn't exist
 export OPENSSL_SRC_DIR="openssl-${OPENSSL_VERSION}"

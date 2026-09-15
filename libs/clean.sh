@@ -2,5 +2,7 @@
 
 
 cd "$(dirname "$0")"
+. ./common.sh
 
-rm -rf build lib
+rm -rf "$BUILDDIR" "$LIBDIR"
+
