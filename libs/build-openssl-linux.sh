@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-
+cd "$(dirname "$0")"
 . ./openssl.sh
 
 
@@ -55,65 +55,45 @@ do_build(){
 
 
 buildLinuxArm64(){
-OPENSSL_ARCH="linux-aarch64"
-ARCH_NAME="arm64"
+  OPENSSL_ARCH="linux-aarch64"
+  ARCH_NAME="arm64"
 
-# Define the base toolchain path
-export KONAN_TC="$HOME/.konan/dependencies/aarch64-unknown-linux-gnu-gcc-8.3.0-glibc-2.25-kernel-4.9-2"
+  # Define the base toolchain path
+  export KONAN_TC="$HOME/.konan/dependencies/aarch64-unknown-linux-gnu-gcc-8.3.0-glibc-2.25-kernel-4.9-2"
 
-# Explicitly force Clang to use the cross-toolchain linker (-fuse-ld)
-export CFLAGS="--target=aarch64-unknown-linux-gnu --gcc-toolchain=$KONAN_TC --sysroot=$KONAN_TC/aarch64-unknown-linux-gnu/sysroot -fuse-ld=$KONAN_TC/bin/aarch64-unknown-linux-gnu-ld"
-export CXXFLAGS="--target=aarch64-unknown-linux-gnu --gcc-toolchain=$KONAN_TC --sysroot=$KONAN_TC/aarch64-unknown-linux-gnu/sysroot -fuse-ld=$KONAN_TC/bin/aarch64-unknown-linux-gnu-ld"
+  # Explicitly force Clang to use the cross-toolchain linker (-fuse-ld)
+  export CFLAGS="--target=aarch64-unknown-linux-gnu --gcc-toolchain=$KONAN_TC --sysroot=$KONAN_TC/aarch64-unknown-linux-gnu/sysroot -fuse-ld=$KONAN_TC/bin/aarch64-unknown-linux-gnu-ld"
+  export CXXFLAGS="--target=aarch64-unknown-linux-gnu --gcc-toolchain=$KONAN_TC --sysroot=$KONAN_TC/aarch64-unknown-linux-gnu/sysroot -fuse-ld=$KONAN_TC/bin/aarch64-unknown-linux-gnu-ld"
 
-# Keep the cross-toolchain binary utilities from the previous step
-export AR="$KONAN_TC/bin/aarch64-unknown-linux-gnu-ar"
-export NM="$KONAN_TC/bin/aarch64-unknown-linux-gnu-nm"
-export RANLIB="$KONAN_TC/bin/aarch64-unknown-linux-gnu-ranlib"
+  # Keep the cross-toolchain binary utilities from the previous step
+  export AR="$KONAN_TC/bin/aarch64-unknown-linux-gnu-ar"
+  export NM="$KONAN_TC/bin/aarch64-unknown-linux-gnu-nm"
+  export RANLIB="$KONAN_TC/bin/aarch64-unknown-linux-gnu-ranlib"
 
-do_build $OPENSSL_ARCH $ARCH_NAME
-}
-
-buildLinuxX64(){
-OPENSSL_ARCH="linux-x86_64"
-ARCH_NAME="x64"
-
-# Define the base toolchain path
-export KONAN_TC="$HOME/.konan/dependencies/aarch64-unknown-linux-gnu-gcc-8.3.0-glibc-2.25-kernel-4.9-2"
-
-# Explicitly force Clang to use the cross-toolchain linker (-fuse-ld)
-export CFLAGS="--target=aarch64-unknown-linux-gnu --gcc-toolchain=$KONAN_TC --sysroot=$KONAN_TC/aarch64-unknown-linux-gnu/sysroot -fuse-ld=$KONAN_TC/bin/aarch64-unknown-linux-gnu-ld"
-export CXXFLAGS="--target=aarch64-unknown-linux-gnu --gcc-toolchain=$KONAN_TC --sysroot=$KONAN_TC/aarch64-unknown-linux-gnu/sysroot -fuse-ld=$KONAN_TC/bin/aarch64-unknown-linux-gnu-ld"
-
-# Keep the cross-toolchain binary utilities from the previous step
-export AR="$KONAN_TC/bin/aarch64-unknown-linux-gnu-ar"
-export NM="$KONAN_TC/bin/aarch64-unknown-linux-gnu-nm"
-export RANLIB="$KONAN_TC/bin/aarch64-unknown-linux-gnu-ranlib"
-
-do_build $OPENSSL_ARCH $ARCH_NAME
+  do_build $OPENSSL_ARCH $ARCH_NAME
 }
 
 
-
 buildLinuxX64(){
-OPENSSL_ARCH="linux-x86_64"
-ARCH_NAME="x64"
+  OPENSSL_ARCH="linux-x86_64"
+  ARCH_NAME="x64"
 
-echo "----------------------------------------------------"
-echo "Building OpenSSL for Linux ${OPENSSL_ARCH} ..."
-echo "----------------------------------------------------"
+  echo "----------------------------------------------------"
+  echo "Building OpenSSL for Linux ${OPENSSL_ARCH} ..."
+  echo "----------------------------------------------------"
 
-# Define the base x86_64 toolchain path (Adjust folder name to match your actual .konan dir)
-export KONAN_TC="$HOME/.konan/dependencies/x86_64-unknown-linux-gnu-gcc-8.3.0-glibc-2.19-kernel-4.9-2"
+  # Define the base x86_64 toolchain path (Adjust folder name to match your actual .konan dir)
+  export KONAN_TC="$HOME/.konan/dependencies/x86_64-unknown-linux-gnu-gcc-8.3.0-glibc-2.19-kernel-4.9-2"
 
-# Direct Clang to target x86_64 Linux, using the specific sysroot and toolchain linker
-export CFLAGS="--target=x86_64-unknown-linux-gnu --gcc-toolchain=$KONAN_TC --sysroot=$KONAN_TC/x86_64-unknown-linux-gnu/sysroot -fuse-ld=$KONAN_TC/bin/x86_64-unknown-linux-gnu-ld"
-export CXXFLAGS="--target=x86_64-unknown-linux-gnu --gcc-toolchain=$KONAN_TC --sysroot=$KONAN_TC/x86_64-unknown-linux-gnu/sysroot -fuse-ld=$KONAN_TC/bin/x86_64-unknown-linux-gnu-ld"
+  # Direct Clang to target x86_64 Linux, using the specific sysroot and toolchain linker
+  export CFLAGS="--target=x86_64-unknown-linux-gnu --gcc-toolchain=$KONAN_TC --sysroot=$KONAN_TC/x86_64-unknown-linux-gnu/sysroot -fuse-ld=$KONAN_TC/bin/x86_64-unknown-linux-gnu-ld"
+  export CXXFLAGS="--target=x86_64-unknown-linux-gnu --gcc-toolchain=$KONAN_TC --sysroot=$KONAN_TC/x86_64-unknown-linux-gnu/sysroot -fuse-ld=$KONAN_TC/bin/x86_64-unknown-linux-gnu-ld"
 
-# Use the matching binary utilities from the x86_64 Konan toolchain
-export AR="$KONAN_TC/bin/x86_64-unknown-linux-gnu-ar"
-export NM="$KONAN_TC/bin/x86_64-unknown-linux-gnu-nm"
-export RANLIB="$KONAN_TC/bin/x86_64-unknown-linux-gnu-ranlib"
-do_build $OPENSSL_ARCH $ARCH_NAME
+  # Use the matching binary utilities from the x86_64 Konan toolchain
+  export AR="$KONAN_TC/bin/x86_64-unknown-linux-gnu-ar"
+  export NM="$KONAN_TC/bin/x86_64-unknown-linux-gnu-nm"
+  export RANLIB="$KONAN_TC/bin/x86_64-unknown-linux-gnu-ranlib"
+  do_build $OPENSSL_ARCH $ARCH_NAME
 }
 
 

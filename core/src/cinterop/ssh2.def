@@ -9,7 +9,7 @@ compilerOpts = -I./src/cinterop -fPIC
 # 1. Instruct Kotlin/Native to pull in the static archive
 #staticLibraries = libcrypto.a libssl.a libssh2.a
 
-compilerOpts.linux_x64 = -I/files/cache/xtras/lib/openssl_linuxX64_3.6.3/include/ -I/files/cache/xtras/lib/ssh2_linuxX64_libssh2-1.11.1/include/
+compilerOpts.linux_x64 = -I/files/workspace/kssh2/lib/openssl/linux/x64/include/ -I/files/workspace/kssh2/lib/ssh2/linux/x64/include/
 compilerOpts.linux_arm64 = -I/files/cache/xtras/lib/openssl_linuxArm64_3.6.3/include/ -I/files/cache/xtras/lib/ssh2_linuxArm64_libssh2-1.11.1/include/
 compilerOpts.android_x64 = -fPIC  -lkssh2 -I/files/workspace/kssh2/lib/ssh2/android/x86_64/include
 compilerOpts.android_arm64 = -fPIC  -lkssh2    -mno-outline-atomics  -I/files/workspace/kssh2/lib/ssh2/android/arm64-v8a/include
@@ -17,7 +17,7 @@ compilerOpts.android_arm64 = -fPIC  -lkssh2    -mno-outline-atomics  -I/files/wo
 
 # 2. Tell the compiler where to look for your static files per platform
 #libraryPaths.linux = /usr/lib/x86_64-linux-gnu /usr/local/lib
-libraryPaths.linux_x64 =  /files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/
+#libraryPaths.linux_x64 =  /files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/
 #/files/cache/xtras/lib/ssh2_linuxX64_libssh2-1.11.1/lib/ /usr/lib
 #libraryPaths.linux_arm64 =  /files/cache/xtras/lib/openssl_linuxArm64_3.6.3/lib/ /files/cache/xtras/lib/ssh2_linuxArm64_libssh2-1.11.1/lib/
 #libraryPaths.androidArm64 =  /files/cache/xtras/lib/openssl_androidArm64_3.6.3/lib/ /files/cache/xtras/lib/ssh2_androidArm64_libssh2-1.11.1/lib/
@@ -37,7 +37,7 @@ linkerOpts.android_arm64 = -lz  -ldl  /files/workspace/kssh2/lib/ssh2/android/ar
 # as well as system libraries like zlib (-lz).
 linkerOpts.osx = -lssl -lcrypto -lz
 #linkerOpts.linux = -lz -lpthread -ldl
-linkerOpts.linux_x64 = -lz -lpthread -ldl  /files/cache/xtras/lib/ssh2_linuxX64_libssh2-1.11.1/lib/libssh2.a  /files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/libssl.a /files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/libcrypto.a
+linkerOpts.linux_x64 = -lz -lpthread -ldl  /files/workspace/kssh2/lib/ssh2/linux/x64/lib/libssh2.a  /files/workspace/kssh2/lib/openssl/linux/x64/lib/libssl.a /files/workspace/kssh2/lib/openssl/linux/x64/lib/libcrypto.a
 #/files/cache/xtras/lib/ssh2_linuxX64_libssh2-1.11.1/lib/libssh2.a /files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/libssl.a /files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/libcrypto.a
 linkerOpts.linux_arm64 = -lz -lpthread -ldl /files/cache/xtras/lib/ssh2_linuxArm64_libssh2-1.11.1/lib/libssh2.a /files/cache/xtras/lib/openssl_linuxArm64_3.6.3/lib/libssl.a /files/cache/xtras/lib/openssl_linuxArm64_3.6.3/lib/libcrypto.a
 #-L/files/cache/xtras/lib/openssl_linuxX64_3.6.3/lib/ -L/files/cache/xtras/lib/ssh2_linuxX64_libssh2-1.11.1/lib/
