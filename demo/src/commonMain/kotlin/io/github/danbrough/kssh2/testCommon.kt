@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.io.files.Path
 import org.danbrough.klog.logger
 import kotlin.time.Duration.Companion.seconds
@@ -46,6 +47,16 @@ suspend fun commonMain(cmdHandler: BasicCommandHandler, args: Array<String>) {
 @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 suspend fun KTerminal.coroutineTest(array: List<String>) {
   demoLog.debug { "coroutineTest: ${SshUtils.threadName()}" }
+
+  coroutineScope {
+    withContext(Dispatchers.IO) {
+      demoLog.debug { "coroutineTEst:${SshUtils.threadName()}  inside scope: $this" }
+      delay(1.seconds)
+      demoLog.debug { "coroutineTEst:${SshUtils.threadName()}  finishing inside scope: $this" }
+    }
+  }
+  demoLog.debug { "coroutineTEst:${SshUtils.threadName()}  outside scope: $this" }
+
   val channel = Channel<String>()
   coroutineScope {
     launch(Dispatchers.IO) {
