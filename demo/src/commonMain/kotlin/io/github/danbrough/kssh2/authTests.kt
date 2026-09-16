@@ -59,7 +59,6 @@ val authTestPublicKey =
           connect(config.host, config.port.toInt()).successOrThrow()
           log.debug { "connected to ${config.host}:${config.port}" }
 
-
           authenticatePublicKey(
             config.user,
             config.pubKey,

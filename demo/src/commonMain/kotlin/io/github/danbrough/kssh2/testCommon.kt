@@ -24,7 +24,10 @@ import kotlin.time.Duration.Companion.seconds
 internal val demoLog = logger("SSH2DEMO")
 private val log = demoLog
 
-suspend fun commonMain(cmdHandler: BasicCommandHandler, args: Array<String>) {
+suspend fun commonMain(
+  args: Array<String>,
+  cmdHandler: BasicCommandHandler = BasicCommandHandler()
+) {
   cmdHandler.registerCommands(
     basicCommand("ssh2Test", "Runs some tests in LibSSH2", KTerminal::ssh2Test),
     authTestPassword,
@@ -38,7 +41,8 @@ suspend fun commonMain(cmdHandler: BasicCommandHandler, args: Array<String>) {
     },
     basicCommand("coroutineTest", "testing stuff") {
       coroutineTest(it)
-    }
+    },
+    scopeTest,
   )
   val terminal =
     KTerminal(history = DefaultHistory(Path("./history.txt")), commandHandler = cmdHandler)

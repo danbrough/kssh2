@@ -24,7 +24,7 @@ import kotlin.time.Clock
 
 
 fun main(args: Array<String>) {
-  demoLog.info {"LD_LIBRARY_PATH=${System.getenv("LD_LIBRARY_PATH")}" }
+  demoLog.info { "LD_LIBRARY_PATH=${System.getenv("LD_LIBRARY_PATH")}" }
   demoLog.info { "DYLD_LIBRARY_PATH=${System.getenv("DYLD_LIBRARY_PATH")}" }
   demoLog.info { "MESSAGE=${System.getenv("MESSAGE")}" }
   demoLog.info { "SSH2_LIBS=${System.getenv("SSH2_LIBS")}" }
@@ -42,7 +42,7 @@ fun main(args: Array<String>) {
 
 
   runBlocking {
-    commonMain(cmdHandler, args)
+    commonMain(args, cmdHandler)
   }
 }
 

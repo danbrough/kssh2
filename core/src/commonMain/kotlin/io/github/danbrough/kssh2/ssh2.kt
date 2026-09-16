@@ -1,16 +1,24 @@
 package io.github.danbrough.kssh2
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.job
 import kotlinx.coroutines.withContext
 
 
+
+
 interface Scope : AutoCloseable
+
+@DslMarker
+@Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
+annotation class SSH2DSL
+
 
 private var globalScope: SSHScope? = null
 
 
-suspend fun <R> ssh(block: suspend SSHScope.() -> R): R =
+suspend fun <R> ssh(block:  suspend SSHScope.() -> R): R =
   currentCoroutineContext()[SSHScope.ContextKey]?.block() ?: globalScope?.block()
   ?: SSHScope().let { scope ->
     globalScope = scope

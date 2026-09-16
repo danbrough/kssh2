@@ -14,6 +14,7 @@ import org.danbrough.klog.logger
 
 private val channelLog = logger("SSH2")
 
+@SSH2DSL
 class Channel(val session: Session, channelType: String = "session") : Scope {
 
   var channelPtr: ChannelPtr =

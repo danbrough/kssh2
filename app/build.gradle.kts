@@ -42,6 +42,12 @@ android {
   buildTypes {
     release {
       optimization {
+        enable = true
+      }
+    }
+
+    debug {
+      optimization {
         enable = false
       }
     }
@@ -80,10 +86,9 @@ dependencies {
     else libs.klog.versioned
   )
 }
-afterEvaluate {
 
+afterEvaluate {
   tasks.getByName("mergeDebugJniLibFolders") {
-    println("MERGE TASK TASK: $this type: ${this::class.java}")
     dependsOn(":core:copyJniLibs")
   }
 }

@@ -14,6 +14,8 @@ suspend fun <R> SSHScope.session(block: suspend Session.() -> R): R =
     sshScope(block, Session())
   }
 
+
+@SSH2DSL
 class Session() : Scope {
 
 

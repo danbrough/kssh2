@@ -68,4 +68,3 @@ suspend fun messageTest() = withContext(Dispatchers.IO) {
 }
 
 
-external fun testLog()

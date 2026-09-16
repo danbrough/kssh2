@@ -9,17 +9,8 @@ import kotlin.time.Clock
 
 
 fun main(args: Array<String>) {
-  println("ARGS: ${args.joinToString()}")
-  val cmdHandler = BasicCommandHandler()
-
-  cmdHandler.registerCommands(
-    basicCommand("date", "prints the date") {
-      println("Today is ${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())}")
-    },
-  )
-
   runBlocking {
-    commonMain(cmdHandler, args)
+    commonMain(args)
   }
 }
 
