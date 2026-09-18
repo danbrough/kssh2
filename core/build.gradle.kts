@@ -5,7 +5,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.KonanTarget
-import java.util.Date
 
 plugins {
   id("io.github.danbrough.kssh2.kmp")
@@ -110,6 +109,7 @@ kotlin {
 
   val ssh2DefFileTemplate = project.file("src/cinterop/ssh2_template.def")
   val ssh2DefFile = project.file("src/cinterop/ssh2.def")
+  val ssh2InteropsPackage = "${project.group}.libssh2.cinterop"
   val libPath = project.file("../lib/").absolutePath
 
   val generateDefFileTaskName = "generateDefFile"
@@ -122,8 +122,7 @@ kotlin {
     outputs.file(ssh2DefFile)
     doFirst {
       println("$name::generating $ssh2DefFile")
-    }
-    /*
+    }/*
 compilerOpts.linux_x64 = -I/files/workspace/kssh2/lib/openssl/linux/x64/include/ -I/files/workspace/kssh2/lib/ssh2/linux/x64/include/
 compilerOpts.linux_arm64 = -I/files/workspace/kssh2/lib/openssl/linux/arm64/include/ -I/files/workspace/kssh2/lib/ssh2/linux/arm64/include/
 
@@ -146,6 +145,7 @@ linkerOpts.linux_arm64 = -lz -lpthread -ldl /files/workspace/kssh2/lib/openssl/l
       val footer = ssh2DefFileTemplate.readText()
       ssh2DefFile.printWriter().use { output ->
         output.println("# GENERATED. Edit ${ssh2DefFileTemplate.name} instead.")
+        output.println("package = $ssh2InteropsPackage")
 
         listOf("arm64", "x64").forEach { arch ->
           output.println("compilerOpts.linux_$arch = -I$libPath/openssl/linux/$arch/include -I$libPath/ssh2/linux/$arch/include")
@@ -167,53 +167,52 @@ linkerOpts.linux_arm64 = -lz -lpthread -ldl /files/workspace/kssh2/lib/openssl/l
       cinterops.create("ssh2Interop") {
         defFile(project.file("src/cinterop/ssh2.def"))
         packageName("${project.group}.libssh2.cinterop")
-        compilerOpts("-fPIC", "-I${project.file("src/cinterop")}")
-        tasks[interopProcessingTaskName].dependsOn(generateDefFileTaskName)
-/*
-        val libDirPath = project.file("../lib").absolutePath
+        //compilerOpts("-fPIC", "-I${project.file("src/cinterop")}")
+        tasks[interopProcessingTaskName].dependsOn(generateDefFileTaskName)/*
+                val libDirPath = project.file("../lib").absolutePath
 
-        if (konanTarget.family == Family.LINUX) {
-          compilerOpts(listOf("openssl", "ssh2").map {
-            "-I$libDirPath/$it/linux/${if (konanTarget == KonanTarget.LINUX_ARM64) "arm64" else "x64"}/include"
-          })
-          linkerOpts(
-            listOf(
-              "libssl.a",
-              "libcrypto.a"
-            ).map { "$libDirPath/openssl/linux/${if (konanTarget == KonanTarget.LINUX_ARM64) "arm64" else "x64"}/lib/$it" })
-        } else if (konanTarget.family == Family.ANDROID) {
-          compilerOpts(listOf("openssl", "ssh2").map {
-            "-I$libDirPath/$it/android/${if (konanTarget == KonanTarget.ANDROID_ARM64) "arm64-v8a" else "x86_64"}/include"
-          })
-          linkerOpts(
-            listOf(
-              "libssl.a",
-              "libcrypto.a"
-            ).map { "$libDirPath/openssl/linux/${if (konanTarget == KonanTarget.ANDROID_ARM64) "arm64-v8a" else "x86_64"}/lib/$it" })
-          linkerOpts("$libDirPath/ssh2/linux/${if (konanTarget == KonanTarget.ANDROID_ARM64) "arm64-v8a" else "x86_64"}/lib/libssh2.a")
-        }
-*/
+                if (konanTarget.family == Family.LINUX) {
+                  compilerOpts(listOf("openssl", "ssh2").map {
+                    "-I$libDirPath/$it/linux/${if (konanTarget == KonanTarget.LINUX_ARM64) "arm64" else "x64"}/include"
+                  })
+                  linkerOpts(
+                    listOf(
+                      "libssl.a",
+                      "libcrypto.a"
+                    ).map { "$libDirPath/openssl/linux/${if (konanTarget == KonanTarget.LINUX_ARM64) "arm64" else "x64"}/lib/$it" })
+                } else if (konanTarget.family == Family.ANDROID) {
+                  compilerOpts(listOf("openssl", "ssh2").map {
+                    "-I$libDirPath/$it/android/${if (konanTarget == KonanTarget.ANDROID_ARM64) "arm64-v8a" else "x86_64"}/include"
+                  })
+                  linkerOpts(
+                    listOf(
+                      "libssl.a",
+                      "libcrypto.a"
+                    ).map { "$libDirPath/openssl/linux/${if (konanTarget == KonanTarget.ANDROID_ARM64) "arm64-v8a" else "x86_64"}/lib/$it" })
+                  linkerOpts("$libDirPath/ssh2/linux/${if (konanTarget == KonanTarget.ANDROID_ARM64) "arm64-v8a" else "x86_64"}/lib/libssh2.a")
+                }
+        */
 
 
       }
 
-      if (konanTarget.family != Family.ANDROID)
-        cinterops.create("jni") {
-          /**
-           * Create the JNI interops in package platform.android so that we can use platform.android for all targets
-           */
-          packageName("platform.android")
-          header("./src/headers/jni.h")
-          if (konanTarget.family == Family.LINUX)
-            includeDirs("./src/cinterops", "./src/headers", "./src/headers/linux")
-          else
-            includeDirs("./src/cinterops", "./src/headers", "./src/headers/darwin")
-        }
+      if (konanTarget.family != Family.ANDROID) cinterops.create("jni") {
+        /**
+         * Create the JNI interops in package platform.android so that we can use platform.android for all targets
+         */
+        packageName("platform.android")
+        header("./src/headers/jni.h")
+        if (konanTarget.family == Family.LINUX) includeDirs(
+          "./src/cinterops",
+          "./src/headers",
+          "./src/headers/linux"
+        )
+        else includeDirs("./src/cinterops", "./src/headers", "./src/headers/darwin")
+      }
     }
 
     binaries {
-      sharedLib("kssh2") {
-      }
+      sharedLib("kssh2") {}
     }
   }
 }

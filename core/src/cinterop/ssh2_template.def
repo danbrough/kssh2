@@ -2,7 +2,7 @@
 headers = libssh2.h  libssh2_publickey.h  libssh2_sftp.h
 #headerFilter = libssh2*
 
-#compilerOpts = -I./src/cinterop -fPIC
+compilerOpts = -I./src/cinterop -fPIC
 compilerOpts.macos_x64 = -I/usr/local/include -I/usr/include
 linkerOpts.macos_x64 = -lssl -lcrypto -lz -lssh2 -L/usr/local/lib -L/usr/lib
 #compilerOpts.android_x64 = -fPIC  -lkssh2
