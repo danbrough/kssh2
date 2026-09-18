@@ -1,7 +1,7 @@
 package io.github.danbrough.kssh2
 
+import io.github.danbrough.katty.CommandExecutor
 import io.github.danbrough.katty.basicCommand
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
@@ -21,8 +21,6 @@ val scopeTest = basicCommand("scopeTest", "Misc scope tests") {
 class Thang : AutoCloseable {
   companion object {
     var COUNT = 1
-
-
   }
 
   init {
@@ -45,6 +43,7 @@ private val globalThang: Lazy<Thang> = lazy {
 suspend fun thang(): Thang {
   if (!globalThang.isInitialized()) {
     log.debug { "thang() adding completion job .." }
+
     currentCoroutineContext().job.topJob.invokeOnCompletion {
       globalThang.value.close()
     }
@@ -52,15 +51,21 @@ suspend fun thang(): Thang {
   return globalThang.value
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
+
 private val Job.topJob: Job
   get() = parent?.topJob ?: this
+
+private suspend fun topJob(): Job = currentCoroutineContext().job.topJob
 
 suspend fun <R> thang(block: suspend Thang.() -> R): R = thang().block()
 
 
 private suspend fun testGetSshScope() {
   log.info { "testGetSshScope()" }
+
+  log.debug { "topJob1: ${currentCoroutineContext().job.topJob}" }
+  log.debug { "topJob1: ${topJob()}" }
+  log.debug { "supervisor: ${currentCoroutineContext()[CommandExecutor]?.supervisorJob}" }
 
   thang {
     log.debug { "in thang:${thang()} scope: $this" }

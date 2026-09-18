@@ -1,5 +1,6 @@
 @file:OptIn(InternalKotlinGradlePluginApi::class)
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.InternalKotlinGradlePluginApi
@@ -39,7 +40,8 @@ allprojects {
             "kotlin.time.ExperimentalTime",
             "kotlin.uuid.ExperimentalUuidApi",
             "kotlinx.cinterop.ExperimentalForeignApi",
-            "kotlin.experimental.ExperimentalNativeApi"
+            "kotlin.experimental.ExperimentalNativeApi",
+            "kotlinx.coroutines.ExperimentalCoroutinesApi",
           )
       }
     }

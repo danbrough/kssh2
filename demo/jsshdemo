@@ -1,12 +1,6 @@
 #!/bin/bash
 
-
-[ -z  "$KLOG_COLOR" ] && KLOG_COLOR=1
-[ -z "$KLOG_LEVEL" ] && KLOG_LEVEL=TRACE
-export KLOG_COLOR KLOG_LEVEL
-
-ROOTDIR="$(pwd)"
-cd `dirname "$0"` && cd ..
+cd "$(dirname "$0")" && . ./common.sh
 
 if [ "$OSTYPE" == "linux-gnu" ]; then
   TARGET=linux
@@ -45,8 +39,8 @@ TMPFILE=`mktemp`
 JARFILE=`cat $TMPFILE | awk '/shadowJar:/  {print $2}'`
 echo jarfile: $JARFILE
 rm $TMPFILE
-echo changing to dir $ROOTDIR
-cd "$ROOTDIR"
+
+cd "$ROOT_DIR/$MODULE"
 echo LD_LIBRARY_PATH = $LD_LIBRARY_PATH
 echo DYLD_LIBRARY_PATH = $DYLD_LIBRARY_PATH
 exec java $ARGS -jar $JARFILE "$@"
