@@ -29,6 +29,7 @@ kotlin {
           ?: libs.katty.versioned)
         implementation(project.findProperty("klog.path")?.let { libs.klog }
           ?: libs.klog.versioned)
+        implementation(libs.kotlinx.coroutines.core)
 
       }
     }

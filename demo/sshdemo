@@ -4,16 +4,12 @@ cd "$(dirname "$0")" && . ./common.sh
 
 EXE=ssh2demo
 
-
-
 if [[ $OSTYPE == darwin* ]] && [[ $HOSTTYPE == "x86_64" ]]; then
   ./gradlew :$MODULE:link${EXE}DebugExecutableMacosX64 || exit $?
-  cd "$MODULE"
-  echo running $ROOT_DIR/$MODULE/build/bin/macosX64/${EXE}DebugExecutable/${EXE}.kexe in $PWD
+  echo running $ROOT_DIR/$MODULE/build/bin/macosX64/${EXE}DebugExecutable/${EXE}.kexe
   exec "$ROOT_DIR/$MODULE/build/bin/macosX64/${EXE}DebugExecutable/${EXE}.kexe" "$@"
 else
   ./gradlew :$MODULE:link${EXE}DebugExecutableLinuxX64 || exit $?
-  cd "$MODULE"
-  echo running $ROOT_DIR/$MODULE/build/bin/linuxX64/${EXE}DebugExecutable/${EXE}.kexe in $PWD
+  echo running $ROOT_DIR/$MODULE/build/bin/linuxX64/${EXE}DebugExecutable/${EXE}.kexe
   exec "$ROOT_DIR/$MODULE/build/bin/linuxX64/${EXE}DebugExecutable/${EXE}.kexe" "$@"
 fi

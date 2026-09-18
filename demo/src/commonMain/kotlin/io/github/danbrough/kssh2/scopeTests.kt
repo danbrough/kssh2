@@ -13,7 +13,10 @@ private val log = demoLog
 val scopeTest = basicCommand("scopeTest", "Misc scope tests") {
 
   ssh {
+    log.debug { "scopeTest:: scope: $this" }
     testGetSshScope()
+
+
   }
 }
 
@@ -63,17 +66,22 @@ suspend fun <R> thang(block: suspend Thang.() -> R): R = thang().block()
 private suspend fun testGetSshScope() {
   log.info { "testGetSshScope()" }
 
-  log.debug { "topJob1: ${currentCoroutineContext().job.topJob}" }
-  log.debug { "topJob1: ${topJob()}" }
-  log.debug { "supervisor: ${currentCoroutineContext()[CommandExecutor]?.supervisorJob}" }
+  ssh {
+    log.debug { "testGetSshScope::ssh scope: $this" }
 
-  thang {
-    log.debug { "in thang:${thang()} scope: $this" }
-  }
 
-  thang {
-    log.debug { "in second thang scope: $this" }
-    test1()
+    log.debug { "topJob1: ${currentCoroutineContext().job.topJob}" }
+    log.debug { "topJob1: ${topJob()}" }
+    log.debug { "supervisor: ${currentCoroutineContext()[CommandExecutor]?.supervisorJob}" }
+
+    thang {
+      log.debug { "in thang:${thang()} scope: $this" }
+    }
+
+    thang {
+      log.debug { "in second thang scope: $this" }
+      test1()
+    }
   }
 
 }

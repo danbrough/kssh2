@@ -4,13 +4,14 @@ import com.github.ajalt.mordant.rendering.TextColors
 import io.github.danbrough.katty.BasicCommandHandler
 import io.github.danbrough.katty.DefaultHistory
 import io.github.danbrough.katty.KTerminal
+import io.github.danbrough.katty.KattyUtils
 import io.github.danbrough.katty.basicCommand
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -45,12 +46,23 @@ suspend fun commonMain(
     scopeTest,
   )
 
-  val terminal =
-    KTerminal(history = DefaultHistory(Path("./history.txt")), commandHandler = cmdHandler)
-  terminal.main(args)
+  /**
+   * Initialize the ssh library before we start.
+   * Then it's close will only be called after the terminal has finished
+   */
+
+  ssh {
+    KTerminal(
+      history = DefaultHistory(Path("./history.txt")),
+      cmdContext = currentCoroutineContext(),
+      commandHandler = cmdHandler
+    ).main(
+      args
+    )
+  }
 }
 
-@OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun KTerminal.coroutineTest(array: List<String>) {
   log.debug { "coroutineTest: ${SshUtils.threadName()}" }
 

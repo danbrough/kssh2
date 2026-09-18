@@ -2,6 +2,7 @@ package io.github.danbrough.kssh2
 
 import java.net.Inet4Address
 import java.net.Inet6Address
+import kotlin.concurrent.thread
 
 actual object SshUtils {
   actual fun getEnv(name: String): String? = System.getenv(name)
@@ -21,6 +22,10 @@ actual object SshUtils {
     }
     return addresses
   }
+
+  actual fun atExit(block: () -> Unit) =
+    Runtime.getRuntime().addShutdownHook(thread(block = block))
+
 }
 
 

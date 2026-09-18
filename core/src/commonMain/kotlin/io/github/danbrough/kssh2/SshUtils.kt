@@ -2,10 +2,12 @@ package io.github.danbrough.kssh2
 
 
 expect object SshUtils {
-   fun getEnv(name: String): String?
-   fun threadName(): String
+  fun getEnv(name: String): String?
+  fun threadName(): String
 
-   fun resolveHostName(hostName:String): List<String>
+  fun resolveHostName(hostName: String): List<String>
+
+  fun atExit(block: () -> Unit)
 }
 
 object IPAddressValidator {
@@ -25,3 +27,4 @@ object IPAddressValidator {
 
   fun isIPAddress(input: String): Boolean = isIPv4(input) || isIPv6(input)
 }
+
