@@ -30,6 +30,7 @@ fun testLog(env: CPointer<JNIEnvVar>) {
     "testSomething() from Log.i logFactory is $klogFactory"
   )*/
 }
+/*
 
 @CName("__assert_fail")
 fun assertFailHook(
@@ -52,11 +53,13 @@ fun assertFailHook(
   abort()
 }
 
+*/
 
+/*
 @CName("explicit_bzero")
 fun explicitBzeroHook(s: kotlinx.cinterop.CPointer<out kotlinx.cinterop.CPointed>?, n: Long) {
   if (s != null && n > 0) {
     // Fall back to a standard memset to clear the memory buffer safely
     memset(s, 0, n.toULong())
   }
-}
+}*/

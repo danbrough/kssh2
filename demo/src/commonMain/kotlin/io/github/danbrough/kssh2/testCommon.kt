@@ -44,6 +44,7 @@ suspend fun commonMain(
     },
     scopeTest,
   )
+
   val terminal =
     KTerminal(history = DefaultHistory(Path("./history.txt")), commandHandler = cmdHandler)
   terminal.main(args)

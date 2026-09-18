@@ -77,25 +77,25 @@ typedef struct {
 } libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result;
 typedef struct {
   libkssh2_KNativePtr pinned;
+} libkssh2_kref_org_danbrough_klog_KLogger;
+typedef struct {
+  libkssh2_KNativePtr pinned;
 } libkssh2_kref_kotlin_Function1;
 typedef struct {
   libkssh2_KNativePtr pinned;
 } libkssh2_kref_kotlin_Function0;
 typedef struct {
   libkssh2_KNativePtr pinned;
-} libkssh2_kref_org_danbrough_klog_KLogger;
+} libkssh2_kref_kotlin_ByteArray;
 typedef struct {
   libkssh2_KNativePtr pinned;
-} libkssh2_kref_kotlin_ByteArray;
+} libkssh2_kref_io_github_danbrough_kssh2_lib_JniEnv;
 typedef struct {
   libkssh2_KNativePtr pinned;
 } libkssh2_kref_kotlin_Any;
 typedef struct {
   libkssh2_KNativePtr pinned;
 } libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result_Companion;
-typedef struct {
-  libkssh2_KNativePtr pinned;
-} libkssh2_kref_io_github_danbrough_kssh2_lib_JniEnv;
 typedef struct {
   libkssh2_KNativePtr pinned;
 } libkssh2_kref_io_github_danbrough_kssh2_lib_LibAgent;
@@ -151,8 +151,6 @@ typedef struct {
   libkssh2_KNativePtr pinned;
 } libkssh2_kref_kotlin_collections_List;
 
-extern void __assert_fail(void* assertion, void* file, libkssh2_KInt line, void* function);
-extern void explicit_bzero(void* s, libkssh2_KLong n);
 extern void Java_io_github_danbrough_kssh2_AndroidKt_testLog(void* env);
 extern void Java_io_github_danbrough_kssh2_lib_LibAgent_close(void* env, void* clazz, libkssh2_KLong agent);
 extern void Java_io_github_danbrough_kssh2_lib_LibChannel_close(void* env, void* clazz, libkssh2_KLong channel);
@@ -228,11 +226,15 @@ typedef struct {
                 libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result (*requestPty)(libkssh2_kref_io_github_danbrough_kssh2_Channel thiz, const char* terminal);
               } Channel;
               struct {
-                void (*assertFailHook)(void* assertion, void* file, libkssh2_KInt line, void* function);
-                void (*explicitBzeroHook)(void* s, libkssh2_KLong n);
                 void (*testLog)(void* env);
               } jni;
               struct {
+                struct {
+                  libkssh2_KType* (*_type)(void);
+                  libkssh2_kref_io_github_danbrough_kssh2_lib_JniEnv (*JniEnv)(void* env);
+                  void* (*get_env)(libkssh2_kref_io_github_danbrough_kssh2_lib_JniEnv thiz);
+                  void* (*get_envPtr)(libkssh2_kref_io_github_danbrough_kssh2_lib_JniEnv thiz);
+                } JniEnv;
                 struct {
                   struct {
                     libkssh2_KType* (*_type)(void);
@@ -248,12 +250,6 @@ typedef struct {
                   libkssh2_KInt (*hashCode)(libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result thiz);
                   const char* (*toString)(libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result thiz);
                 } SSH2Result;
-                struct {
-                  libkssh2_KType* (*_type)(void);
-                  libkssh2_kref_io_github_danbrough_kssh2_lib_JniEnv (*JniEnv)(void* env);
-                  void* (*get_env)(libkssh2_kref_io_github_danbrough_kssh2_lib_JniEnv thiz);
-                  void* (*get_envPtr)(libkssh2_kref_io_github_danbrough_kssh2_lib_JniEnv thiz);
-                } JniEnv;
                 struct {
                   libkssh2_KType* (*_type)(void);
                   libkssh2_kref_io_github_danbrough_kssh2_lib_LibAgent (*_instance)();
@@ -302,11 +298,6 @@ typedef struct {
                   libkssh2_KType* (*_type)(void);
                   libkssh2_kref_io_github_danbrough_kssh2_lib_SshChannelNative (*SshChannelNative)(void* channelPointer);
                 } SshChannelNative;
-                libkssh2_KInt (*get_LIBSSH2_CHANNEL_PACKET_DEFAULT)();
-                libkssh2_KInt (*get_LIBSSH2_CHANNEL_WINDOW_DEFAULT)();
-                libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result (*onFailure)(libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result thiz, libkssh2_kref_kotlin_Function1 block);
-                libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result (*onSuccess)(libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result thiz, libkssh2_kref_kotlin_Function0 block);
-                void (*successOrThrow)(libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result thiz);
                 void (*ssh2AgentClose)(void* env, void* clazz, libkssh2_KLong agent);
                 void (*ssh2ChannelClose)(void* env, void* clazz, libkssh2_KLong channel);
                 libkssh2_KLong (*ssh2ChannelOpen)(void* env, void* clazz, libkssh2_KLong session, libkssh2_KLong socket, void* channelType, libkssh2_KInt windowSize, libkssh2_KInt packetSize, void* message);
@@ -332,6 +323,11 @@ typedef struct {
                 void (*initJniBridge_)();
                 void (*ssh2Close)(void* env, void* clz);
                 void (*ssh2Init)(void* env, void* clz);
+                libkssh2_KInt (*get_LIBSSH2_CHANNEL_PACKET_DEFAULT)();
+                libkssh2_KInt (*get_LIBSSH2_CHANNEL_WINDOW_DEFAULT)();
+                libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result (*onFailure)(libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result thiz, libkssh2_kref_kotlin_Function1 block);
+                libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result (*onSuccess)(libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result thiz, libkssh2_kref_kotlin_Function0 block);
+                void (*successOrThrow)(libkssh2_kref_io_github_danbrough_kssh2_lib_SSH2Result thiz);
                 libkssh2_KLong (*nativeChannelOpen)(libkssh2_KLong session, libkssh2_KLong socket, const char* channelType, libkssh2_KInt windowSize, libkssh2_KInt packetSize, const char* message);
                 libkssh2_KInt (*nativeSessionAuthenticatePublicKey)(libkssh2_KLong sessionPtr, libkssh2_KLong socket, const char* user, const char* publicKeyData, const char* privateKeyData, const char* passphrase);
                 const char* (*nativeSessionError)(libkssh2_KLong session);
@@ -347,6 +343,7 @@ typedef struct {
                 libkssh2_kref_io_github_danbrough_kssh2_SSHScope (*SSHScope)();
                 libkssh2_kref_kotlin_coroutines_CoroutineContext_Key (*get_key)(libkssh2_kref_io_github_danbrough_kssh2_SSHScope thiz);
                 void (*close)(libkssh2_kref_io_github_danbrough_kssh2_SSHScope thiz);
+                void (*ssh)(libkssh2_kref_io_github_danbrough_kssh2_SSHScope thiz, libkssh2_kref_kotlin_Function1 block);
               } SSHScope;
               struct {
                 libkssh2_KType* (*_type)(void);

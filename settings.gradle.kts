@@ -52,7 +52,7 @@ plugins {
 
 
 
-include(":core", ":demo",":app",":core2")
+include(":core", ":demo",":app")
 
 
 providers.gradleProperty("klog.path").orNull?.also {

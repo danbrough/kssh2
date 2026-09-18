@@ -1,14 +1,11 @@
 package io.github.danbrough.kssh2
 
 import io.github.danbrough.katty.basicCommand
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.job
 import kotlin.time.Duration.Companion.seconds
 
 private val log = demoLog
@@ -21,8 +18,8 @@ val scopeTest = basicCommand("scopeTest", "Misc scope tests") {
 }
 
 
-class Thang : CoroutineContext.Element, AutoCloseable {
-  companion object : CoroutineContext.Key<Thang> {
+class Thang : AutoCloseable {
+  companion object {
     var COUNT = 1
 
 
@@ -36,26 +33,37 @@ class Thang : CoroutineContext.Element, AutoCloseable {
 
   override fun toString(): String = "Thang_$count"
 
-  override val key: CoroutineContext.Key<*> = Thang
   override fun close() {
-    log.info { "Thang::$count close()" }
+    log.warn { "Thang::$count close()" }
   }
 }
-suspend fun <R> thang(block: suspend Thang.() -> R) =
-  currentCoroutineContext()[Thang]?.block() ?: Thang().also { thang ->
-    withContext(thang) {
-      thang.use {
-        it.block()
-      }
+
+private val globalThang: Lazy<Thang> = lazy {
+  Thang()
+}
+
+suspend fun thang(): Thang {
+  if (!globalThang.isInitialized()) {
+    log.debug { "thang() adding completion job .." }
+    currentCoroutineContext().job.topJob.invokeOnCompletion {
+      globalThang.value.close()
     }
   }
+  return globalThang.value
+}
+
+@OptIn(ExperimentalCoroutinesApi::class)
+private val Job.topJob: Job
+  get() = parent?.topJob ?: this
+
+suspend fun <R> thang(block: suspend Thang.() -> R): R = thang().block()
 
 
 private suspend fun testGetSshScope() {
   log.info { "testGetSshScope()" }
 
   thang {
-    log.debug { "in thang scope: $this" }
+    log.debug { "in thang:${thang()} scope: $this" }
   }
 
   thang {
@@ -66,15 +74,16 @@ private suspend fun testGetSshScope() {
 }
 
 private suspend fun test1() {
-  log.debug { "test1() with thang: ${currentCoroutineContext()[Thang]}" }
+  log.info { "test1() with thang: ${thang()}" }
 
-  coroutineScope {
-    launch(Dispatchers.IO) {
-      thang {
-        log.debug { "test1() $this  with thang: ${currentCoroutineContext()[Thang]} .. having a sleep" }
-        delay(2.seconds)
-        log.debug { "test1() $this finishing" }
-      }
-    }
+
+  thang {
+    log.debug { "test1() $this  with thang: ${thang()} .. having a sleep" }
+    delay(2.seconds)
+    log.debug { "test1() $this with thang: ${thang()} finishing" }
   }
+
+  log.info { "test1() finishing with thang: ${thang()}" }
+
 }
+
