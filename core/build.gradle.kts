@@ -149,10 +149,10 @@ linkerOpts.linux_arm64 = -lz -lpthread -ldl /files/workspace/kssh2/lib/openssl/l
 
         listOf("arm64", "x64").forEach { arch ->
           output.println("compilerOpts.linux_$arch = -I$libPath/openssl/linux/$arch/include -I$libPath/ssh2/linux/$arch/include")
-          output.println("linkerOpts.linux_$arch = $libPath/openssl/linux/$arch/lib/libssl.a $libPath/openssl/linux/$arch/lib/libcrypto.a $libPath/ssh2/linux/$arch/lib/libssh2.a")
+          output.println("linkerOpts.linux_$arch = $libPath/openssl/linux/$arch/lib/libcrypto.a $libPath/ssh2/linux/$arch/lib/libssh2.a")
           val libDir = if (arch == "arm64") "arm64-v8a" else "x86_64"
           output.println("compilerOpts.android_$arch = -fPIC  -mno-outline-atomics -I$libPath/openssl/android/$libDir/include -I$libPath/ssh2/android/$libDir/include")
-          output.println("linkerOpts.android_$arch = -Wl,--undefined=EVP_aes_256_gcm  $libPath/openssl/android/$libDir/lib/libssl.a $libPath/openssl/android/$libDir/lib/libcrypto.a $libPath/ssh2/android/$libDir/lib/libssh2.a")
+          output.println("linkerOpts.android_$arch = -Wl,--undefined=EVP_aes_256_gcm $libPath/openssl/android/$libDir/lib/libcrypto.a $libPath/ssh2/android/$libDir/lib/libssh2.a")
         }
 
         output.print(footer)
