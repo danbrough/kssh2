@@ -1,11 +1,14 @@
 package io.github.danbrough.kssh2.lib
 
+import io.github.danbrough.kssh2.logJvm
 import org.danbrough.klog.logger
+
+private val log = logJvm
 
 @Suppress("UnsafeDynamicallyLoadedCode")
 actual object LibSSH2 {
 
-  val log = logger("SSH2_JVM")
+
 
   actual val Session: LibSession = LibSession
   actual val Socket: LibSocket = LibSocket

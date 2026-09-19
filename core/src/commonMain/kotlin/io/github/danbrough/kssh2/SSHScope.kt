@@ -2,23 +2,27 @@ package io.github.danbrough.kssh2
 
 
 import io.github.danbrough.kssh2.lib.LibSSH2
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 
 @SSH2DSL
-class SSHScope : Scope, CoroutineContext.Element {
+class SSHScope : CoroutineContext.Element {
 
-  companion object : CoroutineContext.Key<SSHScope>
+  companion object : CoroutineContext.Key<SSHScope>{
+    init {
+      println("SSHScope::initLib()")
+      LibSSH2.initLib()
+      println("REGISTERING SSHSCOPE SHUTDOWN HOOK")
+      SshUtils.atExit{
+        globalSSH.close()
+      }
+    }
+  }
 
   override val key: CoroutineContext.Key<*> = SSHScope
 
-  init {
-    LibSSH2.initLib()
-  }
 
-  override fun close() = LibSSH2.closeLib()
+  fun close() = LibSSH2.closeLib()
 
   @Deprecated(
     message = "Nested 'ssh' blocks are not allowed.",
@@ -30,24 +34,14 @@ class SSHScope : Scope, CoroutineContext.Element {
     error("Forbidden at compile-time.")
 }
 
-private val globalSsh: Lazy<SSHScope> = lazy { SSHScope() }
+private val globalSSH = SSHScope()
+
 
 suspend fun <R> ssh(block: suspend SSHScope.() -> R): R =
-  currentCoroutineContext()[SSHScope]?.block() ?: run {
-    if (!globalSsh.isInitialized())
-      SshUtils.atExit {
-        globalSsh.value.close()
-      }
-
-    globalSsh.value.let {
-      withContext(it) {
-        it.block()
-      }
-    }
-  }
+  globalSSH.block()
 
 
-suspend fun <P : Scope, C : Scope, R> P.sshScope(block: suspend C.() -> R, childScope: C): R =
+suspend fun <P, C : Scope, R> P.sshScope(block: suspend C.() -> R, childScope: C): R =
   runCatching {
     childScope.block()
   }.also { childScope.close() }.getOrThrow()

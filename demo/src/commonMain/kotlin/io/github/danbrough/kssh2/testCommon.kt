@@ -25,6 +25,13 @@ import kotlin.time.Duration.Companion.seconds
 internal val demoLog = logger("SSH2DEMO")
 private val log = demoLog
 
+suspend fun newSSHScope(){
+  ssh {
+    log.debug { "newSSHScope::ssh scope: $this" }
+    delay(1.seconds)
+    log.debug { "newSSHScope::ssh finishing" }
+  }
+}
 suspend fun commonMain(
   args: Array<String>,
   cmdHandler: BasicCommandHandler = BasicCommandHandler()
@@ -43,6 +50,14 @@ suspend fun commonMain(
     basicCommand("coroutineTest", "testing stuff") {
       coroutineTest(it)
     },
+    basicCommand("sshScopeTest", "Testing ssh scope") {
+      ssh {
+        log.debug { "inside ssh scope: $this" }
+        delay(1.seconds)
+        log.debug { "starting new scope ..." }
+        newSSHScope()
+      }
+    },
     scopeTest,
   )
 
@@ -51,15 +66,15 @@ suspend fun commonMain(
    * Then it's close will only be called after the terminal has finished
    */
 
-  ssh {
-    KTerminal(
-      history = DefaultHistory(Path("./history.txt")),
-      cmdContext = currentCoroutineContext(),
-      commandHandler = cmdHandler
-    ).main(
-      args
-    )
-  }
+
+  KTerminal(
+    history = DefaultHistory(Path("./history.txt")),
+    cmdContext = currentCoroutineContext(),
+    commandHandler = cmdHandler
+  ).main(
+    args
+  )
+
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)

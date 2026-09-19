@@ -12,15 +12,12 @@ import io.github.danbrough.kssh2.lib.LibSSH2
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileReader
 import java.io.InputStreamReader
 import java.net.InetAddress
-import kotlin.time.Clock
 
 
 fun main(args: Array<String>) {
@@ -29,17 +26,12 @@ fun main(args: Array<String>) {
   demoLog.info { "MESSAGE=${System.getenv("MESSAGE")}" }
   demoLog.info { "SSH2_LIBS=${System.getenv("SSH2_LIBS")}" }
 
-
   val cmdHandler = BasicCommandHandler()
   cmdHandler.registerCommands(
-    basicCommand("date", "prints the date") {
-      println("Today is ${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())}")
-    },
     basicCommand("jniTest", "Tests that the JNI library works") {
       LibSSH2.initJNI()
     },
   )
-
 
   runBlocking {
     commonMain(args, cmdHandler)
@@ -49,24 +41,7 @@ fun main(args: Array<String>) {
 
 suspend fun KTerminal.sshTest(args: List<String>) {
   println("running ssh2 test with args: ${args.joinToString()}")
-  /*
-  	public static boolean getFile(String host, int port, String username, char[] password, String fromPath, File toFile) {
 
-		try (var client = SshClientBuilder.create().
-				withTarget(host, port).
-				withUsername(username).
-				withPassword(password).build()) {
-
-			return client.addTask(DownloadFileTaskBuilder.create().
-					withClient(client).
-					withRemotePath(fromPath).
-					withLocalFile(toFile).build()).waitForever().isDoneAndSuccess();
-		} catch (Throwable e) {
-			Log.error("getFile failed", e);
-			return false;
-		}
-	}
-   */
   val ssh = SshClient.SshClientBuilder.create().apply {
     withHost(InetAddress.getByName("192.168.0.4"))
     withUsername("dan")

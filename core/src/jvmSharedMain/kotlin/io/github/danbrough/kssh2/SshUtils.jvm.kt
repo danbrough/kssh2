@@ -24,7 +24,8 @@ actual object SshUtils {
   }
 
   actual fun atExit(block: () -> Unit) =
-    Runtime.getRuntime().addShutdownHook(thread(block = block))
+    Runtime.getRuntime().addShutdownHook(thread(start = false, block = block))
+
 
 }
 

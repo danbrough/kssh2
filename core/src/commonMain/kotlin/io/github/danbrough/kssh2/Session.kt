@@ -7,17 +7,17 @@ import io.github.danbrough.kssh2.lib.LibSocket
 import io.github.danbrough.kssh2.lib.SSH2Result
 import io.github.danbrough.kssh2.lib.SessionPtr
 import io.github.danbrough.kssh2.lib.SocketHandle
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.withContext
-
-suspend fun <R> SSHScope.session(block: suspend Session.() -> R): R =
-  withContext(this) {
-    sshScope(block, Session())
-  }
+import kotlin.coroutines.CoroutineContext
 
 
 @SSH2DSL
-class Session() : Scope {
+class Session() : Scope, CoroutineContext.Element {
 
+  companion object : CoroutineContext.Key<Session>
+
+  override val key: CoroutineContext.Key<*> = Session
 
   val session: SessionPtr = LibSession.createSession(false)
   var socket: SocketHandle = 0L
@@ -70,3 +70,17 @@ class Session() : Scope {
 
 internal fun resultOf(sessionPtr: SessionPtr, success: Boolean) =
   if (success) SSH2Result.SUCCESS else SSH2Result(-1, LibSession.getError(sessionPtr))
+
+
+suspend fun <R> session(block: suspend Session.() -> R): R =
+  ssh {
+    currentCoroutineContext()[Session]?.block() ?: Session().let { session ->
+      session.use {
+        withContext(session) {
+          sshScope(block, session)
+        }
+      }
+    }
+  }
+
+

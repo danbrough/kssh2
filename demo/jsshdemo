@@ -40,7 +40,7 @@ JARFILE=`cat $TMPFILE | awk '/shadowJar:/  {print $2}'`
 echo jarfile: $JARFILE
 rm $TMPFILE
 
-cd "$ROOT_DIR/$MODULE"
+#cd "$ROOT_DIR/$MODULE"
 echo LD_LIBRARY_PATH = $LD_LIBRARY_PATH
 echo DYLD_LIBRARY_PATH = $DYLD_LIBRARY_PATH
 exec java $ARGS -jar $JARFILE "$@"
