@@ -7,8 +7,10 @@ import kotlinx.cinterop.toCPointer
 actual object LibAgent {
   actual fun close(agent: AgentPtr) {
     if (agent != 0L) {
-      libssh2_agent_disconnect(agent.toCPointer());
-      libssh2_agent_free(agent.toCPointer());
+      println("calling libssh2_agent_disconnect ...")
+      libssh2_agent_disconnect(agent.toCPointer())
+      println("calling libssh2_agent_free ...")
+      libssh2_agent_free(agent.toCPointer())
     }
   }
 }

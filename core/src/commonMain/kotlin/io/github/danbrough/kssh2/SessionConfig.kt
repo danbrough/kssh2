@@ -1,6 +1,6 @@
 package io.github.danbrough.kssh2
 
-import io.github.danbrough.kssh2.SshUtils.getEnv
+import io.github.danbrough.katty.KattyUtils
 
 
 data class SessionConfig(
@@ -42,7 +42,7 @@ data class SessionConfig(
    * Where known hosts are stored.
    * Defaults to $HOME/.ssh/known_hosts
    */
-  val knownHostsFile: String? = "${getEnv("HOME")}/.ssh/known_hosts",
+  val knownHostsFile: String? = "${KattyUtils.getEnv("HOME")}/.ssh/known_hosts",
 
   /**
    * The authentication method to use.

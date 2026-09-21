@@ -78,7 +78,7 @@ logback = "1.6.3"
 clikt = "5.1.0"
 klog = "0.1.5"
 
-katty = "0.0.9"
+katty = "0.1.0"
 mordant = "3.1.0"
 androidx-navigation = "2.9.2"
 runner = "1.7.0"
@@ -220,8 +220,10 @@ mordant = { module = "com.github.ajalt.mordant:mordant", version.ref = "mordant"
 mordant-coroutines = { module = "com.github.ajalt.mordant:mordant-coroutines", version.ref = "mordant" }
 mordant-markdown = { module = "com.github.ajalt.mordant:mordant-markdown", version.ref = "mordant" }
 
-katty-versioned = { module = "io.github.danbrough.katty:core", version.ref = "katty" }
-katty = { module = "io.github.danbrough.katty:core" }
+katty-shell-versioned = { module = "io.github.danbrough.katty:shell", version.ref = "katty" }
+katty-shell = { module = "io.github.danbrough.katty:shell" }
+katty-utils-versioned = { module = "io.github.danbrough.katty:utils", version.ref = "katty" }
+katty-utils = { module = "io.github.danbrough.katty:utils" }
 klog-versioned = { module = "org.danbrough.klog:core", version.ref = "klog" }
 klog = { module = "org.danbrough.klog:core" }
 logback-core = { module = "ch.qos.logback:logback-core", version.ref = "logback" }

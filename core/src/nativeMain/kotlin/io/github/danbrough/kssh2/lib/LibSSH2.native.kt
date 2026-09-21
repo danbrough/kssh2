@@ -1,6 +1,5 @@
 package io.github.danbrough.kssh2.lib
 
-import io.github.danbrough.kssh2.logNative
 import io.github.danbrough.libssh2.cinterop.kssh2_exit
 import io.github.danbrough.libssh2.cinterop.kssh2_init
 

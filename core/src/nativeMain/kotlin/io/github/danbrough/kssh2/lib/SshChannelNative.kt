@@ -13,7 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import org.danbrough.klog.logger
 import kotlin.time.Duration.Companion.milliseconds
+
+internal  val logNative = logger("SSH2_NATIVE")
 
 @OptIn(ExperimentalForeignApi::class)
 class SshChannelNative(

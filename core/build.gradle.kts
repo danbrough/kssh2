@@ -52,6 +52,8 @@ kotlin {
           if (project.hasProperty("klog.path")) libs.klog
           else libs.klog.versioned
         )
+        implementation(project.findProperty("katty.path")?.let { libs.katty.utils }
+          ?: libs.katty.utils.versioned)
         implementation(libs.kotlinx.datetime)
         implementation(libs.kotlinx.io)
         implementation(libs.kotlinx.coroutines.core)

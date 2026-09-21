@@ -1,5 +1,6 @@
 package io.github.danbrough.kssh2
 
+import io.github.danbrough.katty.KattyUtils
 import io.github.danbrough.kssh2.lib.ChannelPtr
 import io.github.danbrough.kssh2.lib.LibSSH2
 import io.github.danbrough.kssh2.lib.SSH2Result
@@ -37,12 +38,12 @@ class Channel(val session: Session, channelType: String = "session") : Scope {
     val buf = ByteArray(bufSize)
     while (true) {
       val ret = LibSSH2.Channel.read(session.session, session.socket, channelPtr, 0, buf)
-      channelLog.trace { "readChannel():${SshUtils.threadName()} ret: $ret " }
+      channelLog.trace { "readChannel():${KattyUtils.threadName()} ret: $ret " }
       if (ret <= 0) break
       emit(buf.take(ret.toInt()).toByteArray())
     }
 
-    channelLog.trace { "readChannel() done ${SshUtils.threadName()}" }
+    channelLog.trace { "readChannel() done ${KattyUtils.threadName()}" }
   }.flowOn(Dispatchers.IO).buffer(0)
 
   override fun close() {

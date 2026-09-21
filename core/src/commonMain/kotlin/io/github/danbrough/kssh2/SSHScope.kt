@@ -1,19 +1,23 @@
 package io.github.danbrough.kssh2
 
 
+import io.github.danbrough.katty.KattyUtils
 import io.github.danbrough.kssh2.lib.LibSSH2
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 
 @SSH2DSL
 class SSHScope : CoroutineContext.Element {
 
-  companion object : CoroutineContext.Key<SSHScope>{
+  companion object : CoroutineContext.Key<SSHScope> {
     init {
       println("SSHScope::initLib()")
       LibSSH2.initLib()
       println("REGISTERING SSHSCOPE SHUTDOWN HOOK")
-      SshUtils.atExit{
+      KattyUtils.atExit {
         globalSSH.close()
       }
     }
@@ -21,6 +25,7 @@ class SSHScope : CoroutineContext.Element {
 
   override val key: CoroutineContext.Key<*> = SSHScope
 
+  var message:String = "Hello World"
 
   fun close() = LibSSH2.closeLib()
 
@@ -37,8 +42,13 @@ class SSHScope : CoroutineContext.Element {
 private val globalSSH = SSHScope()
 
 
-suspend fun <R> ssh(block: suspend SSHScope.() -> R): R =
-  globalSSH.block()
+suspend fun <R> ssh(
+  block: suspend SSHScope.() -> R
+): R =
+  currentCoroutineContext()[SSHScope]?.block() ?: withContext(globalSSH){
+    globalSSH.block()
+  }
+
 
 
 suspend fun <P, C : Scope, R> P.sshScope(block: suspend C.() -> R, childScope: C): R =

@@ -2,6 +2,7 @@ package io.github.danbrough.kssh2
 
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextStyles
+import io.github.danbrough.katty.IPAddressValidator
 import io.github.danbrough.katty.KTerminal
 import io.github.danbrough.katty.KattyUtils
 import kotlinx.io.buffered
@@ -92,7 +93,7 @@ suspend fun KTerminal.parseArgs(args: List<String>): DemoConfig? {
   }
 
   if (!IPAddressValidator.isIPAddress(config.host)) {
-    val hostNames = SshUtils.resolveHostName(config.host)
+    val hostNames = KattyUtils.resolveHostName(config.host)
     println("hostNames: ${hostNames.joinToString(",")}")
     config.host = hostNames.firstOrNull() ?: config.host
   }

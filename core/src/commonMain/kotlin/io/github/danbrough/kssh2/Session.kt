@@ -11,6 +11,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
+private val log = sshLog
 
 @SSH2DSL
 class Session() : Scope, CoroutineContext.Element {
@@ -61,9 +62,16 @@ class Session() : Scope, CoroutineContext.Element {
   private fun Long.asResult(): SSH2Result = toInt().asResult()
 
   override fun close() {
-    LibSSH2.Agent.close(agent)
+    if (agent != 0L) {
+      log.trace { "Session::close() $this .. closing agent.." }
+      LibSSH2.Agent.close(agent)
+      agent = 0L
+    }
+    log.trace { "Session::close() $this.. closing socket.." }
     LibSocket.close(socket)
+    log.trace { "Session::close() $this.. closing session.." }
     LibSession.close(session)
+    log.trace { "Session::close() $this finished" }
   }
 }
 
@@ -75,11 +83,11 @@ internal fun resultOf(sessionPtr: SessionPtr, success: Boolean) =
 suspend fun <R> session(block: suspend Session.() -> R): R =
   ssh {
     currentCoroutineContext()[Session]?.block() ?: Session().let { session ->
-      session.use {
-        withContext(session) {
-          sshScope(block, session)
-        }
+      log.warn { "created session: $session" }
+      withContext(session) {
+        sshScope(block, session)
       }
+
     }
   }
 

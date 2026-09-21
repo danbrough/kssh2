@@ -1,7 +1,6 @@
 package io.github.danbrough.kssh2.lib
 
 import io.github.danbrough.kssh2.lib.LibSSH2.Session
-import io.github.danbrough.kssh2.logNative
 import io.github.danbrough.libssh2.cinterop.LIBSSH2_ERROR_EAGAIN
 import io.github.danbrough.libssh2.cinterop.libssh2_channel_close
 import io.github.danbrough.libssh2.cinterop.libssh2_channel_process_startup

@@ -2,6 +2,7 @@ package io.github.danbrough.kssh2
 
 import com.github.ajalt.mordant.rendering.TextColors
 import io.github.danbrough.katty.KTerminal
+import io.github.danbrough.katty.KattyUtils
 import kotlinx.coroutines.flow.map
 
 
@@ -25,13 +26,13 @@ suspend fun KTerminal.ssh2Test(args: List<String>) {
       demoLog.debug { "authenticated with agent" }
 
       channel {
-        demoLog.debug { "${SshUtils.threadName()}: opened channel" }
+        demoLog.debug { "${KattyUtils.threadName()}: opened channel" }
         exec("ls ~/")
-        demoLog.debug { "${SshUtils.threadName()}: executed cmd.." }
+        demoLog.debug { "${KattyUtils.threadName()}: executed cmd.." }
         readChannel().map { it.decodeToString() }.collect {
           demoLog.debug { it }
         }
-        demoLog.debug { "${SshUtils.threadName()}: finished collecting " }
+        demoLog.debug { "${KattyUtils.threadName()}: finished collecting " }
       }
 
     }
