@@ -24,7 +24,7 @@ suspend fun Session.runTestCommand() {
         append(it)
       }
     }.also {
-      log.debug { it }
+      log.warn { it }
     }
   }
 }

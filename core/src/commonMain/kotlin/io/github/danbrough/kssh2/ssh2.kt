@@ -3,8 +3,8 @@ package io.github.danbrough.kssh2
 import org.danbrough.klog.logger
 
 
-interface Scope {
-  fun close()
+interface Scope : AutoCloseable{
+
 }
 
 @DslMarker

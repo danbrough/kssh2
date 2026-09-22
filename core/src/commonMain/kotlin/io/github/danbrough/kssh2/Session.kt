@@ -7,18 +7,35 @@ import io.github.danbrough.kssh2.lib.LibSocket
 import io.github.danbrough.kssh2.lib.SSH2Result
 import io.github.danbrough.kssh2.lib.SessionPtr
 import io.github.danbrough.kssh2.lib.SocketHandle
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 private val log = sshLog
 
 @SSH2DSL
-class Session() : Scope, CoroutineContext.Element {
+class Session(override val key: CoroutineContext.Key<*>, val scope: SSHScope) : Scope,
+  CoroutineContext.Element {
 
+  data class SessionKey(val name: String = "") : CoroutineContext.Key<Session> {
+    companion object {
+      val DEFAULT = SessionKey()
+    }
+  }
+
+  /**
+   * Key for the current session
+   */
   companion object : CoroutineContext.Key<Session>
 
-  override val key: CoroutineContext.Key<*> = Session
+  constructor(name: String, scope: SSHScope) : this(SessionKey(name), scope)
+
 
   val session: SessionPtr = LibSession.createSession(false)
   var socket: SocketHandle = 0L
@@ -80,15 +97,28 @@ internal fun resultOf(sessionPtr: SessionPtr, success: Boolean) =
   if (success) SSH2Result.SUCCESS else SSH2Result(-1, LibSession.getError(sessionPtr))
 
 
-suspend fun <R> session(block: suspend Session.() -> R): R =
-  ssh {
-    currentCoroutineContext()[Session]?.block() ?: Session().let { session ->
+suspend fun <R> session(
+  name: String,
+  block: suspend Session.() -> R
+): R = session(Session.SessionKey(name), block)
+
+suspend fun <R> session(
+  key: CoroutineContext.Key<Session> = Session,
+  block: suspend Session.() -> R
+): R =
+
+  currentCoroutineContext()[key]?.block() ?: ssh {
+    Session(key, this).let { session ->
       log.warn { "created session: $session" }
       withContext(session) {
         sshScope(block, session)
       }
-
     }
+
+
   }
+
+
+
 
 

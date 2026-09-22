@@ -71,7 +71,18 @@ dependencies {
   implementation(libs.androidx.compose.ui)
   implementation(libs.androidx.compose.ui.graphics)
   implementation(libs.androidx.compose.ui.tooling.preview)
+  implementation(libs.androidx.navigation.compose)
+  implementation(libs.jetbrains.lifecycle.viewmodel.compose)
+  implementation(libs.jetbrains.lifecycle.viewmodel.navigation3)
+
+
+  /*implementation(libs.androidx.compose.material3.adaptive)
+  implementation(libs.androidx.compose.material3.adaptive.navigation3)
+  implementation(libs.androidx.compose.material3.adaptive.navigation.suite)*/
+
   implementation(libs.androidx.core.ktx)
+  implementation(libs.jetbrains.compose.material.icons.extended)
+  //implementation(libs.androidx.security.crypto)
   implementation(libs.androidx.lifecycle.runtime.ktx)
   testImplementation(libs.junit)
   //androidTestImplementation(platform(libs.androidx.compose.bom))
