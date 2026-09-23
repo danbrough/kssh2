@@ -12,26 +12,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-  primary = AS_Primary,
-  secondary = AS_Secondary,
-  tertiary = Pink80,
-  background = AS_Background,
-  surface = AS_Surface,
-  onPrimary = AS_OnPrimary,
-  onBackground = AS_OnBackground,
-  onSurface = AS_OnSurface,
-  error = AS_Error
+  primary = Moonlight_Primary,
+  secondary = Moonlight_Secondary,
+  tertiary = Moonlight_Tertiary,
+  background = Moonlight_Background,
+  surface = Moonlight_Surface,
+  onPrimary = Moonlight_OnPrimary,
+  onBackground = Moonlight_OnBackground,
+  onSurface = Moonlight_OnSurface,
+  error = Moonlight_Error
 )
 
 private val LightColorScheme = lightColorScheme(
-  primary = AS_Primary,
-  secondary = AS_Secondary,
-  tertiary = Pink40,
-  background = Color(0xFFF0F0F0), // Light grey similar to AS light theme
+  primary = Moonlight_Primary,
+  secondary = Moonlight_Secondary,
+  tertiary = Moonlight_Tertiary,
+  background = Color(0xFFF2F4F8), // Soft moonlit light grey
   surface = Color.White,
-  onPrimary = AS_OnPrimary,
-  onBackground = Color(0xFF1E1F22),
-  onSurface = Color(0xFF1E1F22)
+  onPrimary = Color.White,
+  onBackground = Moonlight_Background,
+  onSurface = Moonlight_Background
 )
 
 @Composable

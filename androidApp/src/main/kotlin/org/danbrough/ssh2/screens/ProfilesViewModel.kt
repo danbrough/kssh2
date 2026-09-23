@@ -8,6 +8,7 @@ import org.danbrough.ssh2.androidLog
 
 data class ProfileUiState(
   val name: String = "",
+  val userName: String = "",
   val hostname: String = "",
   val port: String = "22",
   val password: String = ""
@@ -20,6 +21,11 @@ class ProfilesViewModel : ViewModel() {
   fun updateName(name: String) {
     uiState = uiState.copy(name = name)
   }
+
+  fun updateUsername(userName: String) {
+    uiState = uiState.copy(userName = userName)
+  }
+
 
   fun updateHostname(hostname: String) {
     uiState = uiState.copy(hostname = hostname)

@@ -1,15 +1,13 @@
 package org.danbrough.ssh2
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlaylistAddCircle
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -21,65 +19,29 @@ import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.danbrough.ssh2.screens.AlbumScreen
+import org.danbrough.ssh2.screens.PlaylistScreen
 import org.danbrough.ssh2.screens.ProfilesScreen
+import org.danbrough.ssh2.screens.SongsScreen
 
-@Composable
-fun SongsScreen(viewModel: OrderViewModel, modifier: Modifier = Modifier) {
-  Box(
-    modifier = Modifier.fillMaxSize(),
-    contentAlignment = Alignment.Center
-  ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var lastAmount by viewModel.lastQuantity
-
-
-    Column(modifier = Modifier.padding(16.dp)) {
-      Text("Songs Screen")
-      Text("Quantity: ${uiState.quantity}")
-      Text("Price: ${uiState.price}")
-
-      Button(onClick = {
-        viewModel.setQuantity(lastAmount)
-        lastAmount *= 2
-      }) {
-        Text("Set Quantity to '$lastAmount'")
-      }
-    }
-
-  }
-}
-
-
-@Composable
-fun PlaylistScreen(modifier: Modifier = Modifier) {
-  Box(
-    modifier = Modifier.fillMaxSize(),
-    contentAlignment = Alignment.Center
-  ) {
-    Text("Playlist Screen")
-    TestButtons()
-  }
-}
 
 enum class Destination(
   val route: String,
@@ -90,7 +52,7 @@ enum class Destination(
   SONGS("songs", "Songs", Icons.Default.MusicNote, "Songs"),
   ALBUM("album", "Album", Icons.Default.Album, "Album"),
   PLAYLISTS("playlist", "Playlist", Icons.Default.PlaylistAddCircle, "Playlist"),
-  PROFILES("profiles","Profiles",Icons.Default.Person,"Profiles")
+  PROFILES("profiles", "Profiles", Icons.Default.Person, "Profiles")
 }
 
 @Composable
@@ -112,11 +74,11 @@ fun AppNavHost(
             }
             val viewModel: OrderViewModel =
               viewModel(viewModelStoreOwner = parentEntry) { OrderViewModel() }
-            SongsScreen(viewModel)
+            SongsScreen(viewModel,modifier)
           }
 
-          Destination.ALBUM -> AlbumScreen()
-          Destination.PLAYLISTS -> PlaylistScreen()
+          Destination.ALBUM -> AlbumScreen(modifier)
+          Destination.PLAYLISTS -> PlaylistScreen(modifier)
           Destination.PROFILES -> {
             val parentEntry = remember(backStackEntry) {
               navController.getBackStackEntry(navController.graph.id)
@@ -153,7 +115,8 @@ fun NavigationBarExample(modifier: Modifier = Modifier) {
             icon = {
               Icon(
                 destination.icon,
-                contentDescription = destination.contentDescription
+                contentDescription = destination.contentDescription,
+                modifier = Modifier.size(38.dp),
               )
             },
             label = { Text(destination.label) }
@@ -166,6 +129,39 @@ fun NavigationBarExample(modifier: Modifier = Modifier) {
   }
 }
 // [END android_compose_components_navigationbarexample]
+
+
+@Composable
+fun NavigationSuiteExample() {
+  var currentDestination by rememberSaveable { mutableStateOf(Destination.SONGS) }
+
+  NavigationSuiteScaffold(
+    navigationSuiteItems = {
+      Destination.entries.forEachIndexed { index, destination ->
+        item(
+          icon = {
+            Icon(
+              destination.icon,
+              contentDescription = destination.label,
+              modifier = Modifier.size(36.dp),
+            )
+          },
+          label = { Text(destination.label) },
+          selected = destination == currentDestination,
+          onClick = { currentDestination = destination }
+        )
+      }
+    }
+  ) {
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+      Greeting(
+        name = "Android",
+        modifier = Modifier.padding(innerPadding)
+      )
+    }
+  }
+}
+
 
 @Preview()
 // [START android_compose_components_navigationrailexample]

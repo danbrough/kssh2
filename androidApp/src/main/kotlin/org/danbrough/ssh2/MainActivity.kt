@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -54,6 +55,8 @@ class MainActivity : ComponentActivity() {
     log.error { "init() error!!" }
     setContent {
       MyApplicationTheme {
+        //NavigationRailExample()
+        //NavigationSuiteExample()
         NavigationBarExample()
       }
     }

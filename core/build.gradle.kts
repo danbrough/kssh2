@@ -189,15 +189,14 @@ kotlin.targets.withType<KotlinNativeTarget>().filter { it.konanTarget.family == 
     //val androidLibDir = project.file("app/libs/${linkTask.target}")
     val srcDir = linkTask.outputs.files.files.first()
 
-    val outputDir = project.file("../app/libs/${target.konanTarget.abiFolder}")
+    val outputDir = project.file("../${projects.androidApp.name}/libs/${target.konanTarget.abiFolder}")
     val copyLibTaskName = "copyLib${linkTask.name.substringAfter("link").capitalize()}"
 
     tasks.register(copyLibTaskName) {
       dependsOn(linkTask)
       description =
-        "Copys the shared library from ${linkTask.name} to app/libs/${target.konanTarget.abiFolder}"
+        "Copys the shared library from ${linkTask.name} to $outputDir}"
       actions.add {
-
         println("copying ${srcDir.absolutePath} to ${outputDir.absolutePath}")
         srcDir.copyRecursively(outputDir, overwrite = true)
       }
