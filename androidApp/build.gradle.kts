@@ -1,5 +1,3 @@
-import com.android.build.api.dsl.MinSdkVersion
-
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.compose.compiler)
@@ -16,16 +14,16 @@ android {
       useLegacyPackaging = true
     }
   }
-/*
-  targets.all {
-    compilations.all {
-      compileTaskProvider.configure {
-        compilerOptions{
-          freeCompilerArgs.add("-Xklib-duplicated-unique-name-strategy=allow-all-with-warning")
+  /*
+    targets.all {
+      compilations.all {
+        compileTaskProvider.configure {
+          compilerOptions{
+            freeCompilerArgs.add("-Xklib-duplicated-unique-name-strategy=allow-all-with-warning")
+          }
         }
       }
-    }
-  }*/
+    }*/
 
   defaultConfig {
     minSdk = 27
@@ -75,6 +73,7 @@ dependencies {
   implementation(libs.jetbrains.lifecycle.viewmodel.compose)
   implementation(libs.jetbrains.lifecycle.viewmodel.navigation3)
   implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
+  implementation(libs.androidx.sqlite.async)
 
 
   /*implementation(libs.androidx.compose.material3.adaptive)
@@ -87,7 +86,7 @@ dependencies {
   implementation(libs.androidx.lifecycle.runtime.ktx)
   testImplementation(libs.junit)
   //androidTestImplementation(platform(libs.androidx.compose.bom))
-  androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+  //androidTestImplementation(libs.androidx.compose.ui.test.junit4)
   androidTestImplementation(libs.androidx.espresso.core)
   androidTestImplementation(libs.androidx.testExt.junit)
   debugImplementation(libs.androidx.compose.ui.test.manifest)

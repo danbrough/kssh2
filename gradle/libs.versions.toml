@@ -107,8 +107,15 @@ publish = "0.37.0"
 # https://github.com/sshtools/maverick-synergy
 maverick-synergy-client = "3.1.4"
 androidx-security-crypto = "1.1.0"
+sqlite = "2.7.1"
 
 [libraries]
+#sqlitenow = { module = "dev.goquick.sqlitenow:core", version.ref="sqlitenow" }
+androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
+androidx-sqlite-async = { module = "androidx.sqlite:sqlite-async", version.ref = "sqlite" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+androidx-sqlite-web = { module = "androidx.sqlite:sqlite-web", version.ref = "sqlite" }
+
 
 sshtools-client = { module = "com.sshtools:maverick-synergy-client", version.ref = "maverick-synergy-client" }
 sshtools-bc = { module = "com.sshtools:maverick-bc", version.ref = "maverick-synergy-client" }

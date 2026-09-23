@@ -15,6 +15,8 @@ plugins {
   alias(libs.plugins.kmp.android.library) apply false
   alias(libs.plugins.android.library) apply false
   alias(libs.plugins.android.application) apply false
+  alias(libs.plugins.androidx.room) apply false
+
   alias(libs.plugins.dokka)
   alias(libs.plugins.shadow) apply false
 }
