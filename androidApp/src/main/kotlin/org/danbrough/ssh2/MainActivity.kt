@@ -63,34 +63,7 @@ class MainActivity : ComponentActivity() {
   }
 }
 
-@Composable
-fun TestButtons() {
-  val scope = rememberCoroutineScope()
-  val context = LocalContext.current
-  Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-      Surface(modifier = Modifier.background(Color.Blue)) {
-        Column {
-          Greeting(
-            name = "Android",
-            modifier = Modifier.padding(innerPadding)
-          )
-
-          Button({ scope.launch { messageTest() } }) {
-            Text("Test")
-          }
-
-          Button({ scope.launch { keyTest(context) } }) {
-            Text("Key Test")
-          }
-
-          PasswordPrompt()
-        }
-      }
-    }
-  }
-}
 
 @Composable
 fun PasswordPrompt() {

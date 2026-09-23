@@ -13,6 +13,7 @@ plugins {
 
 kotlin {
   applyDefaultHierarchyTemplate()
+
   android {
     namespace = "io.github.danbrough.kssh2"
 
@@ -52,6 +53,12 @@ kotlin {
     commonMain {
       dependencies {
         api(projects.core)
+      }
+    }
+
+    jvmMain {
+      dependencies {
+        implementation(libs.kotlinx.coroutines.swing)
       }
     }
   }

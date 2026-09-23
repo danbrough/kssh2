@@ -88,6 +88,7 @@ runner = "1.7.0"
 shadow = "9.6.1"
 core = "1.7.0"
 room = "3.0.3"
+##⬆ = "3.1.0-alpha01"
 
 log4k = "2.5.0"
 filekit = "0.16.0"
@@ -98,6 +99,33 @@ lifecycleRuntimeKtx = "2.11.0"
 ##               ⬆ = "2.12.0-alpha03"
 composeBom = "2026.09.00"
 material3-adaptive = "1.4.0"
+##              ⬆ = "1.5.0-alpha01"
+##              ⬆ = "1.5.0-alpha02"
+##              ⬆ = "1.5.0-alpha03"
+##              ⬆ = "1.5.0-alpha04"
+##              ⬆ = "1.5.0-alpha06"
+##              ⬆ = "1.5.0-alpha07"
+##              ⬆ = "1.5.0-alpha08"
+##              ⬆ = "1.5.0-alpha09"
+##              ⬆ = "1.5.0-alpha10"
+##              ⬆ = "1.5.0-alpha11"
+##              ⬆ = "1.5.0-alpha12"
+##              ⬆ = "1.5.0-alpha13"
+##              ⬆ = "1.5.0-alpha14"
+##              ⬆ = "1.5.0-alpha15"
+##              ⬆ = "1.5.0-alpha16"
+##              ⬆ = "1.5.0-alpha17"
+##              ⬆ = "1.5.0-alpha18"
+##              ⬆ = "1.5.0-alpha19"
+##              ⬆ = "1.5.0-alpha20"
+##              ⬆ = "1.5.0-alpha21"
+##              ⬆ = "1.5.0-alpha22"
+##              ⬆ = "1.5.0-alpha23"
+##              ⬆ = "1.5.0-alpha24"
+##              ⬆ = "1.5.0-alpha25"
+##              ⬆ = "1.5.0-alpha26"
+##              ⬆ = "1.5.0-alpha27"
+##              ⬆ = "1.5.0-alpha28"
 kermit = "2.2.0"
 store = "5.1.0"
 readline4k = "0.4.0"
@@ -108,14 +136,15 @@ publish = "0.37.0"
 maverick-synergy-client = "3.1.4"
 androidx-security-crypto = "1.1.0"
 sqlite = "2.7.1"
+##  ⬆ = "2.8.0-alpha01"
 
 [libraries]
+
 #sqlitenow = { module = "dev.goquick.sqlitenow:core", version.ref="sqlitenow" }
 androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 androidx-sqlite-async = { module = "androidx.sqlite:sqlite-async", version.ref = "sqlite" }
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-sqlite-web = { module = "androidx.sqlite:sqlite-web", version.ref = "sqlite" }
-
 
 sshtools-client = { module = "com.sshtools:maverick-synergy-client", version.ref = "maverick-synergy-client" }
 sshtools-bc = { module = "com.sshtools:maverick-bc", version.ref = "maverick-synergy-client" }
