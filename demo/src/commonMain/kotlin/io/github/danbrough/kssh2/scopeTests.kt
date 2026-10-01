@@ -1,6 +1,8 @@
 package io.github.danbrough.kssh2
 
+import io.github.danbrough.katty.CommandContext
 import io.github.danbrough.katty.CommandExecutor
+import io.github.danbrough.katty.ShellContext
 import io.github.danbrough.katty.basicCommand
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
@@ -72,7 +74,7 @@ private suspend fun testGetSshScope() {
 
     log.debug { "topJob1: ${currentCoroutineContext().job.topJob}" }
     log.debug { "topJob1: ${topJob()}" }
-    log.debug { "supervisor: ${currentCoroutineContext()[CommandExecutor]?.supervisorJob}" }
+    log.debug { "CommandContext.job: ${currentCoroutineContext()[CommandContext]?.job}" }
 
     thang {
       log.debug { "in thang:${thang()} scope: $this" }

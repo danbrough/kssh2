@@ -81,9 +81,7 @@ suspend fun commonMain(
     history = DefaultHistory(Path("./history.txt")),
     cmdContext = Dispatchers.Default,
     commandHandler = cmdHandler
-  ).main(
-    args
-  )
+  ).main(args.toList())
 
 
 }
