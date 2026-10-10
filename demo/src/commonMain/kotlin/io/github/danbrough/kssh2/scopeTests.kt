@@ -1,9 +1,7 @@
 package io.github.danbrough.kssh2
 
 import io.github.danbrough.katty.CommandContext
-import io.github.danbrough.katty.CommandExecutor
-import io.github.danbrough.katty.ShellContext
-import io.github.danbrough.katty.basicCommand
+import io.github.danbrough.katty.command.basicCommand
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay

@@ -1,6 +1,6 @@
 package io.github.danbrough.kssh2
 
-import io.github.danbrough.katty.basicCommand
+import io.github.danbrough.katty.command.basicCommand
 import io.github.danbrough.kssh2.lib.onFailure
 import io.github.danbrough.kssh2.lib.onSuccess
 import io.github.danbrough.kssh2.lib.successOrThrow

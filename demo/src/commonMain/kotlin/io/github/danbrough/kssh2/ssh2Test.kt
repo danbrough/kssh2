@@ -1,12 +1,12 @@
 package io.github.danbrough.kssh2
 
 import com.github.ajalt.mordant.rendering.TextColors
-import io.github.danbrough.katty.KTerminal
+import io.github.danbrough.katty.KattyShell
 import io.github.danbrough.katty.KattyUtils
 import kotlinx.coroutines.flow.map
 
 
-suspend fun KTerminal.ssh2Test(args: List<String>) {
+suspend fun KattyShell.ssh2Test(args: List<String>) {
   println("ssh2Test()")
 
 

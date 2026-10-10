@@ -23,8 +23,7 @@ log4k = { id = "io.github.smyrgeorge.log4k", version.ref = "log4k" }
 
 [versions]
 
-kotlin = "2.4.20"
-##  ⬆ = "2.4.21-RC"
+kotlin = "2.4.21"
 ##  ⬆ = "2.5.0-Beta1"
 
 agp = "9.4.1"
@@ -36,6 +35,7 @@ agp = "9.4.1"
 ##⬆= "9.5.0-alpha06"
 ##⬆= "9.5.0-alpha07"
 ##⬆= "9.5.0-alpha08"
+##⬆= "9.5.0-alpha09"
 
 android-compileSdk = "37"
 android-minSdk = "26"
@@ -53,14 +53,16 @@ androidx-testExt = "1.3.0"
 composeHotReload = "1.2.0"
 ##            ⬆ = "1.3.0-alpha01"
 ##            ⬆ = "1.3.0-alpha02"
+##            ⬆ = "1.3.0-beta01"
 composeMultiplatform = "1.12.1"
 ##                ⬆ = "1.13.0-alpha01"
-composeHtml = "1.12.0"
+##                ⬆ = "1.13.0-alpha02"
+composeHtml = "1.12.1"
 composeRuntime = "1.12.1"
 
 compose-multiplatform-adaptive = "1.3.0-rc01"
 compose-multiplatform-lifecycle = "2.11.0"
-multiplatform-nav3-ui = "1.1.1"
+multiplatform-nav3-ui = "1.1.2"
 kotlinxBrowser = "0.5.0"
 material = "1.9.0"
 material-icons = "1.7.3"
@@ -79,16 +81,17 @@ datetime = "0.8.0"
 dokka = "2.2.0"
 ## ⬆ = "2.3.0-Beta"
 
-logback = "1.6.3"
+logback = "1.6.5"
 clikt = "5.1.0"
-klog = "0.1.7"
+klog = "0.1.9"
 
-katty = "0.1.6"
+katty = "0.1.15"
 mordant = "3.1.0"
 androidx-navigation = "2.9.2"
 ##               ⬆ = "2.10.0-alpha01"
 ##               ⬆ = "2.10.0-alpha02"
 ##               ⬆ = "2.10.0-beta01"
+##               ⬆ = "2.10.0-rc01"
 runner = "1.7.0"
 shadow = "9.6.1"
 core = "1.7.0"
@@ -133,6 +136,7 @@ material3-adaptive = "1.4.0"
 ##              ⬆ = "1.5.0-alpha27"
 ##              ⬆ = "1.5.0-alpha28"
 ##              ⬆ = "1.5.0-alpha29"
+##              ⬆ = "1.5.0-beta01"
 kermit = "2.2.0"
 store = "5.1.0"
 readline4k = "0.4.0"
@@ -140,7 +144,7 @@ kmp-terminal-input = "1.0.3"
 # https://github.com/vanniktech/gradle-maven-publish-plugin
 publish = "0.37.0"
 # https://github.com/sshtools/maverick-synergy
-maverick-synergy-client = "3.1.4"
+maverick-synergy-client = "3.2.0"
 androidx-security-crypto = "1.1.0"
 sqlite = "2.7.1"
 ##  ⬆ = "2.8.0-alpha01"
@@ -278,12 +282,10 @@ mordant = { module = "com.github.ajalt.mordant:mordant", version.ref = "mordant"
 mordant-coroutines = { module = "com.github.ajalt.mordant:mordant-coroutines", version.ref = "mordant" }
 mordant-markdown = { module = "com.github.ajalt.mordant:mordant-markdown", version.ref = "mordant" }
 
-katty-shell-versioned = { module = "io.github.danbrough.katty:shell", version.ref = "katty" }
-katty-shell = { module = "io.github.danbrough.katty:shell" }
-katty-utils-versioned = { module = "io.github.danbrough.katty:utils", version.ref = "katty" }
-katty-utils = { module = "io.github.danbrough.katty:utils" }
-klog-versioned = { module = "org.danbrough.klog:core", version.ref = "klog" }
-klog = { module = "org.danbrough.klog:core" }
+katty-shell= { module = "io.github.danbrough.katty:shell", version.ref = "katty" }
+katty-core = { module = "io.github.danbrough.katty:core", version.ref = "katty" }
+
+klog = { module = "org.danbrough.klog:core", version.ref = "klog" }
 logback-core = { module = "ch.qos.logback:logback-core", version.ref = "logback" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }

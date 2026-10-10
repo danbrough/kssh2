@@ -55,12 +55,34 @@ plugins {
 include(":core", ":demo",":androidApp",":composeApp")
 
 
-providers.gradleProperty("klog.path").orNull?.also {
-  includeBuild(it)
+val kattyPath = providers.gradleProperty("katty.path").orNull
+
+if (!kattyPath.isNullOrEmpty()) {
+  // 1. Tell Gradle to pull the entire local project directory into the build tree
+  includeBuild(kattyPath) {
+    // 2. Instruct Gradle to globally substitute the published artifact id
+    // with the specific subproject path inside your local katty clone
+    dependencySubstitution {
+      substitute(module("io.github.danbrough.katty:shell"))
+        .using(project(":shell")) // Assumes the submodule in katty is named ':shell'
+    }
+    dependencySubstitution {
+      substitute(module("io.github.danbrough.katty:core"))
+        .using(project(":core")) // Assumes the submodule in katty is named ':shell'
+    }
+  }
 }
 
-providers.gradleProperty("katty.path").orNull?.also {
-  includeBuild(it)
+val klogPath = providers.gradleProperty("klog.path").orNull
+
+if (!klogPath.isNullOrEmpty()) {
+  // 1. Tell Gradle to pull the entire local project directory into the build tree
+  includeBuild(klogPath) {
+    // 2. Instruct Gradle to globally substitute the published artifact id
+    // with the specific subproject path inside your local katty clone
+    dependencySubstitution {
+      substitute(module("org.danbrough.klog:core"))
+        .using(project(":core")) // Assumes the submodule in katty is named ':shell'
+    }
+  }
 }
-
-

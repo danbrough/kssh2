@@ -1,11 +1,12 @@
 package io.github.danbrough.kssh2
 
 import com.github.ajalt.mordant.rendering.TextColors
-import io.github.danbrough.katty.BasicCommandHandler
 import io.github.danbrough.katty.DefaultHistory
-import io.github.danbrough.katty.KTerminal
+import io.github.danbrough.katty.KattyShell
+import io.github.danbrough.katty.KattyTerminal
 import io.github.danbrough.katty.KattyUtils
-import io.github.danbrough.katty.basicCommand
+import io.github.danbrough.katty.command.BasicCommandHandler
+import io.github.danbrough.katty.command.basicCommand
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO
@@ -41,7 +42,7 @@ suspend fun commonMain(
   cmdHandler: BasicCommandHandler = BasicCommandHandler()
 ) {
   cmdHandler.registerCommands(
-    basicCommand("ssh2Test", "Runs some tests in LibSSH2", KTerminal::ssh2Test),
+    basicCommand("ssh2Test", "Runs some tests in LibSSH2", KattyShell::ssh2Test),
     authTestPassword,
     authTestPublicKey,
     authTestAgent,
@@ -77,9 +78,8 @@ suspend fun commonMain(
 
   log.debug { "commonMain() starting terminal .. thread: ${KattyUtils.threadName()}" }
 
-  KTerminal(
+  KattyTerminal(
     history = DefaultHistory(Path("./history.txt")),
-    cmdContext = Dispatchers.Default,
     commandHandler = cmdHandler
   ).main(args.toList())
 
@@ -87,7 +87,7 @@ suspend fun commonMain(
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
-suspend fun KTerminal.coroutineTest(array: List<String>) {
+suspend fun KattyShell.coroutineTest(array: List<String>) {
   log.debug { "coroutineTest: ${KattyUtils.threadName()}" }
 
   coroutineScope {

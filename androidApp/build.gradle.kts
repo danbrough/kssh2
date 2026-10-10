@@ -92,10 +92,7 @@ dependencies {
   debugImplementation(libs.androidx.compose.ui.test.manifest)
   debugImplementation(libs.androidx.compose.ui.tooling)
   //
-  implementation(
-    if (project.hasProperty("klog.path")) libs.klog
-    else libs.klog.versioned
-  )
+  implementation(libs.klog)
 }
 
 afterEvaluate {

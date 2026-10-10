@@ -25,10 +25,8 @@ kotlin {
     commonMain {
       dependencies {
         implementation(projects.core)
-        implementation(project.findProperty("katty.path")?.let { libs.katty.shell }
-          ?: libs.katty.shell.versioned)
-        implementation(project.findProperty("klog.path")?.let { libs.klog }
-          ?: libs.klog.versioned)
+        implementation(libs.klog)
+        implementation(libs.katty.shell)
         implementation(libs.kotlinx.coroutines.core)
 
       }
